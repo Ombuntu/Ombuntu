@@ -120,7 +120,7 @@ The full manual is at <https://manuals.omamix.org/2/the-omarchy-manual>.
 | Mako only | Mako, with XFCE's `xfce4-notifyd` kept out of the Hyprland session | Both claim the notifications bus name |
 | `scrolling` layout option | Guarded with `hyprlang noerror` | Needs Hyprland 0.54+, Ubuntu has 0.53.3 |
 | Default apps set globally | Set only for the Hyprland session (`~/.config/Hyprland-mimeapps.list`) | Keeps XFCE defaults intact |
-| Browser title-bar buttons | Chromium-family browsers switched to system decorations, so no minimize/maximize/close buttons | Hyprland draws no decorations; `ombuntu-browser-decorations on` restores them |
+| Browser title-bar buttons | Chromium-family browsers and Firefox switched to system decorations, so no minimize/maximize/close buttons | Hyprland draws no decorations; `ombuntu-browser-decorations on` restores them |
 
 Signal Desktop is installed from Signal's own apt repository, as on Arch.
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# omarchy:summary=Make Chromium-family browsers ask the compositor for window decorations (Hyprland draws none, so the min/max/close buttons disappear)
+# omarchy:summary=Make browsers ask the compositor for window decorations (Hyprland draws none, so the min/max/close buttons disappear)
 # omarchy:args=[on|off]
 # omarchy:examples=ombuntu-browser-decorations off | ombuntu-browser-decorations on
 
@@ -46,4 +46,23 @@ for entry in "${profiles[@]}"; do
     rm -f "$tmp"
     echo "$browser: could not update $prefs" >&2
   fi
+done
+
+# Firefox (deb or snap): browser.tabs.inTitlebar=0 puts the tabs below a system title bar,
+# which Hyprland never draws. user.js is re-applied on every start and survives updates.
+for ini in "$HOME/.mozilla/firefox/profiles.ini" "$HOME/snap/firefox/common/.mozilla/firefox/profiles.ini"; do
+  [[ -f $ini ]] || continue
+  base=$(dirname "$ini")
+  while IFS='=' read -r key value; do
+    [[ $key == Path ]] || continue
+    profile="$base/$value"
+    [[ -d $profile ]] || continue
+    userjs="$profile/user.js"
+    touch "$userjs"
+    sed -i '/browser\.tabs\.inTitlebar/d' "$userjs"
+    if [[ $native == true ]]; then
+      echo 'user_pref("browser.tabs.inTitlebar", 0);' >>"$userjs"
+    fi
+    echo "firefox ($value): window decorations $mode$(pgrep -x firefox >/dev/null && echo ', takes effect on next start')"
+  done <"$ini"
 done
