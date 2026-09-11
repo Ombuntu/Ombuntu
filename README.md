@@ -163,11 +163,14 @@ Rebooting between desktops avoids this.
 A banner right after running the installer is transient; `hyprctl reload`
 clears it (the installer does this itself at the end).
 
-**Signal says "file is not a database" and quits.** Electron apps only use the
-GNOME keyring on desktops they recognise; under Hyprland they fall back to
-plain-text storage and cannot decrypt a database created under XFCE. Ombuntu
-launches Signal with `--password-store=gnome-libsecret` (launcher entry and
-Super+Shift+G). If you start it another way, add that flag.
+**Signal says "file is not a database", or the browser lost its saved
+passwords.** Chromium and Electron apps only use the GNOME keyring on desktops
+they recognise; under Hyprland they fall back to plain-text storage and cannot
+decrypt what was saved under XFCE. Ombuntu launches Signal, Vivaldi, Chrome,
+Brave, Edge and Chromium with `--password-store=gnome-libsecret` (launcher
+entries, web apps, Super+Shift+B and Super+Shift+G). Passwords saved while the
+flag was missing are the only ones not recovered. If you start a browser some
+other way, add that flag.
 
 **Walker does not open.** `omarchy-restart-walker`, or check
 `systemctl --user status elephant.service`. Elephant's providers live in

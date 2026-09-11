@@ -121,6 +121,13 @@ if [[ -f /usr/share/applications/signal-desktop.desktop ]]; then
   sed 's|^Exec=\(\S*\)|Exec=\1 --password-store=gnome-libsecret|' /usr/share/applications/signal-desktop.desktop >~/.local/share/applications/signal-desktop.desktop
 fi
 sed -i 's|"uwsm-app -- signal-desktop"|"uwsm-app -- signal-desktop --password-store=gnome-libsecret"|' ~/.config/hypr/bindings.conf
+#     Same for Chromium-family browsers (saved passwords vanish otherwise). Launcher entries
+#     get an override here; omarchy-launch-browser/-webapp in the overlay add the flag too.
+for entry in vivaldi-stable google-chrome brave-browser microsoft-edge chromium; do
+  src=/usr/share/applications/$entry.desktop
+  [[ -f $src ]] || continue
+  sed 's|^Exec=\(\S*\)|Exec=\1 --password-store=gnome-libsecret|' "$src" >~/.local/share/applications/$entry.desktop
+done
 update-desktop-database ~/.local/share/applications 2>/dev/null || true
 
 # 17. Default terminal for xdg-terminal-exec (Alacritty, like Omarchy)

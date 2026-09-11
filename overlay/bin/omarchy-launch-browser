@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# omarchy:summary=Launch the default browser as determined by xdg-settings.
+# omarchy:args=[url]
+
+default_browser=$(xdg-settings get default-web-browser)
+browser_exec=$(sed -n 's/^Exec=\([^ ]*\).*/\1/p' {~/.local,~/.nix-profile,/usr}/share/applications/$default_browser 2>/dev/null | head -1)
+
+extra_flags=()
+if $browser_exec --help 2>/dev/null | grep -q MOZ_LOG; then
+  private_flag="--private-window"
+else
+  # Chromium-family browsers only use the GNOME keyring on desktops they recognise;
+  # under Hyprland they fall back to plain-text storage and lose saved passwords.
+  extra_flags=(--password-store=gnome-libsecret)
+  if [[ $browser_exec =~ edge ]]; then
+    private_flag="--inprivate"
+  else
+    private_flag="--incognito"
+  fi
+fi
+
+exec setsid uwsm-app -- "$browser_exec" "${extra_flags[@]}" "${@/--private/$private_flag}"
