@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# omarchy:summary=Omarchy's dev-environment installers are Arch-specific and not available on Ombuntu
+# omarchy:args=<language>
+
+echo "Omarchy's '$1' installer targets Arch (pacman/yay plus remote install scripts)." >&2
+echo "On Ubuntu use apt, or mise (already installed): mise use -g ${1:-node}@latest" >&2
+exit 1

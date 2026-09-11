@@ -1,0 +1,25 @@
+# SHA256 of every archive the installer downloads, keyed by its name in ~/.cache/ombuntu.
+# Regenerate with: sha256sum ~/.cache/ombuntu/*.tar.* (mise sums also match its SHASUMS256.txt)
+eab433ca0f81b4fd2ab611bb00833c5b33df4c883475c763bb1d7337eb0908fb  walker-v2.17.0-amd64.tar.gz
+4370562d65ae23eb3398e0b80ad429e7049197e17647e8c7526c709b89df8340  elephant-v2.22.0-amd64.tar.gz
+2d28a95c53a36d323c9dfdb241261602228a250d34b6448f6ec61533af9e7550  elephant-aptpackages-v2.22.0-amd64.tar.gz
+c544fc88cf0543cee60d682ce71d5323e43931e7057ed3983b27b3be3a970cef  elephant-bluetooth-v2.22.0-amd64.tar.gz
+49041b19175048c97338be68e1560751ea2ead783a949cba3886f651907bc789  elephant-bookmarks-v2.22.0-amd64.tar.gz
+960dc4319f407aac242fbd54cf1171d13aa31901cd071b7a05ac53079d5bde85  elephant-calc-v2.22.0-amd64.tar.gz
+9af4030af240339b8027143d50f178350c2734c0167062e1ed8aeaf051f3e722  elephant-clipboard-v2.22.0-amd64.tar.gz
+c5e527d2538b60b51297d9fe3cb0ce0867db89dce264464be278a4896658eb54  elephant-desktopapplications-v2.22.0-amd64.tar.gz
+cb25ec2349697ea2280cfc3ad39c106473a57929a5967a68466162c42f66a3a9  elephant-files-v2.22.0-amd64.tar.gz
+b93795af000ca2269b77b43d1035292087b39fe45c12728c4b299efe6140e9a6  elephant-menus-v2.22.0-amd64.tar.gz
+7db5f9360647102136f3e1cdc9e3a77f30b4c34600cce297c6282f27defdfd4d  elephant-playerctl-v2.22.0-amd64.tar.gz
+82f0de50e4e0e343cee1333e67b1f4ac372f44b94bc24390cd7ace5cce97f500  elephant-providerlist-v2.22.0-amd64.tar.gz
+2d46ee6310b31265b8eca767b049f5d481396c10aa9e6090106ad5a45062929a  elephant-runner-v2.22.0-amd64.tar.gz
+b506653cc119dd8a6e1be9361bbf249f56827593b5c4b9effe8d4d878eb57c11  elephant-snippets-v2.22.0-amd64.tar.gz
+de2a636e625a02d30986cd46ef3fa38dc09959d53d25ad39e8fe4d25610fd956  elephant-symbols-v2.22.0-amd64.tar.gz
+7b1ede83cfd07396bd62cf014d4e223bd1bcef30f97a8034b01c2a2546900761  elephant-todo-v2.22.0-amd64.tar.gz
+0ef57abe964f3e4767d303f88c2dfa5ec1a6a945eaa223ceb109630d08247243  elephant-unicode-v2.22.0-amd64.tar.gz
+4f6102f44b04e04cb83a88aa711dc0c90bec9ce44d912371fe23a9de7e42fbeb  elephant-websearch-v2.22.0-amd64.tar.gz
+eb7a028c4a5ce331c2f355add8e2b807a7d697fe4495f7e1965786a4f6bcd5b8  satty-v0.22.0-amd64.tar.gz
+814073f70e7e18390d826f8b60dc429fc904b3abd05f6cae2b00fb8c2b9ea44b  satty-v0.22.0-arm64.tar.gz
+d71e94e1ed59d4d0ca4ac847fa321d6d6615a8e613e9b468c9fb39f0dddd06d5  mise-v2026.9.5-amd64.tar.gz
+3a52c7c7c58d21a0791516950ebf4bc915f403277b49c93d657fc585259625ec  mise-v2026.9.5-arm64.tar.gz
+04d5e8f903693f9dd13e16f867e994834e681eb3c72c0d337a770dcda09010cf  JetBrainsMono-v3.5.1.tar.xz

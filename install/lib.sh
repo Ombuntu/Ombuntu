@@ -66,3 +66,18 @@ install_user_unit() {
   mkdir -p ~/.config/systemd/user
   cp -f "$src" ~/.config/systemd/user/"$name"
 }
+
+# fetch <url> <dest>: download once, then require the file's SHA256 to match
+# install/checksums.sha256. A pinned download with no entry, or a mismatch, aborts.
+fetch() {
+  local url="$1" dest="$2" name expected actual
+  name=$(basename "$dest")
+  [[ -s $dest ]] || curl -fsSL --retry 3 -o "$dest" "$url"
+  expected=$(awk -v n="$name" '$2 == n {print $1}' "$OMBUNTU_REPO/install/checksums.sha256")
+  [[ -n $expected ]] || die "No checksum recorded for $name in install/checksums.sha256"
+  actual=$(sha256sum "$dest" | cut -d' ' -f1)
+  if [[ $actual != "$expected" ]]; then
+    rm -f "$dest"
+    die "Checksum mismatch for $name (got $actual, expected $expected). Download removed; re-run to retry."
+  fi
+}

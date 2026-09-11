@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# omarchy:summary=Direct boot (autologin) is not offered on Ombuntu
+
+echo "Ombuntu does not configure autologin. LightDM's own settings (/etc/lightdm/lightdm.conf.d) control that." >&2
+exit 1

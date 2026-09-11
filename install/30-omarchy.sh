@@ -43,3 +43,6 @@ menu="$OMARCHY_PATH/bin/omarchy-menu"
 sed -i 's/󰣇  Arch\\n/  Ubuntu\\n/' "$menu"
 sed -i 's|\*Arch\*) omarchy-launch-webapp "https://wiki.archlinux.org[^"]*"|*Ubuntu*) omarchy-launch-webapp "https://help.ubuntu.com/"|' "$menu"
 sed -i 's/󰣇  AUR\\n/󰣇  AUR (n\/a on Ubuntu)\\n/' "$menu"
+
+# No menu extensions: upstream sources ~/.config/omarchy/extensions/menu.sh into omarchy-menu
+sed -i '/^USER_EXTENSIONS=/d; /\$USER_EXTENSIONS/d; /^# Allow user extensions and overrides$/d' "$menu"

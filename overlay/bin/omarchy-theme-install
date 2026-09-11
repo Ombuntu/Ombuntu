@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# omarchy:summary=Installing themes from remote git repositories is disabled on Ombuntu
+# omarchy:args=[git-repo-url]
+
+cat >&2 <<'MSG'
+Ombuntu does not install themes from remote repositories: a theme can carry
+executable content (neovim.lua, templates) and would run with your user rights.
+
+Use one of the 19 bundled themes (Super + Ctrl + Shift + Space), or review a
+theme yourself and copy it into ~/.config/omarchy/themes/<name>/.
+MSG
+exit 1

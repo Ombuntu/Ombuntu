@@ -14,10 +14,6 @@ BIN=~/.local/bin
 CACHE=~/.cache/ombuntu
 mkdir -p "$BIN" "$CACHE" ~/.config/elephant/providers
 
-fetch() { # fetch <url> <dest>
-  [[ -s $2 ]] || curl -fsSL --retry 3 -o "$2" "$1"
-}
-
 # Version stamps: walker cannot run until libgtk4-layer-shell is installed, so
 # we track what was installed instead of asking the binaries.
 stamp() { cat "$CACHE/$1.version" 2>/dev/null; }
@@ -59,8 +55,8 @@ if [[ ! -x $BIN/walker || $(stamp walker) != "$WALKER_STAMP" ]]; then
     install -m 755 "$CACHE/build/walker/release/walker" "$BIN/walker"
   else
     log "Walker $WALKER_VERSION"
-    fetch "https://github.com/abenz1267/walker/releases/download/$WALKER_VERSION/walker-$WALKER_VERSION-$RUST_TRIPLE.tar.gz" "$CACHE/walker-$WALKER_VERSION.tar.gz"
-    tar xzf "$CACHE/walker-$WALKER_VERSION.tar.gz" -C "$BIN" walker
+    fetch "https://github.com/abenz1267/walker/releases/download/$WALKER_VERSION/walker-$WALKER_VERSION-$RUST_TRIPLE.tar.gz" "$CACHE/walker-$WALKER_VERSION-amd64.tar.gz"
+    tar xzf "$CACHE/walker-$WALKER_VERSION-amd64.tar.gz" -C "$BIN" walker
     chmod +x "$BIN/walker"
   fi
   mark walker "$WALKER_STAMP"
@@ -83,12 +79,12 @@ if [[ ! -x $BIN/elephant || $(stamp elephant) != "$ELEPHANT_STAMP" ]]; then
     )
   else
     log "Elephant $ELEPHANT_VERSION"
-    fetch "https://github.com/abenz1267/elephant/releases/download/$ELEPHANT_VERSION/elephant-linux-amd64.tar.gz" "$CACHE/elephant-$ELEPHANT_VERSION.tar.gz"
-    tar xzf "$CACHE/elephant-$ELEPHANT_VERSION.tar.gz" -C "$CACHE"
+    fetch "https://github.com/abenz1267/elephant/releases/download/$ELEPHANT_VERSION/elephant-linux-amd64.tar.gz" "$CACHE/elephant-$ELEPHANT_VERSION-amd64.tar.gz"
+    tar xzf "$CACHE/elephant-$ELEPHANT_VERSION-amd64.tar.gz" -C "$CACHE"
     install -m 755 "$CACHE/elephant-linux-amd64" "$BIN/elephant"
     for p in "${ELEPHANT_PROVIDERS[@]}"; do
-      fetch "https://github.com/abenz1267/elephant/releases/download/$ELEPHANT_VERSION/$p-linux-amd64.tar.gz" "$CACHE/elephant-$p-$ELEPHANT_VERSION.tar.gz"
-      tar xzf "$CACHE/elephant-$p-$ELEPHANT_VERSION.tar.gz" -C ~/.config/elephant/providers
+      fetch "https://github.com/abenz1267/elephant/releases/download/$ELEPHANT_VERSION/$p-linux-amd64.tar.gz" "$CACHE/elephant-$p-$ELEPHANT_VERSION-amd64.tar.gz"
+      tar xzf "$CACHE/elephant-$p-$ELEPHANT_VERSION-amd64.tar.gz" -C ~/.config/elephant/providers
     done
   fi
   mark elephant "$ELEPHANT_STAMP"
@@ -97,9 +93,9 @@ fi
 # Satty
 if [[ ! -x $BIN/satty || $(stamp satty) != "$SATTY_VERSION" ]]; then
   log "Satty $SATTY_VERSION"
-  fetch "https://github.com/gabm/Satty/releases/download/$SATTY_VERSION/satty-$RUST_TRIPLE.tar.gz" "$CACHE/satty-$SATTY_VERSION.tar.gz"
+  fetch "https://github.com/gabm/Satty/releases/download/$SATTY_VERSION/satty-$RUST_TRIPLE.tar.gz" "$CACHE/satty-$SATTY_VERSION-$OMBUNTU_ARCH.tar.gz"
   mkdir -p "$CACHE/satty"
-  tar xzf "$CACHE/satty-$SATTY_VERSION.tar.gz" -C "$CACHE/satty"
+  tar xzf "$CACHE/satty-$SATTY_VERSION-$OMBUNTU_ARCH.tar.gz" -C "$CACHE/satty"
   install -m 755 "$CACHE/satty/satty" "$BIN/satty"
   mkdir -p ~/.local/share/applications
   cp -f "$CACHE/satty/satty.desktop" ~/.local/share/applications/
@@ -110,9 +106,9 @@ fi
 MISE_VERSION="${MISE_VERSION:-v2026.9.5}"
 if [[ ! -x $BIN/mise || $(stamp mise) != "$MISE_VERSION" ]]; then
   log "mise $MISE_VERSION"
-  fetch "https://github.com/jdx/mise/releases/download/$MISE_VERSION/mise-$MISE_VERSION-$MISE_ARCH.tar.gz" "$CACHE/mise-$MISE_VERSION.tar.gz"
+  fetch "https://github.com/jdx/mise/releases/download/$MISE_VERSION/mise-$MISE_VERSION-$MISE_ARCH.tar.gz" "$CACHE/mise-$MISE_VERSION-$OMBUNTU_ARCH.tar.gz"
   mkdir -p "$CACHE/mise"
-  tar xzf "$CACHE/mise-$MISE_VERSION.tar.gz" -C "$CACHE/mise"
+  tar xzf "$CACHE/mise-$MISE_VERSION-$OMBUNTU_ARCH.tar.gz" -C "$CACHE/mise"
   install -m 755 "$CACHE/mise/mise/bin/mise" "$BIN/mise"
   mark mise "$MISE_VERSION"
 fi

@@ -183,6 +183,45 @@ other way, add that flag.
 the Hyprland log under `/run/user/$UID/hypr/*/hyprland.log` are the places to
 look. Include their output if you open an issue.
 
+## Security notes
+
+What the installer does with privilege, and what it deliberately leaves out.
+
+- **Root is used for three things only:** apt packages, Signal's apt key and
+  repository (fetched over HTTPS from signal.org), and one session file under
+  `/usr/share/wayland-sessions`. Everything else lives in your home directory.
+- **Every download is pinned and checksummed.** `install/checksums.sha256`
+  holds the SHA256 of each Walker, Elephant, Satty, mise and Nerd Font archive;
+  a mismatch aborts the install. Upstream Omarchy is cloned at a fixed tag.
+- **No plugin or hook execution.** Omarchy runs user scripts from
+  `~/.config/omarchy/hooks/*.d/` on boot, theme change and update, and sources
+  `~/.config/omarchy/extensions/menu.sh` into its menu. Ombuntu disables both:
+  `omarchy-hook` is a no-op, `omarchy-hook-install` refuses, the menu no longer
+  sources extensions, and the sample hook directories are not installed.
+- **No remote theme installs.** `omarchy-theme-install` (git clone of an
+  arbitrary repository, whose `neovim.lua` and templates are executed) is
+  disabled. The 19 bundled themes are available; copy a reviewed theme into
+  `~/.config/omarchy/themes/` by hand if you want another.
+- **No privilege shortcuts.** Omarchy's menu offers passwordless sudo and
+  autologin ("direct boot"); both are disabled here. Its Arch-only
+  dev-environment installers, which pipe remote scripts into a shell, are
+  disabled too; use apt or mise.
+- **Keyring, not plain text.** Browsers and Signal are launched with the GNOME
+  keyring backend, so saved passwords are encrypted with your login keyring
+  rather than a fixed key on disk.
+- **Screen lock** after 5 minutes idle via Hyprlock and PAM; a screensaver runs
+  at 2.5 minutes. `ombuntu toggle idle` turns it off for the session.
+- **Firewall.** Ubuntu's `ufw` is left as you have it (enabled by default on a
+  Xubuntu install). Omarchy would additionally open its LocalSend port; Ombuntu
+  does not install LocalSend, so nothing is opened.
+
+Things to be aware of that are inherited from Omarchy's design: the clipboard
+manager keeps a history of what you copy (Super + Ctrl + V; clear it from the
+same menu), the launcher's web search sends what you type to the configured
+search engine when you use the `@` prefix, and screen sharing remembers your
+choice of screen (`allow_token_by_default` in `~/.config/hypr/xdph.conf`) so
+that apps do not prompt every time. Set that to `false` if you prefer a prompt.
+
 ## Uninstall
 
 XFCE is untouched, so removal is:

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# omarchy:summary=User hooks are disabled on Ombuntu (no plugin-style code execution)
+# omarchy:hidden=true
+
+# Omarchy runs any script placed in ~/.config/omarchy/hooks/<event>.d/ on boot,
+# theme change, update, etc. Ombuntu does not support that extension point.
+exit 0

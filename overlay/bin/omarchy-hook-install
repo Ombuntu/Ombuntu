@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# omarchy:summary=User hooks are disabled on Ombuntu
+
+echo "Ombuntu does not support Omarchy hooks or extensions (~/.config/omarchy/hooks)." >&2
+exit 1

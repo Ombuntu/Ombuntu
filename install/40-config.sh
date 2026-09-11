@@ -17,7 +17,7 @@ install_tree "$OMBUNTU_REPO/config" ~/.config
 
 # 3. Omarchy's ~/.config payload, minus the pieces that don't apply on Ubuntu
 #    (fcitx5 input method, chromium flags, Arch-only autostart entries).
-skip='^(fcitx5|environment.d|autostart|chromium|chromium-flags.conf|Typora|wiremix|omarchy.ttf)$'
+skip='^(fcitx5|environment.d|autostart|chromium|chromium-flags.conf|Typora|wiremix|omarchy.ttf|omarchy)$'  # omarchy/: hook + extension samples, not supported
 for entry in "$OMARCHY_PATH"/config/*; do
   name=$(basename "$entry")
   [[ $name =~ $skip ]] && continue
@@ -51,7 +51,10 @@ include "%H/.local/share/omarchy/default/xcompose"
 XC
 fi
 
-# 6. Persistent toggles + branding text (About / screensaver)
+# 6. Remove hook/extension sample dirs an earlier install may have copied (not supported)
+rm -rf ~/.config/omarchy/hooks ~/.config/omarchy/extensions ~/.config/omarchy/themed/alacritty.toml.tpl.sample
+
+# 6b. Persistent toggles + branding text (About / screensaver)
 [[ -f ~/.local/state/omarchy/toggles/hypr/flags.conf ]] || cp "$OMARCHY_PATH/default/hypr/toggles/flags.conf" ~/.local/state/omarchy/toggles/hypr/
 mkdir -p ~/.config/omarchy/branding ~/.config/omarchy/themes
 cp -f "$OMBUNTU_REPO/branding/about.txt" ~/.config/omarchy/branding/about.txt
