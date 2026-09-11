@@ -40,7 +40,7 @@ cd ~/ombuntu
 The installer:
 
 1. Checks the OS and architecture.
-2. Installs the Ubuntu packages (Hyprland, Waybar, Mako, Alacritty, Nautilus, the terminal tooling, fonts). This is the only step that needs your password.
+2. Installs the Ubuntu packages (Hyprland, Waybar, Mako, Alacritty, Nautilus, the terminal tooling, fonts), then adds Signal's apt repository and installs Signal Desktop. These are the steps that need your password.
 3. Clones Omarchy `v3.8.4` into `~/.local/share/omarchy` and applies the overlay.
 4. Downloads pinned releases of Walker, Elephant, Satty and mise into `~/.local/bin`, plus the JetBrainsMono Nerd Font.
 5. Writes the Omarchy configuration into `~/.config`, installs the bash setup (your old `~/.bashrc` is kept as `~/.bashrc.pre-omarchy`), and applies the Tokyo Night theme.
@@ -106,6 +106,8 @@ The full manual is at <https://manuals.omamix.org/2/the-omarchy-manual>.
 | Mako only | Mako, with XFCE's `xfce4-notifyd` kept out of the Hyprland session | Both claim the notifications bus name |
 | `scrolling` layout option | Guarded with `hyprlang noerror` | Needs Hyprland 0.54+, Ubuntu has 0.53.3 |
 | Default apps set globally | Set only for the Hyprland session (`~/.config/Hyprland-mimeapps.list`) | Keeps XFCE defaults intact |
+
+Signal Desktop is installed from Signal's own apt repository, as on Arch.
 
 Skipped entirely: 1Password, Spotify, Obsidian, Typora, LocalSend, Pinta,
 Docker, snapper/limine, and the Arch hardware fix-ups. Their keybindings stay in

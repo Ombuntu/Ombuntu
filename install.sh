@@ -42,6 +42,7 @@ if [[ $OMARCHY_USER_ONLY == false ]]; then
   log "Root access is needed for apt and the login session file"
   sudo -v
   step "Packages (apt)" "$OMBUNTU_REPO/install/10-packages.sh" root
+  step "Third-party apt repos (Signal)" "$OMBUNTU_REPO/install/15-third-party.sh" root
 fi
 
 step "Omarchy core + Ubuntu overlay" "$OMBUNTU_REPO/install/30-omarchy.sh"
