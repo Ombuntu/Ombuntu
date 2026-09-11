@@ -114,6 +114,14 @@ Docker, snapper/limine, and the Arch hardware fix-ups. Their keybindings stay in
 `~/.config/hypr/bindings.conf` so you can point them at snaps or debs if you
 install them.
 
+### Wallpapers
+
+Five Ombuntu wallpapers ship in `backgrounds/`. They are offered in every theme
+(Super + Ctrl + Space cycles backgrounds, or Style, Background in the menu)
+ahead of the theme's own images, and the horizon one is the default on a fresh
+install. Drop more images in `~/.config/omarchy/backgrounds/<theme>/` to add
+your own.
+
 ### Naming
 
 Everything this repo adds is called Ombuntu: the login session, the About
@@ -142,6 +150,12 @@ Rebooting between desktops avoids this.
 **Config error banner from Hyprland.** `hyprctl configerrors` shows the cause.
 A banner right after running the installer is transient; `hyprctl reload`
 clears it (the installer does this itself at the end).
+
+**Signal says "file is not a database" and quits.** Electron apps only use the
+GNOME keyring on desktops they recognise; under Hyprland they fall back to
+plain-text storage and cannot decrypt a database created under XFCE. Ombuntu
+launches Signal with `--password-store=gnome-libsecret` (launcher entry and
+Super+Shift+G). If you start it another way, add that flag.
 
 **Walker does not open.** `omarchy-restart-walker`, or check
 `systemctl --user status elephant.service`. Elephant's providers live in
@@ -192,6 +206,7 @@ overlay/              files copied over the upstream Omarchy clone
 config/               extra ~/.config files (elephant.service, POSIX uwsm env)
 config-system/        the Wayland session entry installed to /usr/share
 branding/             Ombuntu ASCII art for the About screen and screensaver
+backgrounds/          Ombuntu wallpapers, linked into every theme
 ```
 
 ## Credits and license

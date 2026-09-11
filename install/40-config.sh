@@ -113,8 +113,18 @@ sed -i 's/"Omarchy Menu\\n/"Ombuntu Menu\\n/; s/Omarchy update available/Ubuntu 
 sed -i 's/echo \\"Omarchy \$version\\"/echo \\"Ombuntu (Omarchy $version)\\"/' ~/.config/fastfetch/config.jsonc
 ln -sfn "$OMARCHY_PATH/bin/omarchy" ~/.local/bin/ombuntu
 
-# 16. Default terminal for xdg-terminal-exec (Alacritty, like Omarchy)
+# 16. Electron/Chromium apps only use the GNOME keyring when they recognise the desktop;
+#     under Hyprland they silently fall back to plain-text storage, which makes Signal
+#     unable to open a database created under XFCE ("file is not a database").
+#     Force the libsecret backend in Signal's launcher and Omarchy's Super+Shift+G binding.
+if [[ -f /usr/share/applications/signal-desktop.desktop ]]; then
+  sed 's|^Exec=\(\S*\)|Exec=\1 --password-store=gnome-libsecret|' /usr/share/applications/signal-desktop.desktop >~/.local/share/applications/signal-desktop.desktop
+fi
+sed -i 's|"uwsm-app -- signal-desktop"|"uwsm-app -- signal-desktop --password-store=gnome-libsecret"|' ~/.config/hypr/bindings.conf
+update-desktop-database ~/.local/share/applications 2>/dev/null || true
+
+# 17. Default terminal for xdg-terminal-exec (Alacritty, like Omarchy)
 [[ -f ~/.config/xdg-terminals.list ]] || cp "$OMARCHY_PATH/config/xdg-terminals.list" ~/.config/
 
-# 17. GTK primary-paste like Omarchy's first-run
+# 18. GTK primary-paste like Omarchy's first-run
 gsettings set org.gnome.desktop.interface gtk-enable-primary-paste true 2>/dev/null || true
