@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ombuntu Cheatsheet</title>
+<style>
+  :root { --bg:#1a1b26; --panel:#1f2130; --line:#2c2f44; --fg:#c0caf5; --dim:#7d84a8; --accent:#7aa2f7; --key-bg:#292c40; --key-fg:#e0e4ff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.5 "Liberation Sans", "Noto Sans", system-ui, sans-serif; padding:28px 32px 48px; }
+  header { display:flex; align-items:baseline; gap:16px; flex-wrap:wrap; margin-bottom:6px; }
+  h1 { margin:0; font-size:26px; font-weight:600; letter-spacing:.3px; }
+  h1 span { color:var(--accent); }
+  header p { margin:0; color:var(--dim); }
+  .tip { background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--accent); padding:10px 14px; margin:14px 0 22px; border-radius:4px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr)); gap:18px; }
+  section { background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:14px 16px 8px; break-inside:avoid; }
+  h2 { margin:0 0 8px; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:1.2px; color:var(--accent); }
+  table { width:100%; border-collapse:collapse; }
+  td { padding:5px 4px; vertical-align:top; border-top:1px solid var(--line); }
+  tr:first-child td { border-top:0; }
+  td.k { width:46%; white-space:nowrap; }
+  kbd { display:inline-block; background:var(--key-bg); color:var(--key-fg); border:1px solid #3a3e58; border-bottom-width:2px; border-radius:4px; padding:1px 7px; font:13px "JetBrainsMono Nerd Font", "JetBrains Mono", ui-monospace, monospace; }
+  .plus { color:var(--dim); margin:0 2px; }
+  td.d small { display:block; color:var(--dim); }
+  footer { margin-top:24px; color:var(--dim); font-size:13px; }
+  footer kbd { font-size:12px; }
+  @media print { body { background:#fff; color:#111; padding:12px; } section { background:#fff; border-color:#ccc; } h2 { color:#333; } kbd { background:#eee; color:#111; border-color:#bbb; } .tip { background:#f4f4f4; border-color:#ccc; } td { border-color:#e2e2e2; } }
+</style>
+</head>
+<body>
+<header>
+  <h1><span>Ombuntu</span> keyboard cheatsheet</h1>
+  <p>The essentials for your first week. Everything else is one keypress away.</p>
+</header>
+<div class="tip"><b>Super</b> is the Windows key (⌘ on a Mac keyboard). Nearly every shortcut starts with it. Press <kbd>Super</kbd><span class="plus">+</span><kbd>K</kbd> any time for the full searchable list.</div>
+
+<div class="grid">
+
+<section>
+<h2>Start here</h2>
+<table>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Space</kbd></td><td class="d">Open any app <small>start typing its name, Enter to launch</small></td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Enter</kbd></td><td class="d">Terminal</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>B</kbd></td><td class="d">Web browser</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>F</kbd></td><td class="d">File manager</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>W</kbd></td><td class="d">Close the current window</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Alt</kbd><span class="plus">+</span><kbd>Space</kbd></td><td class="d">Ombuntu menu <small>themes, settings, install, update, power</small></td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Esc</kbd></td><td class="d">Lock, sleep, log out, restart, shut down</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>K</kbd></td><td class="d">Every keyboard shortcut, searchable</td></tr>
+</table>
+</section>
+
+<section>
+<h2>Windows</h2>
+<table>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></td><td class="d">Move focus between windows</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd></td><td class="d">Swap the window with its neighbour</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>F</kbd></td><td class="d">Full screen on / off</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>T</kbd></td><td class="d">Float the window / tile it again</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>J</kbd></td><td class="d">Flip the split (side by side ↔ stacked)</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>-</kbd> / <kbd>=</kbd></td><td class="d">Make the window narrower / wider</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>drag</kbd></td><td class="d">Left button moves, right button resizes</td></tr>
+<tr><td class="k"><kbd>Alt</kbd><span class="plus">+</span><kbd>Tab</kbd></td><td class="d">Cycle through windows on this workspace</td></tr>
+</table>
+</section>
+
+<section>
+<h2>Workspaces</h2>
+<table>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>1</kbd> … <kbd>9</kbd> <kbd>0</kbd></td><td class="d">Go to workspace 1 to 10 <small>they appear in the top bar as you use them</small></td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>1</kbd> … <kbd>0</kbd></td><td class="d">Send the current window there</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Tab</kbd></td><td class="d">Next workspace <small>add Shift for previous</small></td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>scroll</kbd></td><td class="d">Scroll through workspaces</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>S</kbd></td><td class="d">Scratchpad: a hidden workspace that drops over the top <small>Super + Alt + S sends a window into it</small></td></tr>
+</table>
+</section>
+
+<section>
+<h2>Copy, paste and text</h2>
+<table>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>C</kbd> / <kbd>V</kbd> / <kbd>X</kbd></td><td class="d">Copy / paste / cut, works in the terminal too</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Ctrl</kbd><span class="plus">+</span><kbd>V</kbd></td><td class="d">Clipboard history</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Ctrl</kbd><span class="plus">+</span><kbd>E</kbd></td><td class="d">Emoji picker</td></tr>
+<tr><td class="k"><kbd>Caps Lock</kbd> then two keys</td><td class="d">Compose key for accents and symbols <small>Caps, ', e → é &nbsp; Caps, -, > → →</small></td></tr>
+</table>
+</section>
+
+<section>
+<h2>Screenshots and capture</h2>
+<table>
+<tr><td class="k"><kbd>Print</kbd></td><td class="d">Screenshot: drag a region, or click a window <small>saved to Pictures and copied; click the notification to annotate</small></td></tr>
+<tr><td class="k"><kbd>Alt</kbd><span class="plus">+</span><kbd>Print</kbd></td><td class="d">Screen recording (press again to stop)</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Print</kbd></td><td class="d">Colour picker</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Ctrl</kbd><span class="plus">+</span><kbd>Print</kbd></td><td class="d">Copy text out of anything on screen (OCR)</td></tr>
+</table>
+</section>
+
+<section>
+<h2>Look and feel</h2>
+<table>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>Ctrl</kbd><span class="plus">+</span><kbd>Space</kbd></td><td class="d">Pick a theme</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Ctrl</kbd><span class="plus">+</span><kbd>Space</kbd></td><td class="d">Next wallpaper</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>Space</kbd></td><td class="d">Hide / show the top bar</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Ctrl</kbd><span class="plus">+</span><kbd>N</kbd></td><td class="d">Night light (warmer screen)</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Backspace</kbd></td><td class="d">Window transparency on / off</td></tr>
+</table>
+</section>
+
+<section>
+<h2>System and hardware</h2>
+<table>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Ctrl</kbd><span class="plus">+</span><kbd>W</kbd></td><td class="d">Wi-Fi</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Ctrl</kbd><span class="plus">+</span><kbd>B</kbd></td><td class="d">Bluetooth</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Ctrl</kbd><span class="plus">+</span><kbd>A</kbd></td><td class="d">Audio devices and volume</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Ctrl</kbd><span class="plus">+</span><kbd>T</kbd></td><td class="d">Activity monitor (CPU, memory, processes)</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Ctrl</kbd><span class="plus">+</span><kbd>L</kbd></td><td class="d">Lock the screen</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>,</kbd></td><td class="d">Dismiss a notification <small>add Shift to clear them all</small></td></tr>
+<tr><td class="k"><kbd>Ctrl</kbd><span class="plus">+</span><kbd>Alt</kbd><span class="plus">+</span><kbd>Delete</kbd></td><td class="d">Close every window</td></tr>
+</table>
+</section>
+
+<section>
+<h2>Quick apps</h2>
+<table>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>G</kbd></td><td class="d">Signal</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>N</kbd></td><td class="d">Text editor (Neovim)</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>A</kbd> / <kbd>Y</kbd> / <kbd>X</kbd></td><td class="d">ChatGPT / YouTube / X as app windows</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>E</kbd> / <kbd>C</kbd></td><td class="d">Email / Calendar (HEY)</td></tr>
+<tr><td class="k"><kbd>Super</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>K</kbd></td><td class="d">This cheatsheet</td></tr>
+</table>
+</section>
+
+</div>
+<footer>Shortcuts live in <code>~/.config/hypr/bindings.conf</code>; edit it from the menu under Setup, Keybindings. Print this page with <kbd>Ctrl</kbd><span class="plus">+</span><kbd>P</kbd>.</footer>
+</body>
+</html>

@@ -93,6 +93,8 @@ reports are welcome.
 | Print | Screenshot (Satty editor on click) |
 
 Change theme with Super + Ctrl + Shift + Space, background with Super + Ctrl + Space.
+**Super + Shift + K** opens a one-page beginner cheatsheet (also "Ombuntu
+Cheatsheet" in the app launcher, and `docs/cheatsheet.html` in this repo).
 The full manual is at <https://manuals.omamix.org/2/the-omarchy-manual>.
 
 ## What is different from Omarchy on Arch
@@ -221,6 +223,7 @@ overlay/              files copied over the upstream Omarchy clone
 config/               extra ~/.config files (elephant.service, POSIX uwsm env)
 config-system/        the Wayland session entry installed to /usr/share
 branding/             Ombuntu ASCII art for the About screen and screensaver
+docs/                 beginner keyboard cheatsheet (HTML)
 backgrounds/          Ombuntu wallpapers, linked into every theme
 ```
 

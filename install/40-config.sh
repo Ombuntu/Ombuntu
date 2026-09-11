@@ -130,8 +130,24 @@ for entry in vivaldi-stable google-chrome brave-browser microsoft-edge chromium;
 done
 update-desktop-database ~/.local/share/applications 2>/dev/null || true
 
-# 17. Default terminal for xdg-terminal-exec (Alacritty, like Omarchy)
+# 17. Beginner cheatsheet: app entry plus Super+Shift+K
+mkdir -p ~/.local/share/ombuntu
+cp -f "$OMBUNTU_REPO/docs/cheatsheet.html" ~/.local/share/ombuntu/cheatsheet.html
+cat >~/.local/share/applications/ombuntu-cheatsheet.desktop <<'DESK'
+[Desktop Entry]
+Type=Application
+Name=Ombuntu Cheatsheet
+Comment=Keyboard shortcuts for beginners
+Exec=ombuntu-cheatsheet
+Icon=input-keyboard
+Terminal=false
+Categories=Documentation;
+DESK
+grep -q 'ombuntu-cheatsheet' ~/.config/hypr/bindings.conf || printf '\n# Ombuntu beginner cheatsheet\nbindd = SUPER SHIFT, K, Cheatsheet, exec, ombuntu-cheatsheet\n' >>~/.config/hypr/bindings.conf
+update-desktop-database ~/.local/share/applications 2>/dev/null || true
+
+# 18. Default terminal for xdg-terminal-exec (Alacritty, like Omarchy)
 [[ -f ~/.config/xdg-terminals.list ]] || cp "$OMARCHY_PATH/config/xdg-terminals.list" ~/.config/
 
-# 18. GTK primary-paste like Omarchy's first-run
+# 19. GTK primary-paste like Omarchy's first-run
 gsettings set org.gnome.desktop.interface gtk-enable-primary-paste true 2>/dev/null || true
