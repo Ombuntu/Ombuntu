@@ -10,6 +10,15 @@ export OMARCHY_SKIP_BASHRC="${OMARCHY_SKIP_BASHRC:-false}"
 export OMARCHY_FORCE_CONFIG="${OMARCHY_FORCE_CONFIG:-false}"
 export PATH="$OMARCHY_PATH/bin:$HOME/.local/bin:$PATH"
 
+# CPU architecture, in Debian naming (amd64 / arm64). Prebuilt GitHub releases
+# exist for every tool on amd64; on arm64 Walker and Elephant are built from source.
+export OMBUNTU_ARCH="${OMBUNTU_ARCH:-$(dpkg --print-architecture 2>/dev/null || uname -m)}"
+case "$OMBUNTU_ARCH" in
+  amd64 | x86_64) OMBUNTU_ARCH=amd64 ;;
+  arm64 | aarch64) OMBUNTU_ARCH=arm64 ;;
+esac
+export OMBUNTU_BUILD_FROM_SOURCE="${OMBUNTU_BUILD_FROM_SOURCE:-false}"
+
 log() { printf '\033[32m==>\033[0m %s\n' "$*"; }
 warn() { printf '\033[33m==> WARNING:\033[0m %s\n' "$*" >&2; }
 die() { printf '\033[31m==> ERROR:\033[0m %s\n' "$*" >&2; exit 1; }
@@ -20,7 +29,7 @@ step() {
   echo
   log "$label"
   if [[ $mode == root ]]; then
-    sudo --preserve-env=OMBUNTU_REPO,OMARCHY_PATH,OMARCHY_REF,OMARCHY_USER_ONLY,OMARCHY_SKIP_BASHRC,OMARCHY_FORCE_CONFIG \
+    sudo --preserve-env=OMBUNTU_REPO,OMBUNTU_ARCH,OMBUNTU_BUILD_FROM_SOURCE,OMARCHY_PATH,OMARCHY_REF,OMARCHY_USER_ONLY,OMARCHY_SKIP_BASHRC,OMARCHY_FORCE_CONFIG \
       bash "$script"
   else
     bash "$script"

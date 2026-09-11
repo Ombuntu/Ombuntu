@@ -1,0 +1,13 @@
+# Build dependencies used only when Walker and Elephant are compiled from source
+# (arm64, or OMBUNTU_BUILD_FROM_SOURCE=true).
+build-essential
+pkg-config
+git
+protobuf-compiler
+golang-go
+cargo
+rustc
+libgtk-4-dev
+libgtk4-layer-shell-dev
+libpoppler-glib-dev
+libwayland-dev

@@ -18,7 +18,7 @@ the login screen.
 | | Required |
 | --- | --- |
 | Distribution | Ubuntu 26.04 LTS or a flavour of it (built and tested on Xubuntu 26.04). Hyprland 0.53 comes from the Ubuntu archive; older releases do not ship it. |
-| Architecture | x86_64 (prebuilt Walker, Elephant, Satty and mise binaries) |
+| Architecture | amd64 (x86_64) or arm64 (aarch64), detected automatically. On amd64 every extra tool is a prebuilt release; on arm64 Walker and Elephant are compiled from source, which adds 10-30 minutes and a Rust/Go toolchain from apt. |
 | Display manager | LightDM (Xubuntu default). GDM and SDDM also read `/usr/share/wayland-sessions`, but were not tested. |
 | GPU | Anything with a Mesa Wayland driver: AMD, Intel, or Nvidia with the open kernel modules. Tested on AMD Radeon 890M. |
 | Network | Internet access for apt and GitHub release downloads (about 250 MB) |
@@ -64,6 +64,18 @@ name in LightDM), and log in.
 Environment overrides: `OMARCHY_REF=v3.8.3 ./install.sh` pins another upstream
 tag; `WALKER_VERSION`, `ELEPHANT_VERSION`, `SATTY_VERSION`, `MISE_VERSION`,
 `NERD_FONTS_VERSION` do the same for the GitHub downloads.
+`OMBUNTU_BUILD_FROM_SOURCE=true` compiles Walker and Elephant even on amd64.
+
+### arm64
+
+Ubuntu builds Hyprland and the rest of the desktop for arm64, so the apt side
+is identical. Satty and mise publish aarch64 releases. Walker (Rust, GTK4) and
+Elephant (Go) do not, so the installer adds the toolchains from
+`install/packages-build.list` and compiles them at the pinned tags into
+`~/.local/bin`. Expect the Walker build to take a while on a small board. The
+Elephant build path is tested; the Walker build follows upstream's
+`cargo build --release` and has not yet been run on real arm64 hardware, so
+reports are welcome.
 
 ## First login
 
@@ -198,7 +210,7 @@ defaults there.
 
 ```
 install.sh            entry point
-install/              one script per step, packages.list (apt), lib.sh
+install/              one script per step, packages.list and packages-build.list (apt), lib.sh
 overlay/              files copied over the upstream Omarchy clone
   bin/                Ubuntu replacements for omarchy-* commands
   default/            autostart, app rules, waybar indicator, bash init, looknfeel/foot fixes
