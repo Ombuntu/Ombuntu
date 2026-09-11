@@ -146,8 +146,13 @@ DESK
 grep -q 'ombuntu-cheatsheet' ~/.config/hypr/bindings.conf || printf '\n# Ombuntu beginner cheatsheet\nbindd = SUPER SHIFT, K, Cheatsheet, exec, ombuntu-cheatsheet\n' >>~/.config/hypr/bindings.conf
 update-desktop-database ~/.local/share/applications 2>/dev/null || true
 
-# 18. Default terminal for xdg-terminal-exec (Alacritty, like Omarchy)
+# 18. Browsers draw their own minimize/maximize/close buttons under Wayland. Switch the
+#     Chromium family to system decorations so Hyprland (which draws none) leaves a clean
+#     tab strip. Reversible with: ombuntu-browser-decorations on
+ombuntu-browser-decorations off || true
+
+# 19. Default terminal for xdg-terminal-exec (Alacritty, like Omarchy)
 [[ -f ~/.config/xdg-terminals.list ]] || cp "$OMARCHY_PATH/config/xdg-terminals.list" ~/.config/
 
-# 19. GTK primary-paste like Omarchy's first-run
+# 20. GTK primary-paste like Omarchy's first-run
 gsettings set org.gnome.desktop.interface gtk-enable-primary-paste true 2>/dev/null || true

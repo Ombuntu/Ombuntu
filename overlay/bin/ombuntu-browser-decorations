@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# omarchy:summary=Make Chromium-family browsers ask the compositor for window decorations (Hyprland draws none, so the min/max/close buttons disappear)
+# omarchy:args=[on|off]
+# omarchy:examples=ombuntu-browser-decorations off | ombuntu-browser-decorations on
+
+# "off" (default) hides the buttons by switching browsers to system decorations;
+# "on" restores the browsers' own title bar buttons.
+mode="${1:-off}"
+case "$mode" in
+  off) native=true ;;
+  on) native=false ;;
+  *) echo "Usage: ombuntu-browser-decorations [on|off]" >&2; exit 1 ;;
+esac
+
+command -v jq >/dev/null || { echo "jq is required" >&2; exit 1; }
+
+# profile dir | process name | jq expression
+profiles=(
+  "$HOME/.config/vivaldi/Default|vivaldi-bin|.vivaldi.windows.use_native_decoration = $native"
+  "$HOME/.config/chromium/Default|chromium|.browser.custom_chrome_frame = $([[ $native == true ]] && echo false || echo true)"
+  "$HOME/.config/google-chrome/Default|chrome|.browser.custom_chrome_frame = $([[ $native == true ]] && echo false || echo true)"
+  "$HOME/.config/BraveSoftware/Brave-Browser/Default|brave|.browser.custom_chrome_frame = $([[ $native == true ]] && echo false || echo true)"
+  "$HOME/.config/microsoft-edge/Default|msedge|.browser.custom_chrome_frame = $([[ $native == true ]] && echo false || echo true)"
+)
+
+for entry in "${profiles[@]}"; do
+  IFS='|' read -r dir proc expr <<<"$entry"
+  browser=$(basename "$(dirname "$dir")")
+  [[ -d $(dirname "$dir") ]] || continue # browser not installed / never configured
+
+  if pgrep -x "$proc" >/dev/null 2>&1; then
+    echo "$browser is running; close it and re-run to change its window decorations" >&2
+    continue
+  fi
+
+  mkdir -p "$dir"
+  prefs="$dir/Preferences"
+  [[ -s $prefs ]] || echo '{}' >"$prefs"
+
+  tmp=$(mktemp "$dir/.Preferences.XXXXXX")
+  if jq "$expr" "$prefs" >"$tmp"; then
+    mv -f "$tmp" "$prefs"
+    echo "$browser: window decorations $mode"
+  else
+    rm -f "$tmp"
+    echo "$browser: could not update $prefs" >&2
+  fi
+done
