@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# omarchy:summary=Launch the Wi-Fi controls (NetworkManager's nmtui on Ubuntu instead of Impala).
+
+rfkill unblock wifi 2>/dev/null
+omarchy-launch-or-focus-tui nmtui

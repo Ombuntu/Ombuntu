@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# omarchy:summary=Toggle nightlight screen temperature (wlsunset on Ubuntu instead of hyprsunset)
+# omarchy:examples=omarchy toggle nightlight
+
+ON_TEMP=4000
+
+restart_nightlighted_waybar() {
+  if grep -q "custom/nightlight" ~/.config/waybar/config.jsonc 2>/dev/null; then
+    omarchy-restart-waybar
+  fi
+}
+
+if pgrep -x wlsunset >/dev/null; then
+  pkill -x wlsunset
+  notify-send -u low "   Daylight screen temperature"
+else
+  # Fixed temperature: manual sunrise/sunset with a 1K band keeps wlsunset at ON_TEMP all day
+  setsid uwsm-app -- wlsunset -t $ON_TEMP -T $((ON_TEMP + 1)) -S 06:00 -s 18:00 -d 1 >/dev/null 2>&1 &
+  notify-send -u low "  Nightlight screen temperature"
+fi
+
+restart_nightlighted_waybar

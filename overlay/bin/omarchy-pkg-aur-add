@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# omarchy:summary=AUR packages are not available on Ubuntu (this is a compatibility stub)
+# omarchy:args=<packages...>
+
+echo -e "\033[33mThe AUR is an Arch Linux thing. On Ubuntu use 'omarchy pkg add <apt-package>' or 'sudo snap install <snap>'.\033[0m" >&2
+echo "Requested: $*" >&2
+exit 1

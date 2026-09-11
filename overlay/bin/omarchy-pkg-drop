@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# omarchy:summary=Remove all the named packages from the system if they're installed (otherwise ignore).
+# omarchy:args=<packages...>
+# omarchy:requires-sudo=true
+
+installed=()
+for pkg in "$@"; do
+  omarchy-pkg-present "$pkg" && installed+=("$pkg")
+done
+
+if (( ${#installed[@]} > 0 )); then
+  sudo apt-get remove --purge -y "${installed[@]}"
+  sudo apt-get autoremove -y
+fi

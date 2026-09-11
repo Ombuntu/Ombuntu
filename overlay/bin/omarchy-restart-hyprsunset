@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# omarchy:summary=Restart the nightlight daemon (wlsunset on Ubuntu)
+
+if pgrep -x wlsunset >/dev/null; then
+  omarchy-toggle-nightlight >/dev/null
+  omarchy-toggle-nightlight >/dev/null
+fi

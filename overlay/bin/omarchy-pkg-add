@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# omarchy:summary=Install Ubuntu packages (apt) if they are missing
+# omarchy:args=<packages...>
+# omarchy:examples=omarchy pkg add jq ripgrep
+# omarchy:requires-sudo=true
+
+# Map the Arch package names Omarchy uses to Ubuntu equivalents
+map_pkg() {
+  case "$1" in
+  mako) echo mako-notifier ;;
+  fd) echo fd-find ;;
+  dust) echo du-dust ;;
+  github-cli) echo gh ;;
+  noto-fonts) echo fonts-noto-core ;;
+  noto-fonts-cjk) echo fonts-noto-cjk ;;
+  noto-fonts-emoji) echo fonts-noto-color-emoji ;;
+  ttf-liberation) echo fonts-liberation ;;
+  emacs-wayland) echo emacs ;;
+  docker) echo docker.io ;;
+  docker-compose) echo docker-compose-v2 ;;
+  neovim) echo neovim ;;
+  python-*) echo "python3-${1#python-}" ;;
+  *) echo "$1" ;;
+  esac
+}
+
+packages=()
+for pkg in "$@"; do
+  case "$pkg" in
+  ttf-*-nerd)
+    omarchy-nerd-font-install "$pkg" || exit 1
+    ;;
+  *)
+    packages+=("$(map_pkg "$pkg")")
+    ;;
+  esac
+done
+
+(( ${#packages[@]} )) || exit 0
+
+if omarchy-pkg-missing "${packages[@]}"; then
+  sudo apt-get install -y "${packages[@]}" || exit 1
+fi
+
+for pkg in "${packages[@]}"; do
+  if ! omarchy-pkg-present "$pkg"; then
+    echo -e "\033[31mError: Package '$pkg' did not install\033[0m" >&2
+    exit 1
+  fi
+done
+
+exit 0

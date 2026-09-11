@@ -1,0 +1,71 @@
+#!/bin/bash
+
+# omarchy:summary=Start or stop screen recording (wf-recorder on Ubuntu instead of gpu-screen-recorder)
+# omarchy:group=capture
+# omarchy:args=[--with-desktop-audio] [--with-microphone-audio] [--stop-recording]
+# omarchy:examples=omarchy screenrecord | omarchy capture screenrecord --with-desktop-audio
+# omarchy:aliases=omarchy screenrecord
+
+[[ -f ~/.config/user-dirs.dirs ]] && source ~/.config/user-dirs.dirs
+OUTPUT_DIR="${OMARCHY_SCREENRECORD_DIR:-${XDG_VIDEOS_DIR:-$HOME/Videos}}"
+
+DESKTOP_AUDIO=false
+MICROPHONE_AUDIO=false
+STOP_RECORDING=false
+
+for arg in "$@"; do
+  case "$arg" in
+  --with-desktop-audio) DESKTOP_AUDIO=true ;;
+  --with-microphone-audio) MICROPHONE_AUDIO=true ;;
+  --with-webcam | --webcam-device=*) notify-send -u low "Webcam overlay is not supported with wf-recorder" -t 3000 ;;
+  --stop-recording) STOP_RECORDING=true ;;
+  esac
+done
+
+stop_recording() {
+  pkill -INT -x wf-recorder
+  sleep 0.5
+  notify-send "Screen recording saved" "$(cat /tmp/omarchy-screenrecord-filename 2>/dev/null)" -t 3000
+  pkill -RTMIN+8 waybar
+}
+
+if pgrep -x wf-recorder >/dev/null; then
+  stop_recording
+  exit 0
+elif [[ $STOP_RECORDING == true ]]; then
+  exit 1
+fi
+
+if [[ ! -d $OUTPUT_DIR ]]; then
+  notify-send "Screen recording directory does not exist: $OUTPUT_DIR" -u critical -t 3000
+  exit 1
+fi
+
+# Let the user pick a region; clicking a monitor without dragging records that whole output
+monitors=$(hyprctl monitors -j | jq -r '.[] | "\(.x),\(.y) \((.width / .scale | floor))x\((.height / .scale | floor))"')
+SELECTION=$(echo "$monitors" | slurp -o -r 2>/dev/null) || SELECTION=$(slurp 2>/dev/null)
+[[ -z $SELECTION ]] && exit 0
+
+FILENAME="$OUTPUT_DIR/screenrecording-$(date +'%Y-%m-%d_%H-%M-%S').mp4"
+echo "$FILENAME" >/tmp/omarchy-screenrecord-filename
+
+audio_args=()
+if [[ $MICROPHONE_AUDIO == true && $DESKTOP_AUDIO == true ]]; then
+  notify-send -u low "wf-recorder records one audio source; using desktop audio" -t 3000
+  audio_args=(--audio)
+elif [[ $MICROPHONE_AUDIO == true ]]; then
+  audio_args=(--audio="$(pactl get-default-source 2>/dev/null)")
+elif [[ $DESKTOP_AUDIO == true ]]; then
+  audio_args=(--audio)
+fi
+
+setsid wf-recorder -g "$SELECTION" -f "$FILENAME" "${audio_args[@]}" >/dev/null 2>&1 &
+sleep 0.5
+
+if pgrep -x wf-recorder >/dev/null; then
+  notify-send "Screen recording started" "Stop with Alt+Print or the bar indicator" -t 2000
+  pkill -RTMIN+8 waybar
+else
+  notify-send "Screen recording failed to start" -u critical -t 3000
+  exit 1
+fi

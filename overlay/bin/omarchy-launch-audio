@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# omarchy:summary=Launch the audio controls TUI (pulsemixer on Ubuntu instead of wiremix).
+
+omarchy-launch-or-focus-tui pulsemixer

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# omarchy:summary=Print the pinned upstream Omarchy tag this Ombuntu install is based on
+
+git -C "$OMARCHY_PATH" describe --tags --exact-match 2>/dev/null || git -C "$OMARCHY_PATH" rev-parse --short HEAD

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# omarchy:summary=Apply ~/.XCompose changes (no fcitx5 on Ubuntu: GTK/Qt apps read it on next launch)
+
+notify-send -u low "󰞅    XCompose updated" "      Restart an app to pick up the new compose sequences"

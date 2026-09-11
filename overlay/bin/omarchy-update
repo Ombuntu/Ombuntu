@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# omarchy:summary=Update system packages (apt) and re-apply the Omarchy-on-Xubuntu overlay
+# omarchy:args=[-y]
+# omarchy:examples=omarchy update | omarchy update -y
+# omarchy:requires-sudo=true
+
+set -e
+
+trap 'echo ""; echo -e "\033[0;31mSomething went wrong during the update!\n\nPlease review the output above carefully, correct the error, and retry the update.\033[0m"' ERR
+
+if [[ $1 != "-y" ]]; then
+  gum confirm "Update Ubuntu packages and the Omarchy overlay now?" || exit 0
+fi
+
+sudo apt-get update
+sudo apt-get full-upgrade -y
+sudo apt-get autoremove -y
+
+repo=$(cat "$OMARCHY_PATH/ombuntu-repo.path" 2>/dev/null)
+if [[ -n $repo && -d $repo/.git ]]; then
+  echo "Refreshing Omarchy overlay from $repo"
+  git -C "$repo" pull --ff-only 2>/dev/null || echo "(no upstream to pull from, using local copy)"
+  bash "$repo/install.sh" --user-only
+fi
+
+pkill -RTMIN+7 waybar 2>/dev/null || true

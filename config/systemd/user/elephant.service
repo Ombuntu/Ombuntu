@@ -1,0 +1,14 @@
+[Unit]
+Description=Elephant (Walker data provider)
+PartOf=graphical-session.target
+After=graphical-session.target
+ConditionEnvironment=XDG_CURRENT_DESKTOP=Hyprland
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/elephant
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=graphical-session.target

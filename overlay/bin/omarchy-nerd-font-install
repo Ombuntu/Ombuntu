@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# omarchy:summary=Install a Nerd Font from the nerd-fonts GitHub releases into ~/.local/share/fonts
+# omarchy:args=<ttf-name-nerd|NerdFontArchiveName>
+# omarchy:examples=omarchy nerd font install ttf-cascadia-mono-nerd | omarchy-nerd-font-install FiraCode
+
+NERD_FONTS_VERSION="${NERD_FONTS_VERSION:-v3.5.1}"
+
+case "$1" in
+ttf-cascadia-mono-nerd) archive=CascadiaMono ;;
+ttf-cascadia-code-nerd) archive=CascadiaCode ;;
+ttf-meslo-nerd) archive=Meslo ;;
+ttf-firacode-nerd) archive=FiraCode ;;
+ttf-victor-mono-nerd) archive=VictorMono ;;
+ttf-bitstream-vera-mono-nerd) archive=BitstreamVeraSansMono ;;
+ttf-iosevka-nerd) archive=Iosevka ;;
+ttf-jetbrains-mono-nerd) archive=JetBrainsMono ;;
+ttf-*-nerd) echo "Unknown nerd font package: $1" >&2; exit 1 ;;
+"") echo "Usage: omarchy-nerd-font-install <ttf-name-nerd|ArchiveName>" >&2; exit 1 ;;
+*) archive="$1" ;;
+esac
+
+dest=~/.local/share/fonts/${archive}NerdFont
+if [[ -d $dest ]] && ls "$dest"/*.ttf >/dev/null 2>&1; then
+  echo "$archive Nerd Font already installed"
+  exit 0
+fi
+
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+echo "Downloading $archive Nerd Font $NERD_FONTS_VERSION..."
+curl -fsSL --retry 3 -o "$tmp/font.tar.xz" \
+  "https://github.com/ryanoasis/nerd-fonts/releases/download/$NERD_FONTS_VERSION/$archive.tar.xz" || exit 1
+mkdir -p "$dest"
+tar xJf "$tmp/font.tar.xz" -C "$dest"
+fc-cache -f >/dev/null
+echo "Installed to $dest"

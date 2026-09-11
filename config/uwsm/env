@@ -1,0 +1,14 @@
+# Changes require a restart to take effect.
+# Note: uwsm evaluates this file with /bin/sh (dash on Ubuntu), so keep it POSIX.
+
+# Ensure Omarchy bins are in the path
+export OMARCHY_PATH=$HOME/.local/share/omarchy
+export PATH=$OMARCHY_PATH/bin:$PATH:$HOME/.local/bin
+
+# Set default terminal and editor
+. "$HOME/.config/uwsm/default"
+
+# Activate mise if present on the system
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate bash --shims)"
+fi

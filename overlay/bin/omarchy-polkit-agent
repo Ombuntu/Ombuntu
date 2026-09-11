@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# omarchy:summary=Start whichever polkit authentication agent is installed (hyprpolkitagent, MATE, GNOME, KDE)
+
+for agent in \
+  /usr/libexec/hyprpolkitagent \
+  /usr/libexec/polkit-mate-authentication-agent-1 \
+  /usr/lib/mate-polkit/polkit-mate-authentication-agent-1 \
+  /usr/libexec/polkit-gnome-authentication-agent-1 \
+  /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 \
+  /usr/lib/x86_64-linux-gnu/libexec/polkit-kde-authentication-agent-1; do
+  [[ -x $agent ]] && exec "$agent"
+done
+
+echo "No polkit authentication agent found" >&2
+exit 1

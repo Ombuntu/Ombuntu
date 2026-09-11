@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# omarchy:summary=Release channels are not applicable on Ubuntu (Omarchy is pinned to a tag by the installer)
+
+echo "Omarchy-on-Xubuntu pins upstream Omarchy to a tag (see OMARCHY_REF in install.sh)." >&2
+echo "Change the tag there and re-run install.sh instead of switching channels." >&2
+exit 1

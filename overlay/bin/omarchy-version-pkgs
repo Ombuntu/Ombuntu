@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# omarchy:summary=Print when apt last upgraded packages
+
+last=$(grep -h '^Start-Date' /var/log/apt/history.log 2>/dev/null | tail -1 | sed 's/Start-Date: //')
+[[ -z $last ]] && { echo "unknown"; exit 0; }
+date -d "$last" "+%A, %B %d %Y at %H:%M" 2>/dev/null || echo "$last"

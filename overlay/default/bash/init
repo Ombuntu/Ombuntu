@@ -1,0 +1,31 @@
+if command -v mise &> /dev/null; then
+  eval "$(mise activate bash)"
+fi
+
+if [[ $- == *i* ]] && [[ ${TERM:-} != "dumb" ]] && command -v starship &> /dev/null; then
+  eval "$(starship init bash)"
+fi
+
+if command -v zoxide &> /dev/null; then
+  eval "$(zoxide init bash)"
+fi
+
+if command -v try &> /dev/null; then
+  try() {
+    unset -f try
+    eval "$(SHELL=/bin/bash command try init ~/Work/tries)"
+    try "$@"
+  }
+fi
+
+# Ubuntu ships fzf's shell integration differently from Arch
+if command -v fzf &> /dev/null; then
+  if fzf --bash &> /dev/null; then
+    eval "$(fzf --bash)"
+  else
+    [[ -f /usr/share/doc/fzf/examples/completion.bash ]] && source /usr/share/doc/fzf/examples/completion.bash
+    [[ -f /usr/share/doc/fzf/examples/key-bindings.bash ]] && source /usr/share/doc/fzf/examples/key-bindings.bash
+  fi
+fi
+
+source "$OMARCHY_PATH/default/bash/completions"
