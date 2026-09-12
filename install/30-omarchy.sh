@@ -31,6 +31,11 @@ log "Applying Ubuntu overlay"
 cp -R "$OMBUNTU_REPO/overlay/." "$OMARCHY_PATH/"
 chmod +x "$OMARCHY_PATH"/bin/* "$OMARCHY_PATH"/default/waybar/indicators/*.sh 2>/dev/null || true
 
+# Only Ombuntu wallpapers are offered: drop the per-theme background images that Omarchy
+# ships (the background chooser lists ~/.config/omarchy/current/theme/backgrounds and the
+# user's ~/.config/omarchy/backgrounds/<theme>; the second is where ours are linked).
+rm -rf "$OMARCHY_PATH"/themes/*/backgrounds
+
 # Remember where this installer lives so `omarchy-update` can re-apply it
 echo "$OMBUNTU_REPO" >"$OMARCHY_PATH/ombuntu-repo.path"
 cp -f "$OMBUNTU_REPO/VERSION" "$OMARCHY_PATH/ombuntu-version"

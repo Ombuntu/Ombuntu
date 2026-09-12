@@ -163,10 +163,10 @@ install them.
 
 Five Ombuntu wallpapers ship in `backgrounds/` at 3840x2400 (16:10, suits 4K
 and 5K displays; Hyprland scales them to fit). They are offered in every theme
-(Super + Ctrl + Space cycles backgrounds, or Style, Background in the menu)
-ahead of the theme's own images, and the horizon one is the default on a fresh
-install. Drop more images in `~/.config/omarchy/backgrounds/<theme>/` to add
-your own.
+(Super + Ctrl + Space cycles backgrounds, or Style, Background in the menu);
+Omarchy's own per-theme images are not installed. The horizon one is the
+default on a fresh install. Drop more images in
+`~/.config/omarchy/backgrounds/<theme>/` to add your own.
 
 ### Naming
 

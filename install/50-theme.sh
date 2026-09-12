@@ -37,9 +37,13 @@ for theme_dir in "$OMARCHY_PATH"/themes/* ~/.config/omarchy/themes/*; do
   done
 done
 
+# Existing installs: the active theme was copied with Omarchy's backgrounds; remove them too,
+# and move a background link that pointed at one of them to the Ombuntu default.
+rm -rf ~/.config/omarchy/current/theme/backgrounds
+
 # Use the Ombuntu default wallpaper unless the user already picked their own
 current_bg=$(readlink ~/.config/omarchy/current/background 2>/dev/null || true)
-if [[ -z $current_bg || $current_bg == "$HOME/.config/omarchy/current/theme/backgrounds/"* ]]; then
+if [[ -z $current_bg || $current_bg == "$HOME/.config/omarchy/current/theme/backgrounds/"* || ! -e $current_bg ]]; then
   omarchy-theme-bg-set "$(ls "$BG_STORE"/*.png | sort | head -1)" >/dev/null 2>&1 ||
     ln -nsf "$(ls "$BG_STORE"/*.png | sort | head -1)" ~/.config/omarchy/current/background
 fi
