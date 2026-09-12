@@ -133,6 +133,7 @@ The full manual is at <https://manuals.omamix.org/2/the-omarchy-manual>.
 | Default apps set globally | Set only for the Hyprland session (`~/.config/Hyprland-mimeapps.list`) | Keeps XFCE defaults intact |
 | Hooks, menu extensions, remote theme install | Disabled | Security: they execute arbitrary user-supplied code |
 | Install menu (editors, browsers, AI, gaming, services) | Vendor apt repositories, checksum-verified downloads, snaps, or "not available" | No AUR; no `curl \| sh` |
+| Menu entries with no Ubuntu path (AUR, Windows VM, ONCE, Brave Origin, Zen, Cursor, LM Studio, hibernation, fingerprint/FIDO2, release channels, Plymouth) | Removed from the menu | See `install/patch-menu.py` |
 | Browser title-bar buttons | Chromium-family browsers and Firefox switched to system decorations, so no minimize/maximize/close buttons | Hyprland draws no decorations; `ombuntu-browser-decorations on` restores them |
 
 Signal Desktop is installed from Signal's own apt repository, as on Arch.

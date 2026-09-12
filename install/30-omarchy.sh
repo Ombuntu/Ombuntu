@@ -38,11 +38,5 @@ grep -q "^OnlyShowIn=" "$OMARCHY_PATH/default/walker/walker.desktop" || echo "On
 mkdir -p ~/.local/bin
 ln -sfn "$OMARCHY_PATH/bin/omarchy" ~/.local/bin/omarchy
 
-# Small menu text fixes: "Learn > Arch" becomes Ubuntu docs, AUR entry is labelled
-menu="$OMARCHY_PATH/bin/omarchy-menu"
-sed -i 's/󰣇  Arch\\n/  Ubuntu\\n/' "$menu"
-sed -i 's|\*Arch\*) omarchy-launch-webapp "https://wiki.archlinux.org[^"]*"|*Ubuntu*) omarchy-launch-webapp "https://help.ubuntu.com/"|' "$menu"
-sed -i 's/󰣇  AUR\\n/󰣇  AUR (n\/a on Ubuntu)\\n/' "$menu"
-
-# No menu extensions: upstream sources ~/.config/omarchy/extensions/menu.sh into omarchy-menu
-sed -i '/^USER_EXTENSIONS=/d; /\$USER_EXTENSIONS/d; /^# Allow user extensions and overrides$/d' "$menu"
+# Trim the menu to entries that work on Ubuntu (see install/patch-menu.py)
+python3 "$OMBUNTU_REPO/install/patch-menu.py" "$OMARCHY_PATH/bin/omarchy-menu"

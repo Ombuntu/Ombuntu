@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# omarchy:summary=Remove a browser installed from the Install menu
+# omarchy:args=<chrome|edge|brave|firefox>
+# omarchy:requires-sudo=true
+
+case $1 in
+chrome) omarchy-pkg-drop google-chrome-stable ;;
+edge) omarchy-pkg-drop microsoft-edge-stable ;;
+brave) omarchy-pkg-drop brave-browser ;;
+firefox) omarchy-pkg-drop firefox; sudo snap remove firefox 2>/dev/null ;;
+*) echo "Usage: omarchy-remove-browser <chrome|edge|brave|firefox>"; exit 1 ;;
+esac
