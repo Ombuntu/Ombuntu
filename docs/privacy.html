@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Privacy · Ombuntu</title>
+<title>Privacy and security · Ombuntu</title>
 <link rel="icon" href="assets/favicon.ico">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -14,10 +14,17 @@
   <nav><a href="index.html">Docs</a><a href="getting-started.html">Getting started</a><a href="privacy.html" class="here">Privacy</a><a href="faq.html">FAQ</a><a href="uninstall.html">Uninstall</a><a href="about.html">About</a><a href="https://ombuntu.org/agent-guide.md">Agent guide</a></nav>
 </header>
 <main>
-<h1>Privacy</h1>
-<p class="lead">Ubuntu and the browsers phone home by default. Ombuntu turns that off, and tells you exactly what it changed.</p>
+<h1>Privacy and security</h1>
+<p class="lead">Off by default: telemetry, remote code, unverified downloads, and shortcuts that trade security for convenience. Every change is listed here with the file behind it.</p>
 
-<div class="note">Every change is a config file or a service state, listed here with its location so you can reverse any of them. Running the installer again re-applies the set.</div>
+<div class="note">Everything on this page is a config file or a service state you can inspect and reverse. Running the installer again re-applies the set; <code>uninstall.sh --restore-telemetry</code> puts Ubuntu's defaults back.</div>
+<h2>Off by default, at a glance</h2>
+<ul>
+<li><b>Telemetry:</b> crash reports and usage statistics to Canonical, Ubuntu Pro adverts, the connectivity probe, and data collection in Firefox and the Chromium family.</li>
+<li><b>Remote code:</b> no <code>curl | sh</code> installers, no plugin hooks, no menu extensions, no themes cloned from arbitrary repositories.</li>
+<li><b>Unverified software:</b> every archive checksummed, every apt key checked against a pinned fingerprint, every upstream pinned to a commit, root steps run with a fixed <code>PATH</code>.</li>
+<li><b>Security shortcuts:</b> no passwordless sudo, no autologin, no remembered screen-share permissions, no plain-text password storage in browsers, no radios silently unblocked.</li>
+</ul>
 <h2>Canonical and Ubuntu</h2>
 <ul>
 <li><b>Crash reporting.</b> apport is disabled (<code>/etc/default/apport</code>) and whoopsie, the uploader, is removed. ubuntu-report, popularity-contest and kerneloops are removed if present.</li>
@@ -38,15 +45,15 @@
 <li>Vivaldi sends its own anonymous usage-count ping, which has no policy switch.</li>
 <li>apt downloads package lists from Ubuntu mirrors.</li>
 </ul>
-<h2>Security choices</h2>
+<h2>Security choices, in detail</h2>
 <ul>
-<li>Screen sharing asks which screen or window to share every time; Omarchy remembers the choice (a restore token) by default.</li>
+<li>Screen sharing asks which screen or window to share every time; the upstream default remembers the choice (a restore token).</li>
 <li>Opening the Wi-Fi or Bluetooth panel does not unblock a radio you switched off.</li>
-<li>Omarchy's own command directory sits at the end of <code>PATH</code>, so nothing in it can shadow a system command.</li>
-<li>Root is used for three things: apt, Signal's apt repository, and the login session file.</li>
-<li>Every download is pinned and checksummed; a mismatch aborts the install.</li>
-<li>Omarchy's plugins are disabled: hooks, menu extensions and remote theme installs all run arbitrary code with your user rights.</li>
-<li>Passwordless sudo, autologin and installers that pipe remote scripts into a shell are not offered.</li>
+<li>The desktop's own command directory sits at the end of <code>PATH</code>, so nothing in it can shadow a system command.</li>
+<li>Root is used for three things: apt, Signal's apt repository, and the login session file. Root steps run with a fixed system <code>PATH</code>, never one that includes user-writable directories.</li>
+<li>Every download is pinned and checksummed; a mismatch aborts the install. Upstream code is pinned to commit hashes, not just tags. Vendor apt keys are verified by fingerprint before apt trusts them.</li>
+<li>Plugin-style code execution is disabled: hooks, menu extensions and remote theme installs would all run arbitrary code with your user rights.</li>
+<li>Passwordless sudo, autologin and installers that pipe remote scripts into a shell are not offered. The uninstaller removes only what the installer wrote.</li>
 </ul>
 
 </main>

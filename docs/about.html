@@ -15,18 +15,18 @@
 </header>
 <main>
 <h1>About</h1>
-<p class="lead">What Ombuntu is, and what it is not.</p>
+<p class="lead">What Ombuntu is, what it is built on, and what it leaves out.</p>
 
-<p>Ombuntu is the <a href="https://omarchy.org">Omarchy</a> Hyprland desktop running on Ubuntu 26.04 instead of Arch Linux. Omarchy is an opinionated, keyboard-driven desktop built on Hyprland: a tiling window manager, a launcher, a bar, themes, and a menu that installs and configures software for you. Ombuntu keeps all of that and swaps the Arch-specific parts for Ubuntu ones.</p>
-<h2>How it works</h2>
-<p>Upstream Omarchy is cloned at a fixed tag into <code>~/.local/share/omarchy</code> and left unmodified. A small overlay is laid on top: apt instead of pacman, Ubuntu packages or vendor repositories in place of the AUR, and fixes for a few Ubuntu packaging quirks. Updates re-apply the overlay, so moving to a newer Omarchy is a matter of changing one tag.</p>
-<h2>What is different</h2>
+<p>Ombuntu is a pre-configured desktop for Ubuntu 26.04: a tiling window manager (Hyprland), a launcher, a status bar, a lock screen, themes, and one menu that installs software and changes settings, all set up to work together the moment you log in. It is keyboard-driven, fast, and opinionated so you do not have to assemble it yourself.</p>
+<p>It is also deliberately conservative about security and privacy. Software comes only from Ubuntu's archive, vendor-signed repositories, or pinned and checksummed releases. Telemetry from the operating system and the browsers is switched off. Nothing downloads and runs code from the internet at runtime, and the convenience shortcuts that trade security for a click (passwordless sudo, autologin, remembered screen-share permissions) are not offered. The <a href="privacy.html">privacy and security page</a> lists every such choice with the file behind it.</p>
+<h2>Built on Omarchy</h2>
+<p>The desktop itself is <a href="https://omarchy.org">Omarchy</a>, DHH's Hyprland configuration for Arch Linux, which Ombuntu installs unmodified at a pinned commit and adapts to Ubuntu with an overlay: apt in place of pacman, Ubuntu packages or vendor repositories in place of the AUR, fixes for Ubuntu packaging quirks, and the security and privacy changes above. Omarchy's plugin surface (hooks, menu extensions, remote themes) is disabled, and menu entries with no safe Ubuntu path are removed rather than left to fail. Updates re-apply the overlay, so moving to a newer Omarchy is a matter of changing one pin.</p>
+<h2>What is different from Omarchy</h2>
 <ul>
-<li>apt instead of pacman and yay; no AUR.</li>
-<li>Walker, Elephant, Satty and mise are pinned, checksummed GitHub releases. wlsunset, wf-recorder, nmtui, Blueman and pulsemixer stand in for hyprsunset, gpu-screen-recorder, impala, bluetui and wiremix.</li>
-<li>Omarchy's plugin surface (hooks, menu extensions, remote themes) is disabled for security.</li>
-<li>Telemetry from Canonical and browser vendors is turned off. See <a href="privacy.html">Privacy</a>.</li>
-<li>Menu entries with no Ubuntu path are removed rather than left to fail.</li>
+<li>apt instead of pacman and yay; no AUR, no <code>curl | sh</code>.</li>
+<li>Walker, Elephant, Satty and mise are pinned, checksummed releases. wlsunset, wf-recorder, nmtui, Blueman and pulsemixer stand in for hyprsunset, gpu-screen-recorder, impala, bluetui and wiremix.</li>
+<li>Hooks, menu extensions and remote themes are disabled; passwordless sudo and autologin are not offered.</li>
+<li>Telemetry off; browsers store passwords in the keyring; screen sharing asks every time; Omarchy's command directory sits last in <code>PATH</code>.</li>
 <li>Not installed: Spotify, Obsidian, Typora, LocalSend, Pinta (offered under Install, Apps), 1Password, Docker, snapper, limine, Plymouth, SDDM, and Omarchy's own-company web apps.</li>
 </ul>
 <h2>Naming</h2>

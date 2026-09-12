@@ -15,7 +15,7 @@
 </header>
 <main>
 <h1>Getting started</h1>
-<p class="lead">From a fresh Xubuntu to the Ombuntu desktop in one command.</p>
+<p class="lead">From a fresh Xubuntu to a pre-configured, secure Hyprland desktop in one command.</p>
 
 <h2>Requirements</h2>
 <table>
@@ -27,7 +27,7 @@
 </table>
 <h2>Install</h2>
 <div class="cmd"><pre id="install">curl -fsSL https://ombuntu.org/install.sh | bash</pre><button class="copy" data-for="install" type="button" title="Copy" aria-label="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
-<p>The installer asks for your password once. It installs the Ubuntu packages, fetches upstream Omarchy at a pinned tag into <code>~/.local/share/omarchy</code>, lays the Ubuntu overlay on top, writes the configuration into <code>~/.config</code>, applies the Tokyo Night theme with an Ombuntu wallpaper, turns off telemetry, and adds the <b>Ombuntu</b> entry to the login screen. It is safe to run again; it only redoes what changed.</p>
+<p>The installer asks for your password once. It installs the Ubuntu packages, fetches the desktop configuration at a pinned commit, writes your configuration into <code>~/.config</code>, applies the Tokyo Night theme with an Ombuntu wallpaper, turns telemetry off, and adds the <b>Ombuntu</b> entry to the login screen. It is safe to run again; it only redoes what changed. Nothing it downloads is run without a checksum or a signature check.</p>
 <p>Your XFCE session is not touched. Both are offered at the login screen.</p>
 <h3>Options</h3>
 <table>
@@ -50,7 +50,7 @@
 <tr><td><kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd></td><td>Beginner cheatsheet</td></tr>
 <tr><td><kbd>Super</kbd> + <kbd>K</kbd></td><td>Every shortcut, searchable</td></tr>
 </table>
-<p>Themes: <kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Space</kbd>. Wallpapers: <kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>Space</kbd>. The full <a href="cheatsheet.html">cheatsheet</a> covers windows, workspaces, screenshots and more. Everything Omarchy documents applies; the <a href="https://manuals.omamix.org/2/the-omarchy-manual">Omarchy manual</a> is the long version.</p>
+<p>Themes: <kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Space</kbd>. Wallpapers: <kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>Space</kbd>. The full <a href="cheatsheet.html">cheatsheet</a> covers windows, workspaces, screenshots and more. The desktop is built on Omarchy, so the <a href="https://manuals.omamix.org/2/the-omarchy-manual">Omarchy manual</a> is the long version of how it works; the <a href="about.html">About page</a> lists what Ombuntu does differently.</p>
 <h2>Something off? Run the doctor</h2>
 <p><code>ombuntu-doctor</code> prints one line per check: the session, duplicate services, tools on the path, keyring flags, privacy files, failed units. Most warnings are fixed by running the installer again. Paste its output when you ask for help.</p>
 <p>The installer detects your display scaling (from the panel's size and resolution) and keyboard layout on the first run and writes them to <code>~/.config/hypr/monitors.conf</code> and <code>input.conf</code>. Both are plain files; edit them if the guess is wrong.</p>

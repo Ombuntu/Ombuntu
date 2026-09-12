@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="logo/apple-touch-icon.png">
 <style>
   body { margin:0; background:#1a1b26; color:#c0caf5; font:17px/1.6 "Liberation Sans","Noto Sans",system-ui,sans-serif; display:flex; min-height:100vh; align-items:center; justify-content:center; padding:24px; }
-  main { max-width:640px; }
+  main { max-width:680px; }
   h1 { font-size:40px; margin:0 0 4px; } h1 span { color:#8819fc; }
   img.logo { width:140px; height:140px; display:block; margin:0 0 18px; }
   p.tag { color:#7d84a8; margin:0 0 28px; }
@@ -21,29 +21,46 @@
   .copy.done { color:#8819fc; border-color:#8819fc; }
   a { color:#8819fc; }
   small { color:#7d84a8; }
+  h2.sec { font-size:13px; text-transform:uppercase; letter-spacing:1.2px; color:#8819fc; margin:26px 0 8px; }
+  ul.list { padding-left:20px; margin:0 0 12px; } ul.list li { margin-bottom:6px; }
 </style>
 </head>
 <body>
 <main>
   <img class="logo" src="logo/ombuntu-logo.png" alt="Ombuntu enso ring logo">
   <h1><span>Om</span>buntu</h1>
-  <p class="tag">The Omarchy Hyprland desktop on Xubuntu / Ubuntu 26.04.</p>
+  <p class="tag">A pre-configured, keyboard-driven Hyprland desktop for Ubuntu. Secure and private by default.</p>
   <p>On a fresh Ubuntu or Xubuntu 26.04, run:</p>
   <div class="cmd">
     <pre id="install-cmd">curl -fsSL https://ombuntu.org/install.sh | bash</pre>
-    <button class="copy" data-for="install-cmd" type="button" title="Copy" aria-label="Copy install command">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-    </button>
+    <button class="copy" data-for="install-cmd" type="button" title="Copy" aria-label="Copy install command"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
   </div>
-  <p>Then log out and choose <b>Ombuntu</b> at the login screen.</p>
-  <p><b>Documentation:</b> <a href="https://docs.ombuntu.org/">docs.ombuntu.org</a> &middot; <a href="https://docs.ombuntu.org/getting-started.html">getting started</a> &middot; <a href="https://docs.ombuntu.org/privacy.html">privacy</a> &middot; <a href="https://docs.ombuntu.org/faq.html">FAQ</a> &middot; <a href="https://docs.ombuntu.org/cheatsheet.html">cheatsheet</a></p>
-  <p><a href="https://github.com/Ombuntu/Ombuntu">Source and issues on GitHub</a> &middot; <a href="https://github.com/Ombuntu/Ombuntu/blob/main/install.sh">read install.sh first</a> &middot; <a href="https://docs.ombuntu.org/">docs</a> &middot; <a href="agent-guide.md">agent guide</a></p>
+  <p>Then log out and choose <b>Ombuntu</b> at the login screen. Your existing desktop stays installed. Prefer to read first? <a href="https://github.com/Ombuntu/Ombuntu/blob/main/install.sh">install.sh</a> is short.</p>
+
+  <h2 class="sec">What you get</h2>
+  <ul class="list">
+    <li>A tiling window manager, an app launcher, a status bar, a lock screen and nineteen themes, all configured and consistent.</li>
+    <li>One menu (Super + Alt + Space) to install software, change themes and settings, and manage the system.</li>
+    <li>Everything comes from Ubuntu's archive, vendor-signed repositories, or pinned and checksummed releases.</li>
+  </ul>
+
+  <h2 class="sec">Off by default</h2>
+  <ul class="list">
+    <li><b>Telemetry.</b> Crash reporting and usage statistics to Canonical, Ubuntu Pro adverts, and data collection in Firefox, Chrome, Chromium, Brave, Edge and Vivaldi.</li>
+    <li><b>Remote code.</b> No <code>curl | sh</code> installers, no plugin hooks or menu extensions, no themes cloned from arbitrary repositories.</li>
+    <li><b>Unverified downloads.</b> Every archive is checksummed, every apt key checked against a pinned fingerprint, every upstream pinned to a commit.</li>
+    <li><b>Convenience shortcuts that cost security.</b> No passwordless sudo, no autologin, no remembered screen-share permissions, no plain-text password storage in browsers.</li>
+  </ul>
+  <p>Each item is a file you can see and reverse; the <a href="https://docs.ombuntu.org/privacy.html">privacy and security page</a> lists them all.</p>
+
   <p style="margin-top:28px">Using an AI coding agent? Paste this into it:</p>
   <div class="cmd">
     <pre id="prompt">Read https://ombuntu.org/agent-guide.md, then help me install Ombuntu on this Xubuntu 26.04 machine and walk me through the first login.</pre>
     <button class="copy" data-for="prompt" type="button" title="Copy" aria-label="Copy agent prompt"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
   </div>
-  <p><small>Independent community project. Not affiliated with Canonical, Ubuntu, Xubuntu or Omarchy.</small></p>
+  <p><b>Documentation:</b> <a href="https://docs.ombuntu.org/">docs.ombuntu.org</a> &middot; <a href="https://docs.ombuntu.org/getting-started.html">getting started</a> &middot; <a href="https://docs.ombuntu.org/privacy.html">privacy and security</a> &middot; <a href="https://docs.ombuntu.org/faq.html">FAQ</a> &middot; <a href="https://docs.ombuntu.org/cheatsheet.html">cheatsheet</a></p>
+  <p><a href="https://github.com/Ombuntu/Ombuntu">Source and issues on GitHub</a> &middot; <a href="agent-guide.md">agent guide</a></p>
+  <p><small>Built on the <a href="https://omarchy.org">Omarchy</a> desktop, adapted for Ubuntu. Independent community project, not affiliated with Canonical, Ubuntu, Xubuntu or Omarchy. MIT licensed.</small></p>
 </main>
 <script src="docs/copy.js"></script>
 </body>
