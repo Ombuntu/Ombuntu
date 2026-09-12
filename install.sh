@@ -70,6 +70,19 @@ if [[ -z ${BASH_SOURCE[0]} ]] || ! is_own_checkout "$(cd "$(dirname "${BASH_SOUR
     [[ -n $OMBUNTU_REF ]] || { printf '\033[31m==> ERROR:\033[0m %s\n' "Could not determine the latest Ombuntu release; set OMBUNTU_REF=main to use the development branch." >&2; exit 1; }
   fi
 
+  # Release tags must be signed by the Ombuntu release key (SSH signature). The key is embedded
+  # here on purpose: this file is served from ombuntu.org, so a compromised GitHub repository
+  # cannot ship a tag signed by some other key together with a matching signer list.
+  OMBUNTU_RELEASE_KEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO1w+Rwt4vkTc7Yf5SfAzw+OerDxNg5Grh05aLee1ajE"
+  verify_release_tag() { # verify_release_tag <repo-dir> <tag>
+    local signers; signers=$(mktemp)
+    echo "ombuntu-release $OMBUNTU_RELEASE_KEY" >"$signers"
+    if git -C "$1" -c gpg.format=ssh -c gpg.ssh.allowedSignersFile="$signers" verify-tag "$2" >/dev/null 2>&1; then
+      rm -f "$signers"; return 0
+    fi
+    rm -f "$signers"; return 1
+  }
+
   if [[ -d $OMBUNTU_HOME/.git ]]; then
     printf '\033[32m==>\033[0m %s\n' "Updating $OMBUNTU_HOME to $OMBUNTU_REF"
     git -C "$OMBUNTU_HOME" fetch -q --tags origin
@@ -82,6 +95,11 @@ if [[ -z ${BASH_SOURCE[0]} ]] || ! is_own_checkout "$(cd "$(dirname "${BASH_SOUR
     printf '\033[32m==>\033[0m %s\n' "Fetching Ombuntu $OMBUNTU_REF into $OMBUNTU_HOME"
     mkdir -p "$(dirname "$OMBUNTU_HOME")"
     git clone -q --branch "$OMBUNTU_REF" "$OMBUNTU_REPO_URL" "$OMBUNTU_HOME"
+  fi
+
+  if [[ $OMBUNTU_REF != main ]] && ! verify_release_tag "$OMBUNTU_HOME" "$OMBUNTU_REF"; then
+    printf '\033[31m==> ERROR:\033[0m %s\n' "Release tag $OMBUNTU_REF is not signed by the Ombuntu release key. Refusing to run it. (OMBUNTU_REF=main skips this check for development.)" >&2
+    exit 1
   fi
 
   # Hand the terminal back to the real installer so sudo and prompts work when piped from curl

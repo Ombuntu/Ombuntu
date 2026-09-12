@@ -1,12 +1,11 @@
 #!/bin/bash
-# Helix from its GitHub release tarball into ~/.local/helix
+# Helix from its pinned GitHub release tarball into ~/.local/helix
 source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
 set -e
 command -v hx >/dev/null && { echo "Helix already installed"; exit 0; }
-HELIX_VERSION="${HELIX_VERSION:-$(curl -fsSL https://api.github.com/repos/helix-editor/helix/releases/latest | jq -r .tag_name)}"
-case "$(ombuntu_arch)" in amd64) a=x86_64 ;; arm64) a=aarch64 ;; *) exit 1 ;; esac
+v=$(pin HELIX); k=$(arch_key); case $k in AMD64) a=x86_64 ;; ARM64) a=aarch64 ;; esac
 tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
-curl -fL --retry 3 --progress-bar -o "$tmp/helix.tar.xz" "$(gh_asset_url helix-editor/helix "$HELIX_VERSION" "helix-$HELIX_VERSION-$a-linux.tar.xz")"
+download_verified "$(gh_asset_url helix-editor/helix "$v" "helix-$v-$a-linux.tar.xz")" "$tmp/helix.tar.xz" "$(pin HELIX "SHA256_$k")"
 mkdir -p "$tmp/helix" ~/.local/bin
 tar -xJf "$tmp/helix.tar.xz" -C "$tmp/helix" --strip-components=1
 [[ -x $tmp/helix/hx ]] || { echo "Helix archive did not contain hx" >&2; exit 1; }

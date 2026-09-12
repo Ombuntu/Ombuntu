@@ -1,20 +1,17 @@
 #!/bin/bash
-# Voxtype dictation from its GitHub release binaries, verified against the release SHA256SUMS
-# (the .deb upstream publishes is not listed in SHA256SUMS, the raw binaries are).
+# Voxtype dictation from its pinned GitHub release binaries, verified against pinned SHA256s
+# (the .deb upstream publishes is not listed in its SHA256SUMS, the raw binaries are).
 source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
 set -e
 command -v voxtype >/dev/null && exit 0
 [[ $(ombuntu_arch) == amd64 ]] || { echo "Ombuntu installs Voxtype on amd64 only" >&2; exit 1; }
 grep -qw avx2 /proc/cpuinfo || { echo "This CPU lacks AVX2, which Voxtype's binaries need" >&2; exit 1; }
-VOXTYPE_VERSION="${VOXTYPE_VERSION:-$(curl -fsSL https://api.github.com/repos/peteonrails/voxtype/releases/latest | jq -r .tag_name)}"
-v="${VOXTYPE_VERSION#v}"
+VOXTYPE_VERSION=$(pin VOXTYPE); v="${VOXTYPE_VERSION#v}"
 tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
-curl -fsSL --retry 3 -o "$tmp/SHA256SUMS.txt" "$(gh_asset_url peteonrails/voxtype "$VOXTYPE_VERSION" SHA256SUMS.txt)"
 mkdir -p ~/.local/bin
-for asset in "voxtype-$v-linux-x86_64-avx2:voxtype" "voxtype-$v-linux-x86_64-audio-bridge:voxtype-audio-bridge"; do
-  name="${asset%%:*}" dest="${asset##*:}"
-  curl -fL --retry 3 --progress-bar -o "$tmp/$name" "$(gh_asset_url peteonrails/voxtype "$VOXTYPE_VERSION" "$name")"
-  verify_sha256_from_list "$tmp/$name" "$tmp/SHA256SUMS.txt"
+for asset in "voxtype-$v-linux-x86_64-avx2:voxtype:SHA256_AVX2" "voxtype-$v-linux-x86_64-audio-bridge:voxtype-audio-bridge:SHA256_AUDIO_BRIDGE"; do
+  IFS=: read -r name dest key <<<"$asset"
+  download_verified "$(gh_asset_url peteonrails/voxtype "$VOXTYPE_VERSION" "$name")" "$tmp/$name" "$(pin VOXTYPE "$key")"
   install -m 755 "$tmp/$name" ~/.local/bin/"$dest"
 done
 echo "Voxtype $v installed to ~/.local/bin"

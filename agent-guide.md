@@ -66,7 +66,7 @@ Tell the human these before they follow Omarchy documentation literally:
 Say this plainly when asked:
 
 - Root is used only for apt, Signal's apt repository, and the session file.
-- Every download has its SHA256 pinned in `install/checksums.sha256`; a mismatch aborts. Upstream Omarchy, Walker and Elephant are pinned to commit hashes, not just tags. Vendor apt keys are verified by fingerprint. Root steps run with a fixed system PATH.
+- Every download has its SHA256 pinned in `install/checksums.sha256`; a mismatch aborts. Upstream Omarchy, Walker and Elephant are pinned to commit hashes, not just tags; apps from GitHub releases are pinned by version and checksum (`overlay/bin/ombuntu-pins.sh`). Vendor apt keys are verified by fingerprint. Release tags are SSH-signed and verified by the installer and by `ombuntu update`. Root steps run with a fixed system PATH.
 - **Omarchy plugins are disabled for security reasons**: user hooks (`~/.config/omarchy/hooks/*.d/`), menu extensions (`~/.config/omarchy/extensions/menu.sh`) and remote theme installs all execute arbitrary code and are turned off. `omarchy-hook` is a no-op. Do not tell the human to add hooks; suggest editing `~/.config/hypr/*.conf` instead.
 - Passwordless sudo, autologin and Omarchy's Arch dev-environment installers that pipe remote scripts into a shell are disabled.
 - Install-menu entries that fetch software use vendor apt repositories or checksum-verified downloads, not `curl | sh`.

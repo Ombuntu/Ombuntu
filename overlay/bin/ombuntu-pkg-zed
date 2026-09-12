@@ -1,12 +1,12 @@
 #!/bin/bash
-# Zed from its official tarball into ~/.local (what zed.dev/install.sh does, minus the pipe)
+# Zed from its pinned GitHub release tarball into ~/.local (what zed.dev/install.sh does, pinned and verified)
 source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
 set -e
 [[ -x ~/.local/zed.app/bin/zed ]] && { echo "Zed already installed"; exit 0; }
-case "$(ombuntu_arch)" in amd64) a=x86_64 ;; arm64) a=aarch64 ;; *) exit 1 ;; esac
+v=$(pin ZED); k=$(arch_key); case $k in AMD64) a=x86_64 ;; ARM64) a=aarch64 ;; esac
 tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
-echo "Downloading Zed..."
-curl -fL --retry 3 --progress-bar -o "$tmp/zed.tar.gz" "https://zed.dev/api/releases/stable/latest/zed-linux-$a.tar.gz"
+echo "Downloading Zed $v..."
+download_verified "$(gh_asset_url zed-industries/zed "$v" "zed-linux-$a.tar.gz")" "$tmp/zed.tar.gz" "$(pin ZED "SHA256_$k")"
 mkdir -p ~/.local/bin ~/.local/share/applications
 tar -xzf "$tmp/zed.tar.gz" -C "$tmp"
 app=$(find "$tmp" -maxdepth 1 -type d -name 'zed*.app' | head -1)

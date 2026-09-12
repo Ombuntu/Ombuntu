@@ -192,6 +192,14 @@ Detected at first install: display scaling from the panel's size and resolution
 layout from the system or XFCE settings (into `~/.config/hypr/input.conf`).
 Both are ordinary files you can edit afterwards.
 
+## Releasing (maintainers)
+
+Tags are signed with SSH (`git config gpg.format ssh`, `tag.gpgSign true`); the
+public key lives in `install/allowed_signers` and, embedded, in `install.sh`,
+and CI checks the two match. To release: bump `VERSION` and `CHANGELOG.md`,
+`git tag -s v0.x.y -m "Ombuntu 0.x.y"`, `git push --tags`. An unsigned tag is
+ignored by the installer and by `ombuntu update`.
+
 ## Updating
 
 `ombuntu update` (or the menu: Update, Omarchy) runs `apt full-upgrade`, pulls
@@ -251,10 +259,21 @@ What the installer does with privilege, and what it deliberately leaves out.
 - **Root never sees user-writable paths.** Root steps run with a fixed system
   `PATH`; during the user steps Omarchy's own `bin` sits at the end of `PATH`,
   so a compromised checkout cannot shadow `sha256sum`, `curl` or `apt`.
-- **The one-line installer fetches the newest release tag**, not the
-  development branch (`OMBUNTU_REF=main` opts in), and only trusts a checkout
-  next to `install.sh` when it is a git repository owned by you and not
-  writable by others.
+- **Release tags are signed and verified.** The one-line installer fetches the
+  newest release tag, checks its SSH signature against the release key embedded
+  in `install.sh` (served from ombuntu.org, so a compromised GitHub repository
+  cannot substitute its own key), and refuses an unsigned or foreign tag.
+  `ombuntu update` does the same before moving to a newer release.
+  `OMBUNTU_REF=main` opts into the unsigned development branch. A checkout next
+  to `install.sh` is only trusted when it is a git repository owned by you and
+  not writable by others.
+- **Apps from GitHub releases are pinned.** Helix, Heroic, LocalSend, Moonlight,
+  Zed, Ollama and Voxtype install a fixed version with a pinned SHA256 from
+  `overlay/bin/ombuntu-pins.sh`; nothing follows "latest" at install time.
+  `install/refresh-pins.sh` moves a pin to a newer release (taking the
+  publisher's own checksums where they exist), and `--check` cross-checks
+  `install/checksums.sha256` against the publishers that provide sums.
+- **GitHub Actions are pinned to commit hashes**, not floating version tags.
 - **Uninstall removes only what the installer wrote.** Files are tracked in
   `~/.local/state/ombuntu/manifest`, apt packages the installer *added* in
   `/etc/ombuntu/installed-packages`; `--dry-run` shows the plan first.

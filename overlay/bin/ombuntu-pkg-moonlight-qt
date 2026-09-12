@@ -1,12 +1,13 @@
 #!/bin/bash
-# Moonlight's official AppImage into ~/.local/bin
+# Moonlight's pinned AppImage into ~/.local/bin
 source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
 set -e
 [[ -x ~/.local/bin/moonlight ]] && exit 0
 [[ $(ombuntu_arch) == amd64 ]] || { echo "Moonlight publishes an x86_64 AppImage only" >&2; exit 1; }
-MOONLIGHT_VERSION="${MOONLIGHT_VERSION:-$(curl -fsSL https://api.github.com/repos/moonlight-stream/moonlight-qt/releases/latest | jq -r .tag_name)}"
+v=$(pin MOONLIGHT)
+tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
+download_verified "$(gh_asset_url moonlight-stream/moonlight-qt "$v" "Moonlight-${v#v}-x86_64.AppImage")" "$tmp/moonlight" "$(pin MOONLIGHT SHA256_AMD64)"
 mkdir -p ~/.local/bin
-curl -fL --retry 3 --progress-bar -o ~/.local/bin/moonlight "$(gh_asset_url moonlight-stream/moonlight-qt "$MOONLIGHT_VERSION" "Moonlight-${MOONLIGHT_VERSION#v}-x86_64.AppImage")"
-chmod +x ~/.local/bin/moonlight
+install -m 755 "$tmp/moonlight" ~/.local/bin/moonlight
 omarchy-pkg-add libfuse2t64
 desktop_entry com.moonlight_stream.Moonlight "Moonlight" "$HOME/.local/bin/moonlight" video-display "Game;"

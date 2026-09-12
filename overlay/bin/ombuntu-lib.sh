@@ -52,6 +52,26 @@ deb_install() {
   return $rc
 }
 
+# Pinned versions and sums for apps fetched from GitHub releases (see install/refresh-pins.sh)
+source "$(dirname "${BASH_SOURCE[0]}")/ombuntu-pins.sh"
+
+# pin <APP> [KEY]: the pinned version (no key) or sum (key such as SHA256_AMD64) of an app
+pin() {
+  local v; if [[ -n ${2:-} ]]; then v="PIN_$1_$2"; else v="PIN_$1_VERSION"; fi
+  [[ -n ${!v:-} ]] || { echo "No pin for $v; run install/refresh-pins.sh" >&2; return 1; }
+  echo "${!v}"
+}
+# arch_key: AMD64 or ARM64 for the running machine
+arch_key() { case "$(ombuntu_arch)" in amd64) echo AMD64 ;; arm64) echo ARM64 ;; *) return 1 ;; esac; }
+
+# download_verified <url> <dest> <sha256>: fetch over HTTPS only and refuse a mismatch
+download_verified() {
+  local url="$1" dest="$2" sum="$3" actual
+  curl -fL --proto '=https' --proto-redir '=https' --retry 3 --progress-bar -o "$dest" "$url" || return 1
+  actual=$(sha256sum "$dest" | cut -d' ' -f1)
+  [[ $actual == "$sum" ]] || { echo "Checksum mismatch for $(basename "$url"): got $actual, pinned $sum" >&2; rm -f "$dest"; return 1; }
+}
+
 # gh_asset_url <owner/repo> <tag> <asset-name>
 gh_asset_url() { echo "https://github.com/$1/releases/download/$2/$3"; }
 

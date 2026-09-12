@@ -1,7 +1,8 @@
 #!/bin/bash
+# Heroic from its pinned GitHub release .deb
 source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
 set -e
 command -v heroic >/dev/null && exit 0
 [[ $(ombuntu_arch) == amd64 ]] || { echo "Heroic publishes amd64 .deb only" >&2; exit 1; }
-HEROIC_VERSION="${HEROIC_VERSION:-$(curl -fsSL https://api.github.com/repos/Heroic-Games-Launcher/HeroicGamesLauncher/releases/latest | jq -r .tag_name)}"
-deb_install "$(gh_asset_url Heroic-Games-Launcher/HeroicGamesLauncher "$HEROIC_VERSION" "Heroic-${HEROIC_VERSION#v}-linux-amd64.deb")"
+v=$(pin HEROIC)
+deb_install "$(gh_asset_url Heroic-Games-Launcher/HeroicGamesLauncher "$v" "Heroic-${v#v}-linux-amd64.deb")" "$(pin HEROIC SHA256_AMD64)"

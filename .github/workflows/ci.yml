@@ -15,7 +15,7 @@ jobs:
     name: Lint scripts and data
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Install shellcheck
         run: sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
       - name: bash -n on every script
@@ -34,6 +34,15 @@ jobs:
       - name: JSON files parse
         run: |
           python3 -c "import json,glob; [json.load(open(f)) for f in glob.glob('privacy/*.json')]"
+      - name: Release key in install.sh matches install/allowed_signers
+        run: |
+          emb=$(grep -oE 'OMBUNTU_RELEASE_KEY="[^"]+"' install.sh | cut -d'"' -f2)
+          test "ombuntu-release $emb" = "$(cat install/allowed_signers)"
+      - name: Pinned app table is complete and well formed
+        run: |
+          bash -n overlay/bin/ombuntu-pins.sh
+          grep -E '^PIN_[A-Z_]+_SHA256_[A-Z_0-9]+=[0-9a-f]{64}$' overlay/bin/ombuntu-pins.sh | wc -l | grep -qxE '1[0-9]'
+          grep -E '^PIN_(HELIX|HEROIC|LOCALSEND|MOONLIGHT|ZED|OLLAMA|VOXTYPE)_VERSION=\S+$' overlay/bin/ombuntu-pins.sh | wc -l | grep -qx 7
       - name: Checksums file is well formed
         run: |
           grep -vE '^\s*(#|$)' install/checksums.sha256 | awk 'NF != 2 || length($1) != 64 {print "bad line:", $0; bad=1} END {exit bad}'
@@ -42,7 +51,7 @@ jobs:
     name: Menu patch applies to the pinned Omarchy tag
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Read the pinned tag
         id: tag
         run: echo "ref=$(grep -oE 'OMARCHY_REF:-v[0-9.]+' install/lib.sh | head -1 | cut -d- -f2)" >> "$GITHUB_OUTPUT"
@@ -70,7 +79,7 @@ jobs:
       image: ubuntu:26.04
       options: --user root
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Prepare a user with sudo (the installer refuses to run as root)
         run: |
           apt-get update -qq

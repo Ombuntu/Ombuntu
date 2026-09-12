@@ -1,9 +1,12 @@
 # Changelog
 
-## Unreleased
+## 0.1.1
+
+First signed release.
 
 - Security review fixes: root steps run with a fixed PATH; upstream Omarchy, Walker and Elephant pinned to commits; a checkout is only trusted when it is your own git repository; vendor apt keys verified by fingerprint; Chrome and NordVPN from signed repositories; apt source lines fixed; manifest-based uninstall with `--dry-run`, removing only recorded packages; Ollama extracted root-owned; hibernation never unlinks live swap; Docker databases get random passwords.
 - Screen-share restore tokens off; opening the Wi-Fi/Bluetooth panel no longer unblocks radios; Omarchy's bin last in PATH; FIDO2 requires the key's PIN; Firefox no longer forces video decoding past Mozilla's blocklist.
+- Signed release tags, verified by the installer and by `ombuntu update`; GitHub-release apps pinned by version and SHA256 (`install/refresh-pins.sh`); GitHub Actions pinned to commit hashes.
 - 1Password removed (Bitwarden stays). Vendor-matching apt source file names; snap browsers detected correctly; hibernation refuses Secure Boot lockdown.
 
 ## 0.1.0

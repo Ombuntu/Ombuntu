@@ -1,18 +1,16 @@
 #!/bin/bash
-# Ollama from its GitHub release archive, verified against the release's sha256sum.txt
+# Ollama from its pinned GitHub release archive, verified against the pinned SHA256
 # (the same files ollama.com/install.sh fetches, without piping a script into a shell).
 source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
 set -e
 variant=$(basename "$0"); variant=${variant#ombuntu-pkg-ollama}; variant=${variant#-}   # "" or rocm/cuda
 command -v ollama >/dev/null && { echo "Ollama already installed ($(ollama --version 2>/dev/null))"; exit 0; }
 
-OLLAMA_VERSION="${OLLAMA_VERSION:-$(curl -fsSL https://api.github.com/repos/ollama/ollama/releases/latest | jq -r .tag_name)}"
-case "$(ombuntu_arch)" in amd64) asset=ollama-linux-amd64.tar.zst ;; arm64) asset=ollama-linux-arm64.tar.zst ;; *) echo "unsupported arch" >&2; exit 1 ;; esac
+OLLAMA_VERSION=$(pin OLLAMA); k=$(arch_key)
+case $k in AMD64) asset=ollama-linux-amd64.tar.zst ;; ARM64) asset=ollama-linux-arm64.tar.zst ;; esac
 tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
 echo "Downloading Ollama $OLLAMA_VERSION (about 1.4 GB)..."
-curl -fL --retry 3 --progress-bar -o "$tmp/$asset" "$(gh_asset_url ollama/ollama "$OLLAMA_VERSION" "$asset")"
-curl -fsSL --retry 3 -o "$tmp/sha256sum.txt" "$(gh_asset_url ollama/ollama "$OLLAMA_VERSION" sha256sum.txt)"
-verify_sha256_from_list "$tmp/$asset" "$tmp/sha256sum.txt"
+download_verified "$(gh_asset_url ollama/ollama "$OLLAMA_VERSION" "$asset")" "$tmp/$asset" "$(pin OLLAMA "SHA256_$k")"
 
 omarchy-pkg-add zstd
 echo "Installing to /usr/local..."
@@ -21,8 +19,7 @@ sudo tar --zstd --no-same-owner --no-same-permissions --owner=root --group=root 
 if [[ $variant == rocm && $(ombuntu_arch) == amd64 ]]; then
   rocm=ollama-linux-amd64-rocm.tar.zst
   echo "Downloading the ROCm bundle..."
-  curl -fL --retry 3 --progress-bar -o "$tmp/$rocm" "$(gh_asset_url ollama/ollama "$OLLAMA_VERSION" "$rocm")"
-  verify_sha256_from_list "$tmp/$rocm" "$tmp/sha256sum.txt"
+  download_verified "$(gh_asset_url ollama/ollama "$OLLAMA_VERSION" "$rocm")" "$tmp/$rocm" "$(pin OLLAMA_ROCM SHA256_AMD64)"
   sudo tar --zstd --no-same-owner --no-same-permissions --owner=root --group=root -C /usr/local -xf "$tmp/$rocm"
 fi
 

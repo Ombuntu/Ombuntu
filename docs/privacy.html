@@ -51,7 +51,7 @@
 <li>Opening the Wi-Fi or Bluetooth panel does not unblock a radio you switched off.</li>
 <li>The desktop's own command directory sits at the end of <code>PATH</code>, so nothing in it can shadow a system command.</li>
 <li>Root is used for three things: apt, Signal's apt repository, and the login session file. Root steps run with a fixed system <code>PATH</code>, never one that includes user-writable directories.</li>
-<li>Every download is pinned and checksummed; a mismatch aborts the install. Upstream code is pinned to commit hashes, not just tags. Vendor apt keys are verified by fingerprint before apt trusts them.</li>
+<li>Every download is pinned and checksummed; a mismatch aborts the install. Upstream code is pinned to commit hashes, not just tags; apps from GitHub releases (Helix, Zed, Ollama and the rest) install a pinned version with a pinned checksum rather than "latest". Vendor apt keys are verified by fingerprint before apt trusts them. Release tags are signed, and the installer refuses an unsigned one.</li>
 <li>Plugin-style code execution is disabled: hooks, menu extensions and remote theme installs would all run arbitrary code with your user rights.</li>
 <li>Passwordless sudo, autologin and installers that pipe remote scripts into a shell are not offered. The uninstaller removes only what the installer wrote.</li>
 </ul>
