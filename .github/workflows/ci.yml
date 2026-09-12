@@ -57,7 +57,7 @@ jobs:
         run: echo "ref=$(grep -oE 'OMARCHY_REF:-v[0-9.]+' install/lib.sh | head -1 | cut -d- -f2)" >> "$GITHUB_OUTPUT"
       - name: Clone upstream Omarchy at that tag
         run: git clone -q --depth 1 --branch "${{ steps.tag.outputs.ref }}" https://github.com/basecamp/omarchy.git /tmp/omarchy
-      - name: Apply the overlay and the menu patch
+      - name: Apply the Ubuntu adaptations and the menu patch
         run: |
           cp -R overlay/. /tmp/omarchy/
           python3 install/patch-menu.py /tmp/omarchy/bin/omarchy-menu
