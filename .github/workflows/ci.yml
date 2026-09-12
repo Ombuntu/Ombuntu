@@ -80,9 +80,31 @@ jobs:
           chown -R tester:tester "$GITHUB_WORKSPACE"
           chmod 755 "$GITHUB_WORKSPACE"
           stat -c 'workspace: owner %U group %G mode %a' "$GITHUB_WORKSPACE"
-      - name: Run install.sh
-        run: |
-          sudo -u tester -H env OMBUNTU_CI=1 bash -c "cd '$GITHUB_WORKSPACE' && ./install.sh --skip-bashrc"
+      # Each installer step as its own CI step, so the API shows exactly which one fails.
+      - name: Step 00 preflight (user)
+        run: sudo -u tester -H bash -c "cd '$GITHUB_WORKSPACE' && bash install/00-preflight.sh"
+      - name: Step 10 packages (root)
+        run: cd "$GITHUB_WORKSPACE" && env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash install/10-packages.sh
+      - name: Step 15 third-party repos (root)
+        run: cd "$GITHUB_WORKSPACE" && env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash install/15-third-party.sh
+      - name: Step 30 omarchy + overlay (user)
+        run: sudo -u tester -H bash -c "cd '$GITHUB_WORKSPACE' && bash install/30-omarchy.sh"
+      - name: Step 20 binaries (user)
+        run: sudo -u tester -H bash -c "cd '$GITHUB_WORKSPACE' && bash install/20-binaries.sh"
+      - name: Step 25 fonts (user)
+        run: sudo -u tester -H bash -c "cd '$GITHUB_WORKSPACE' && bash install/25-fonts.sh"
+      - name: Step 40 config (user)
+        run: sudo -u tester -H bash -c "cd '$GITHUB_WORKSPACE' && OMARCHY_SKIP_BASHRC=true bash install/40-config.sh"
+      - name: Step 50 theme (user)
+        run: sudo -u tester -H bash -c "cd '$GITHUB_WORKSPACE' && bash install/50-theme.sh"
+      - name: Step 60 session (root)
+        run: cd "$GITHUB_WORKSPACE" && env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash install/60-session.sh
+      - name: Step 70 privacy (root)
+        run: cd "$GITHUB_WORKSPACE" && env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash install/70-privacy.sh
+      - name: Step 90 verify (user)
+        run: sudo -u tester -H bash -c "cd '$GITHUB_WORKSPACE' && bash install/90-verify.sh"
+      - name: Run install.sh end to end (idempotent re-run through the entry point)
+        run: sudo -u tester -H bash -c "cd '$GITHUB_WORKSPACE' && ./install.sh --skip-bashrc"
       - name: Verify - session entry and tools
         run: |
           test -f /usr/share/wayland-sessions/ombuntu.desktop
