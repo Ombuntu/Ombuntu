@@ -38,6 +38,10 @@ is_own_checkout() {
   # group-writable is fine only for the user's own primary group (Ubuntu user-private groups)
   [[ ${mode: -2:1} =~ [0-5] || $gid == "$(id -g)" ]]
 }
+if [[ -n ${BASH_SOURCE[0]} ]] && ! is_own_checkout "$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd)"; then
+  d="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd)"
+  printf '\033[33m==> WARNING:\033[0m %s\n' "Not using the checkout at $d (needs .git, VERSION, install/lib.sh; owned by you; not writable by others: $(stat -c 'owner %U group %G mode %a' "$d" 2>/dev/null)). Fetching a release instead."
+fi
 if [[ -z ${BASH_SOURCE[0]} ]] || ! is_own_checkout "$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd)"; then
   OMBUNTU_HOME="${OMBUNTU_HOME:-$HOME/.local/share/ombuntu/repo}"
   OMBUNTU_REPO_URL="${OMBUNTU_REPO_URL:-https://github.com/Ombuntu/Ombuntu.git}"

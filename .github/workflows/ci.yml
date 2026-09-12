@@ -78,6 +78,8 @@ jobs:
           useradd -m -s /bin/bash tester
           echo 'tester ALL=(ALL) NOPASSWD:ALL' >/etc/sudoers.d/tester
           chown -R tester:tester "$GITHUB_WORKSPACE"
+          chmod 755 "$GITHUB_WORKSPACE"
+          stat -c 'workspace: owner %U group %G mode %a' "$GITHUB_WORKSPACE"
       - name: Run install.sh
         run: |
           sudo -u tester -H env OMBUNTU_CI=1 bash -c "cd '$GITHUB_WORKSPACE' && ./install.sh --skip-bashrc"
