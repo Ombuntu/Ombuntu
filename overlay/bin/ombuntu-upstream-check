@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# omarchy:summary=Try a newer upstream Omarchy tag in a temporary directory and report whether the Ombuntu overlay still fits
+# omarchy:summary=Try a newer upstream Omarchy tag in a temporary directory and report whether Ombuntu's adaptations still fit
 # omarchy:args=[tag]
 # omarchy:examples=ombuntu-upstream-check | ombuntu-upstream-check v3.9.0
 
@@ -33,8 +33,8 @@ else
 fi
 
 echo
-echo "2. Overlay files whose upstream original changed between $current and $tag"
-echo "   (the overlay copy may need the same change)"
+echo "2. Ombuntu-adapted files whose upstream original changed between $current and $tag"
+echo "   (the adapted copy in overlay/ may need the same change)"
 changed=0
 while IFS= read -r -d '' f; do
   rel="${f#$repo/overlay/}"

@@ -24,7 +24,7 @@ echo "Session"
 check "Running inside the Ombuntu (Hyprland) session" test "$XDG_CURRENT_DESKTOP" = Hyprland
 check "Ombuntu login entry installed" test -f /usr/share/wayland-sessions/ombuntu.desktop
 check "Omarchy checkout present" test -d "$OMARCHY_PATH/.git"
-check "Ubuntu overlay applied" test -f "$OMARCHY_PATH/bin/ombuntu-lib.sh"
+check "Ombuntu adaptations applied" test -f "$OMARCHY_PATH/bin/ombuntu-lib.sh"
 check "Hyprland config parses" bash -c 'Hyprland --verify-config 2>&1 | grep -q "config ok"'
 if [[ $XDG_CURRENT_DESKTOP == Hyprland ]]; then
   check "No live config errors" bash -c '[[ -z $(hyprctl configerrors 2>/dev/null) ]]'

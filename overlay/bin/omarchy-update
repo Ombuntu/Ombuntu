@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# omarchy:summary=Update system packages (apt) and re-apply the Omarchy-on-Xubuntu overlay
+# omarchy:summary=Update Ubuntu packages (apt) and Ombuntu
 # omarchy:args=[-y]
 # omarchy:examples=omarchy update | omarchy update -y
 # omarchy:requires-sudo=true
@@ -10,7 +10,7 @@ set -e
 trap 'echo ""; echo -e "\033[0;31mSomething went wrong during the update!\n\nPlease review the output above carefully, correct the error, and retry the update.\033[0m"' ERR
 
 if [[ $1 != "-y" ]]; then
-  gum confirm "Update Ubuntu packages and the Omarchy overlay now?" || exit 0
+  gum confirm "Update Ubuntu packages and Ombuntu now?" || exit 0
 fi
 
 sudo apt-get update

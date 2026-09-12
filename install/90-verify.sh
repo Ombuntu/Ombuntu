@@ -26,8 +26,8 @@ if (( ${#missing[@]} )); then
   warn "Not on PATH yet (install packages / log in again): ${missing[*]}"
 fi
 
-# Hyprland auto-reloads when sourced files change, and the overlay step rewrites
-# some of them twice (upstream restore, then overlay). A final reload clears any
+# Hyprland auto-reloads when sourced files change, and the desktop step rewrites
+# some of them twice (upstream restore, then adaptations). A final reload clears any
 # transient config error banner from that.
 if [[ -n $HYPRLAND_INSTANCE_SIGNATURE ]] && command -v hyprctl >/dev/null; then
   hyprctl reload >/dev/null 2>&1 || true

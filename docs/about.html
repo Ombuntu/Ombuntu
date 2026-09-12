@@ -20,7 +20,7 @@
 <p>Ombuntu is a pre-configured desktop for Ubuntu 26.04: a tiling window manager (Hyprland), a launcher, a status bar, a lock screen, themes, and one menu that installs software and changes settings, all set up to work together the moment you log in. It is keyboard-driven, fast, and opinionated so you do not have to assemble it yourself.</p>
 <p>It is also deliberately conservative about security and privacy. Software comes only from Ubuntu's archive, vendor-signed repositories, or pinned and checksummed releases. Telemetry from the operating system and the browsers is switched off. Nothing downloads and runs code from the internet at runtime, and the convenience shortcuts that trade security for a click (passwordless sudo, autologin, remembered screen-share permissions) are not offered. The <a href="privacy.html">privacy and security page</a> lists every such choice with the file behind it.</p>
 <h2>Built on Omarchy</h2>
-<p>The desktop itself is <a href="https://omarchy.org">Omarchy</a>, DHH's Hyprland configuration for Arch Linux, which Ombuntu installs unmodified at a pinned commit and adapts to Ubuntu with an overlay: apt in place of pacman, Ubuntu packages or vendor repositories in place of the AUR, fixes for Ubuntu packaging quirks, and the security and privacy changes above. Omarchy's plugin surface (hooks, menu extensions, remote themes) is disabled, and menu entries with no safe Ubuntu path are removed rather than left to fail. Updates re-apply the overlay, so moving to a newer Omarchy is a matter of changing one pin.</p>
+<p>The desktop itself is <a href="https://omarchy.org">Omarchy</a>, DHH's Hyprland configuration for Arch Linux, which Ombuntu installs unmodified at a pinned commit and adapts to Ubuntu: apt in place of pacman, Ubuntu packages or vendor repositories in place of the AUR, fixes for Ubuntu packaging quirks, and the security and privacy changes above. Omarchy's plugin surface (hooks, menu extensions, remote themes) is disabled, and menu entries with no safe Ubuntu path are removed rather than left to fail. Updates re-apply the adaptations, so moving to a newer Omarchy is a matter of changing one pin.</p>
 <h2>What is different from Omarchy</h2>
 <ul>
 <li>apt instead of pacman and yay; no AUR, no <code>curl | sh</code>.</li>
@@ -32,7 +32,7 @@
 <h2>Naming</h2>
 <p>Everything Ombuntu adds is called Ombuntu. The upstream engine keeps its <code>omarchy-*</code> command names, because its scripts call each other by them; the <code>ombuntu</code> command is the same dispatcher.</p>
 <h2>Credits and license</h2>
-<p>Omarchy is by DHH and contributors, MIT licensed. Ombuntu is by Jascha Wanger, MIT licensed; the overlay scripts are adapted from Omarchy's. Source, issues and the installer are at <a href="https://github.com/Ombuntu/Ombuntu">github.com/Ombuntu/Ombuntu</a>.</p>
+<p>Omarchy is by DHH and contributors, MIT licensed. Ombuntu is by Jascha Wanger, MIT licensed; its adapted scripts derive from Omarchy's. Source, issues and the installer are at <a href="https://github.com/Ombuntu/Ombuntu">github.com/Ombuntu/Ombuntu</a>.</p>
 <h2>Disclaimer</h2>
 <p>Ombuntu is an independent community project. It is not affiliated with, endorsed by, or associated with Canonical Ltd., Ubuntu, Xubuntu, or the Omarchy project. Ubuntu and Xubuntu are trademarks of Canonical Ltd. Use at your own risk.</p>
 

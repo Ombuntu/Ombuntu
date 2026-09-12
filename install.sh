@@ -152,7 +152,7 @@ if [[ $OMARCHY_USER_ONLY == false ]]; then
   step "Third-party apt repos (Signal)" "$OMBUNTU_REPO/install/15-third-party.sh" root
 fi
 
-step "Omarchy core + Ubuntu overlay" "$OMBUNTU_REPO/install/30-omarchy.sh"
+step "Ombuntu desktop" "$OMBUNTU_REPO/install/30-omarchy.sh"
 step "Binaries not packaged by Ubuntu" "$OMBUNTU_REPO/install/20-binaries.sh"
 step "Fonts" "$OMBUNTU_REPO/install/25-fonts.sh"
 step "User configuration" "$OMBUNTU_REPO/install/40-config.sh"

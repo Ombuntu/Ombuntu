@@ -85,7 +85,7 @@ mkdir -p ~/.config/omarchy/branding ~/.config/omarchy/themes
 cp -f "$OMBUNTU_REPO/branding/about.txt" ~/.config/omarchy/branding/about.txt
 cp -f "$OMBUNTU_REPO/branding/screensaver.txt" ~/.config/omarchy/branding/screensaver.txt
 
-# 7. Desktop entries, icons, web apps and TUIs (Omarchy's own refresher). The overlay's
+# 7. Desktop entries, icons, web apps and TUIs (Omarchy's own refresher). Ombuntu's
 #    web app list leaves out Omarchy's own-company apps (HEY, Basecamp, Fizzy); drop any an
 #    earlier run created, and the HEY bindings.
 rm -f ~/.local/share/applications/{HEY,Basecamp,Fizzy}.desktop ~/.local/share/applications/icons/{HEY,Basecamp,Fizzy}.png
@@ -173,7 +173,7 @@ if [[ -f /usr/share/applications/signal-desktop.desktop ]]; then
 fi
 sed -i 's|"uwsm-app -- signal-desktop"|"uwsm-app -- signal-desktop --password-store=gnome-libsecret"|' ~/.config/hypr/bindings.conf
 #     Same for Chromium-family browsers (saved passwords vanish otherwise). Launcher entries
-#     get an override here; omarchy-launch-browser/-webapp in the overlay add the flag too.
+#     get an override here; Ombuntu's omarchy-launch-browser/-webapp add the flag too.
 for entry in vivaldi-stable google-chrome brave-browser microsoft-edge chromium; do
   src=/usr/share/applications/$entry.desktop
   [[ -f $src ]] || continue

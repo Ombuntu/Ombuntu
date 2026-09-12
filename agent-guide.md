@@ -4,7 +4,7 @@ Use this guide to help a human understand, install, or troubleshoot Ombuntu. Can
 
 ## What Ombuntu is
 
-Ombuntu is the [Omarchy](https://omarchy.org) Hyprland desktop running on Ubuntu / Xubuntu 26.04 instead of Arch Linux. It installs upstream Omarchy unchanged (pinned to a tag, currently `v3.8.4`) into `~/.local/share/omarchy`, then lays an Ubuntu overlay on top: apt instead of pacman, Ubuntu-packaged or vendor-repository replacements for AUR software, and fixes for Ubuntu packaging quirks. The existing XFCE session is untouched; the human picks **Ombuntu** or **Xubuntu Session** at the login screen.
+Ombuntu is the [Omarchy](https://omarchy.org) Hyprland desktop running on Ubuntu / Xubuntu 26.04 instead of Arch Linux. It installs upstream Omarchy unchanged (pinned to a commit, currently `v3.8.4`) into `~/.local/share/omarchy`, then adapts it to Ubuntu: apt instead of pacman, Ubuntu-packaged or vendor-repository replacements for AUR software, security and privacy defaults, and fixes for Ubuntu packaging quirks. The existing XFCE session is untouched; the human picks **Ombuntu** or **Xubuntu Session** at the login screen.
 
 Everything Omarchy documents applies unless this guide says otherwise: the `omarchy` CLI and menu, all 19 themes, Waybar, Walker, Mako, Hyprlock, Hypridle, SwayOSD, the keybindings, web apps, and the bash/starship/eza/zoxide shell. The Omarchy manual is at https://manuals.omamix.org/2/the-omarchy-manual.
 
@@ -13,8 +13,8 @@ Everything Omarchy documents applies unless this guide says otherwise: the `omar
 Teach these in this order:
 
 - **Session** — Hyprland, started by uwsm from the "Ombuntu" entry in LightDM. Logging out returns to the greeter; the XFCE session is still there.
-- **Upstream Omarchy** — `~/.local/share/omarchy`, a git checkout at a fixed tag. Never edited by hand; the installer re-applies the overlay over it.
-- **Overlay** — the `overlay/` directory of the Ombuntu repository, copied over the checkout. Its `bin/` holds Ubuntu replacements for `omarchy-*` commands and `ombuntu-*` helpers.
+- **Upstream Omarchy** — `~/.local/share/omarchy`, a git checkout at a fixed tag. Never edited by hand; the installer re-applies Ombuntu's adaptations over it.
+- **Adaptations** — the `overlay/` directory of the Ombuntu repository, copied over the checkout. Its `bin/` holds Ubuntu replacements for `omarchy-*` commands and `ombuntu-*` helpers.
 - **Repository** — cloned to `~/.local/share/ombuntu/repo` by the one-line installer (or wherever the human cloned it). `~/.local/share/omarchy/ombuntu-repo.path` records where.
 - **User config** — `~/.config/hypr/*.conf` (bindings, input, monitors, look and feel, autostart), plus Waybar, Walker, Mako and the rest under `~/.config`. `~/.config/omarchy/current/` holds the active theme and background.
 - **Naming** — everything Ombuntu adds is called Ombuntu (session, branding, `ombuntu` command). The upstream engine keeps its `omarchy-*` command names because its 280+ scripts call each other by them. `ombuntu` and `omarchy` run the same dispatcher.
@@ -52,14 +52,14 @@ On arm64 Walker and Elephant are compiled from source, which adds 10 to 30 minut
 Tell the human these before they follow Omarchy documentation literally:
 
 - `omarchy pkg add <name>` uses apt. Arch package names Omarchy uses internally are mapped, and names that only exist in the AUR are handled by `ombuntu-pkg-<name>` scripts (vendor apt repositories, verified .deb downloads, snaps) or reported as not available. `omarchy pkg aur ...` always refuses.
-- `omarchy update` runs `apt full-upgrade`, pulls the Ombuntu repo, and re-applies the overlay. The Waybar update indicator shows apt pending upgrades.
+- `omarchy update` runs `apt full-upgrade`, moves the Ombuntu repo to the newest signed release, and re-applies it. The Waybar update indicator shows apt pending upgrades.
 - Replacements: Walker, Elephant, Satty and mise are pinned GitHub releases in `~/.local/bin`; wlsunset replaces hyprsunset; wf-recorder replaces gpu-screen-recorder; nmtui, Blueman and pulsemixer replace impala, bluetui and wiremix; hyprpolkitagent replaces polkit-gnome.
 - Browsers and Signal are launched with `--password-store=gnome-libsecret`, and browsers are set to system decorations, so they show no title-bar buttons. `ombuntu-browser-decorations on` restores them.
 - Default applications are set only for the Hyprland session, in `~/.config/Hyprland-mimeapps.list`.
 - The `scrolling` layout needs Hyprland 0.54; Ubuntu ships 0.53, so that block is guarded.
 - Not installed by default: Docker, snapper, limine, fcitx5, Plymouth, SDDM. Spotify, Obsidian, Typora, LocalSend and Pinta are under the menu's Install, Apps (snaps, vendor apt repositories, Flathub). Fingerprint/FIDO2 login and hibernation have Ubuntu implementations under Setup.
 - Install flags: `--keep-telemetry`, `--keep-browser-buttons`, `--no-firefox-policy`. Uninstall: `uninstall.sh` in the repository (`--purge-packages`, `--restore-telemetry`).
-- `ombuntu-upstream-check` reports whether a newer Omarchy tag would still fit the overlay; bumping means editing `OMARCHY_REF` and re-running `install.sh`.
+- `ombuntu-upstream-check` reports whether a newer Omarchy tag would still fit Ombuntu's adaptations; bumping means editing `OMARCHY_REF` and re-running `install.sh`.
 
 ## Security posture
 

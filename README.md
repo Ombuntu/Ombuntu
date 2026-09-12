@@ -8,10 +8,10 @@ Documentation: **https://docs.ombuntu.org/** (getting started, privacy, FAQ,
 uninstall, cheatsheet). Site and installer: https://ombuntu.org/.
 
 Ombuntu installs upstream Omarchy (security audited and pinned to tag `v3.8.4`) next to your
-existing XFCE session and lays a small Ubuntu overlay on top of it. You get the
+existing XFCE session and adapts it to Ubuntu. You get the
 real thing: the `omarchy` CLI and menu, all 19 themes, Waybar, Walker, Mako,
 Hyprlock, Hypridle, SwayOSD, the full keybinding set, web apps, and the
-bash/starship/eza/zoxide shell. The overlay only swaps out what Arch has and
+bash/starship/eza/zoxide shell. The adaptations only swap out what Arch has and
 Ubuntu does not (package manager, a few tools, some paths) and works around a
 couple of Ubuntu packaging quirks. As well as disabling security issues and auditing for any additional.
 
@@ -56,7 +56,7 @@ The installer:
 
 1. Checks the OS and architecture.
 2. Installs the Ubuntu packages (Hyprland, Waybar, Mako, Alacritty, Nautilus, the terminal tooling, fonts), then adds Signal's apt repository and installs Signal Desktop. These are the steps that need your password.
-3. Clones Omarchy `v3.8.4` into `~/.local/share/omarchy` and applies the overlay.
+3. Fetches the Omarchy `v3.8.4` base into `~/.local/share/omarchy` and applies Ombuntu's Ubuntu adaptations.
 4. Downloads pinned releases of Walker, Elephant, Satty and mise into `~/.local/bin`, plus the JetBrainsMono Nerd Font.
 5. Writes the Omarchy configuration into `~/.config`, installs the bash setup (your old `~/.bashrc` is kept as `~/.bashrc.pre-omarchy`), and applies the Tokyo Night theme.
 6. Adds the **Ombuntu** entry to the login screen.
@@ -119,7 +119,7 @@ The full manual is at <https://manuals.omamix.org/2/the-omarchy-manual>.
 | Omarchy (Arch) | Ombuntu (Ubuntu 26.04) | Why |
 | --- | --- | --- |
 | `pacman`/`yay` via `omarchy-pkg-*` | `apt` via the same `omarchy-pkg-*` commands | No AUR; `omarchy pkg aur ...` says so |
-| `omarchy-update` (git + pacman) | `apt full-upgrade` + re-apply this overlay | Upstream is pinned to a tag |
+| `omarchy-update` (git + pacman) | `apt full-upgrade` + re-apply Ombuntu | Upstream is pinned to a commit |
 | Waybar update dot | apt pending-upgrade count | |
 | Walker / Elephant (AUR) | Prebuilt GitHub releases in `~/.local/bin` | Not packaged by Ubuntu |
 | Satty, mise (AUR) | Prebuilt GitHub releases | Not packaged by Ubuntu |
@@ -183,7 +183,7 @@ scripts call each other by those names. `ombuntu` is the same dispatcher, so
 | `ombuntu` | Same dispatcher as `omarchy` (`ombuntu theme set nord`, `ombuntu update`) |
 | `ombuntu-doctor` | One line per check: session, duplicate services, tools, keyring flags, privacy files. Paste its output when asking for help. |
 | `ombuntu-version` | Ombuntu version and the upstream Omarchy tag |
-| `ombuntu-upstream-check [tag]` | Tries a newer Omarchy tag in a temp directory and reports whether the overlay and menu patch still fit |
+| `ombuntu-upstream-check [tag]` | Tries a newer Omarchy tag in a temp directory and reports whether Ombuntu's adaptations and menu patch still fit |
 | `ombuntu-browser-decorations on\|off` | Show or hide browsers' title-bar buttons |
 | `ombuntu-cheatsheet` | The beginner cheatsheet window |
 
@@ -203,10 +203,10 @@ ignored by the installer and by `ombuntu update`.
 ## Updating
 
 `ombuntu update` (or the menu: Update, Omarchy) runs `apt full-upgrade`, pulls
-this repo, and re-applies the overlay. Running the one-line installer again
+this repo, and re-applies Ombuntu. Running the one-line installer again
 does the same. To move to a newer upstream Omarchy,
 change `OMARCHY_REF` in `install.sh`, run it, and check that the files in
-`overlay/` still make sense against the new upstream.
+`overlay/` (Ombuntu's adapted files) still make sense against the new upstream.
 
 ## Troubleshooting
 
@@ -365,7 +365,7 @@ place, and your own pre-existing configs are kept.
 
 ## Files this touches
 
-- `~/.local/share/omarchy` (upstream clone + overlay)
+- `~/.local/share/omarchy` (upstream base plus Ombuntu's adaptations)
 - `~/.config/hypr/*`, `waybar`, `walker`, `elephant`, `mako`, `swayosd`, `alacritty`, `btop`, `fastfetch`, `starship.toml`, `tmux`, `git/config`, `fontconfig/fonts.conf`, `uwsm`, `xdg-terminals.list`, `omarchy/*`, `Hyprland-mimeapps.list`, `autostart/*.desktop`, `systemd/user/*`
 - `~/.bashrc` (backup kept), `~/.XCompose`, `~/.local/bin/*`, `~/.local/share/fonts`, `~/.local/share/applications`
 - `/usr/share/wayland-sessions/ombuntu.desktop`
@@ -380,7 +380,7 @@ defaults there.
 ```
 install.sh            entry point
 install/              one script per step, packages.list and packages-build.list (apt), lib.sh
-overlay/              files copied over the upstream Omarchy clone
+overlay/              Ombuntu's adapted files, copied over the upstream base
   bin/                Ubuntu replacements for omarchy-* commands
   default/            autostart, app rules, waybar indicator, bash init, looknfeel/foot fixes
   config/hypr/        1x monitor default for a 1080p laptop panel

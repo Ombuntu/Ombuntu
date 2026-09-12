@@ -1,6 +1,6 @@
 #!/bin/bash
 # Clone upstream Omarchy at a pinned tag into ~/.local/share/omarchy, then lay
-# the Ubuntu overlay (this repo's overlay/ directory) on top of it.
+# Ombuntu's Ubuntu adaptations (this repo's overlay/ directory) on top of it.
 set -eEo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
@@ -11,7 +11,7 @@ if [[ -d $OMARCHY_PATH/.git ]]; then
     git -C "$OMARCHY_PATH" fetch --depth 1 origin "refs/tags/$OMARCHY_REF:refs/tags/$OMARCHY_REF"
     git -C "$OMARCHY_PATH" checkout -q --force "$OMARCHY_REF"
   else
-    # Drop any previous overlay so upstream files are pristine before re-applying
+    # Restore pristine upstream files before re-applying the adaptations
     git -C "$OMARCHY_PATH" checkout -q -- . 2>/dev/null || true
     git -C "$OMARCHY_PATH" clean -qfd 2>/dev/null || true
   fi
@@ -27,7 +27,7 @@ if [[ -n $OMARCHY_COMMIT && $actual != "$OMARCHY_COMMIT" ]]; then
   die "Upstream tag $OMARCHY_REF resolves to $actual, expected $OMARCHY_COMMIT. Refusing to continue; if upstream re-tagged legitimately, update OMARCHY_COMMIT."
 fi
 
-log "Applying Ubuntu overlay"
+log "Applying Ombuntu's Ubuntu adaptations"
 cp -R "$OMBUNTU_REPO/overlay/." "$OMARCHY_PATH/"
 chmod +x "$OMARCHY_PATH"/bin/* "$OMARCHY_PATH"/default/waybar/indicators/*.sh 2>/dev/null || true
 
