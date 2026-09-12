@@ -30,11 +30,21 @@ overwrites config files you already have unless you ask it to.
 
 ## Install
 
+On a fresh Ubuntu or Xubuntu 26.04, one line does the whole install:
+
 ```bash
-sudo apt install -y git curl
+curl -fsSL https://ombuntu.org/install.sh | bash
+```
+
+It fetches this repository into `~/.local/share/ombuntu/repo`, asks for your
+password once, installs everything, and adds the **Ombuntu** entry to the login
+screen. Log out, pick Ombuntu, log in.
+
+Prefer to read before you run? Download it first, or use a checkout:
+
+```bash
 git clone https://github.com/Ombuntu/Ombuntu.git ~/ombuntu
-cd ~/ombuntu
-./install.sh
+cd ~/ombuntu && ./install.sh
 ```
 
 The installer:
@@ -50,9 +60,6 @@ The installer:
 It is idempotent: run it again any time, it only redoes what is missing or
 changed.
 
-Then log out, choose **Ombuntu** in the greeter (the small icon next to your
-name in LightDM), and log in.
-
 ### Options
 
 | Flag | Effect |
@@ -60,6 +67,8 @@ name in LightDM), and log in.
 | `--user-only` | Skip the steps that need root (apt, session file) |
 | `--skip-bashrc` | Leave `~/.bashrc` alone |
 | `--force-config` | Overwrite `~/.config` files with Omarchy defaults (existing files saved as `*.pre-omarchy`) |
+
+The piped form takes the same flags: `curl -fsSL https://ombuntu.org/install.sh | bash -s -- --skip-bashrc`.
 
 Environment overrides: `OMARCHY_REF=v3.8.3 ./install.sh` pins another upstream
 tag; `WALKER_VERSION`, `ELEPHANT_VERSION`, `SATTY_VERSION`, `MISE_VERSION`,
@@ -157,7 +166,8 @@ scripts call each other by those names. `ombuntu` is the same dispatcher, so
 ## Updating
 
 `ombuntu update` (or the menu: Update, Omarchy) runs `apt full-upgrade`, pulls
-this repo, and re-applies the overlay. To move to a newer upstream Omarchy,
+this repo, and re-applies the overlay. Running the one-line installer again
+does the same. To move to a newer upstream Omarchy,
 change `OMARCHY_REF` in `install.sh`, run it, and check that the files in
 `overlay/` still make sense against the new upstream.
 
@@ -275,6 +285,15 @@ branding/             Ombuntu ASCII art for the About screen and screensaver
 docs/                 beginner keyboard cheatsheet (HTML)
 backgrounds/          Ombuntu wallpapers, linked into every theme
 ```
+
+## Hosting install.sh at ombuntu.org
+
+`ombuntu.org/install.sh` is this repository's root served by GitHub Pages:
+`CNAME` names the domain, `.nojekyll` keeps files verbatim, and `index.html`
+is the landing page. In the repository settings enable Pages from the `main`
+branch, root folder, and point the domain's DNS at GitHub Pages. Until then
+the same file is reachable at
+`https://raw.githubusercontent.com/Ombuntu/Ombuntu/main/install.sh`.
 
 ## Credits and license
 

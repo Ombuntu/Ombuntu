@@ -6,13 +6,60 @@
 # Safe to re-run: every step is idempotent. Existing personal config files are
 # never overwritten unless you pass --force-config.
 #
-# Usage:
+# One-line install on a fresh Ubuntu / Xubuntu 26.04:
+#   curl -fsSL https://ombuntu.org/install.sh | bash
+#
+# From a checkout:
 #   ./install.sh                 full install (asks for sudo once for apt + session file)
 #   ./install.sh --user-only     skip the steps that need root (apt packages, session file)
 #   ./install.sh --skip-bashrc   leave ~/.bashrc alone
 #   ./install.sh --force-config  overwrite ~/.config files with Omarchy defaults (backups are made)
 #
+# Piped form takes the same flags:  curl -fsSL https://ombuntu.org/install.sh | bash -s -- --skip-bashrc
+#
 set -eEo pipefail
+
+# ---------------------------------------------------------------------------
+# Bootstrap: when this file is run on its own (curl | bash, or a lone copy),
+# fetch the repository and hand over to the copy inside it.
+# ---------------------------------------------------------------------------
+if [[ -z ${BASH_SOURCE[0]} || ! -d "$(dirname "${BASH_SOURCE[0]}")/install" ]]; then
+  OMBUNTU_HOME="${OMBUNTU_HOME:-$HOME/.local/share/ombuntu/repo}"
+  OMBUNTU_REPO_URL="${OMBUNTU_REPO_URL:-https://github.com/Ombuntu/Ombuntu.git}"
+  OMBUNTU_BRANCH="${OMBUNTU_BRANCH:-main}"
+
+  printf '\033[32m==>\033[0m %s\n' "Ombuntu: Omarchy on Xubuntu"
+
+  if [[ -r /etc/os-release ]]; then
+    . /etc/os-release
+    case "${ID:-} ${ID_LIKE:-}" in
+      *ubuntu* | *debian*) ;;
+      *) printf '\033[31m==> ERROR:\033[0m %s\n' "This installer is for Ubuntu / Xubuntu 26.04 (found ${PRETTY_NAME:-unknown})." >&2; exit 1 ;;
+    esac
+  fi
+
+  if ! command -v git >/dev/null || ! command -v curl >/dev/null; then
+    printf '\033[32m==>\033[0m %s\n' "Installing git and curl (sudo)"
+    sudo apt-get update -qq
+    sudo apt-get install -y -qq git curl
+  fi
+
+  if [[ -d $OMBUNTU_HOME/.git ]]; then
+    printf '\033[32m==>\033[0m %s\n' "Updating $OMBUNTU_HOME"
+    git -C "$OMBUNTU_HOME" pull -q --ff-only --no-rebase
+  else
+    printf '\033[32m==>\033[0m %s\n' "Fetching Ombuntu into $OMBUNTU_HOME"
+    mkdir -p "$(dirname "$OMBUNTU_HOME")"
+    git clone -q --depth 1 --branch "$OMBUNTU_BRANCH" "$OMBUNTU_REPO_URL" "$OMBUNTU_HOME"
+  fi
+
+  # Hand the terminal back to the real installer so sudo and prompts work when piped from curl
+  if ( : </dev/tty ) 2>/dev/null; then
+    exec bash "$OMBUNTU_HOME/install.sh" "$@" </dev/tty
+  else
+    exec bash "$OMBUNTU_HOME/install.sh" "$@"
+  fi
+fi
 
 export OMBUNTU_REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export OMARCHY_PATH="$HOME/.local/share/omarchy"
@@ -29,7 +76,7 @@ for arg in "$@"; do
   --user-only) OMARCHY_USER_ONLY=true ;;
   --skip-bashrc) OMARCHY_SKIP_BASHRC=true ;;
   --force-config) OMARCHY_FORCE_CONFIG=true ;;
-  -h | --help) sed -n '2,15p' "$0"; exit 0 ;;
+  -h | --help) sed -n '2,/^set -eEo/p' "$0" | head -n -1; exit 0 ;;
   *) echo "Unknown option: $arg" >&2; exit 1 ;;
   esac
 done
