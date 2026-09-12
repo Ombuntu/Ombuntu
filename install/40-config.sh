@@ -155,6 +155,7 @@ update-desktop-database ~/.local/share/applications 2>/dev/null || true
 # 17. Beginner cheatsheet: app entry plus Super+Shift+K
 mkdir -p ~/.local/share/ombuntu
 cp -f "$OMBUNTU_REPO/docs/cheatsheet.html" ~/.local/share/ombuntu/cheatsheet.html
+mkdir -p ~/.local/share/ombuntu/assets && cp -f "$OMBUNTU_REPO/logo/ombuntu-logo.png" ~/.local/share/ombuntu/assets/ombuntu-logo.png
 cp -f "$OMBUNTU_REPO/logo/ombuntu-logo.png" ~/.local/share/ombuntu/ombuntu-logo.png
 mkdir -p ~/.local/share/icons/hicolor/512x512/apps
 cp -f "$OMBUNTU_REPO/logo/ombuntu-512.png" ~/.local/share/icons/hicolor/512x512/apps/ombuntu.png

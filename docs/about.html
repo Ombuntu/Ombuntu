@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About · Ombuntu</title>
+<link rel="icon" href="assets/favicon.ico">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <a href="https://ombuntu.org/"><img src="assets/ombuntu-logo.png" alt=""></a>
+  <a class="brand" href="https://ombuntu.org/"><span>Om</span>buntu</a>
+  <nav><a href="index.html">Docs</a><a href="getting-started.html">Getting started</a><a href="privacy.html">Privacy</a><a href="faq.html">FAQ</a><a href="uninstall.html">Uninstall</a><a href="about.html" class="here">About</a><a href="https://ombuntu.org/agent-guide.md">Agent guide</a></nav>
+</header>
+<main>
+<h1>About</h1>
+<p class="lead">What Ombuntu is, and what it is not.</p>
+
+<p>Ombuntu is the <a href="https://omarchy.org">Omarchy</a> Hyprland desktop running on Ubuntu 26.04 instead of Arch Linux. Omarchy is an opinionated, keyboard-driven desktop built on Hyprland: a tiling window manager, a launcher, a bar, themes, and a menu that installs and configures software for you. Ombuntu keeps all of that and swaps the Arch-specific parts for Ubuntu ones.</p>
+<h2>How it works</h2>
+<p>Upstream Omarchy is cloned at a fixed tag into <code>~/.local/share/omarchy</code> and left unmodified. A small overlay is laid on top: apt instead of pacman, Ubuntu packages or vendor repositories in place of the AUR, and fixes for a few Ubuntu packaging quirks. Updates re-apply the overlay, so moving to a newer Omarchy is a matter of changing one tag.</p>
+<h2>What is different</h2>
+<ul>
+<li>apt instead of pacman and yay; no AUR.</li>
+<li>Walker, Elephant, Satty and mise are pinned, checksummed GitHub releases. wlsunset, wf-recorder, nmtui, Blueman and pulsemixer stand in for hyprsunset, gpu-screen-recorder, impala, bluetui and wiremix.</li>
+<li>Omarchy's plugin surface (hooks, menu extensions, remote themes) is disabled for security.</li>
+<li>Telemetry from Canonical and browser vendors is turned off. See <a href="privacy.html">Privacy</a>.</li>
+<li>Menu entries with no Ubuntu path are removed rather than left to fail.</li>
+<li>Not installed: 1Password, Spotify, Obsidian, Typora, LocalSend, Pinta, Docker, snapper, limine, Plymouth, SDDM, and Omarchy's own-company web apps.</li>
+</ul>
+<h2>Naming</h2>
+<p>Everything Ombuntu adds is called Ombuntu. The upstream engine keeps its <code>omarchy-*</code> command names, because its scripts call each other by them; the <code>ombuntu</code> command is the same dispatcher.</p>
+<h2>Credits and license</h2>
+<p>Omarchy is by DHH and contributors, MIT licensed. Ombuntu is by Jascha Wanger, MIT licensed; the overlay scripts are adapted from Omarchy's. Source, issues and the installer are at <a href="https://github.com/Ombuntu/Ombuntu">github.com/Ombuntu/Ombuntu</a>.</p>
+<h2>Disclaimer</h2>
+<p>Ombuntu is an independent community project. It is not affiliated with, endorsed by, or associated with Canonical Ltd., Ubuntu, Xubuntu, or the Omarchy project. Ubuntu and Xubuntu are trademarks of Canonical Ltd. Use at your own risk.</p>
+
+</main>
+<footer>Ombuntu is an independent community project, not affiliated with Canonical, Ubuntu, Xubuntu or Omarchy. <a href="https://github.com/Ombuntu/Ombuntu">Source on GitHub</a>.</footer>
+<script src="copy.js"></script>
+</body>
+</html>

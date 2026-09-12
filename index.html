@@ -14,7 +14,7 @@
   img.logo { width:140px; height:140px; display:block; margin:0 0 18px; }
   p.tag { color:#7d84a8; margin:0 0 28px; }
   .cmd { position:relative; }
-  pre { background:#1f2130; border:1px solid #2c2f44; border-left:3px solid #8819fc; padding:14px 52px 14px 18px; border-radius:6px; overflow-x:auto; font-size:15px; margin:0; }
+  pre { background:#1f2130; border:1px solid #2c2f44; border-left:3px solid #8819fc; padding:14px 52px 14px 18px; border-radius:6px; overflow-x:auto; font-size:15px; margin:0; white-space:pre-wrap; }
   .copy { position:absolute; top:8px; right:8px; width:34px; height:34px; border:1px solid #2c2f44; border-radius:6px; background:#1a1b26; color:#7d84a8; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; }
   .copy:hover { color:#c0caf5; border-color:#8819fc; }
   .copy svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
@@ -31,35 +31,19 @@
   <p>On a fresh Ubuntu or Xubuntu 26.04, run:</p>
   <div class="cmd">
     <pre id="install-cmd">curl -fsSL https://ombuntu.org/install.sh | bash</pre>
-    <button class="copy" id="copy" type="button" title="Copy to clipboard" aria-label="Copy install command">
+    <button class="copy" data-for="install-cmd" type="button" title="Copy" aria-label="Copy install command">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
     </button>
   </div>
   <p>Then log out and choose <b>Ombuntu</b> at the login screen.</p>
-  <p><a href="https://github.com/Ombuntu/Ombuntu">Source, documentation and issues on GitHub</a> &middot; <a href="https://github.com/Ombuntu/Ombuntu/blob/main/install.sh">read install.sh first</a> &middot; <a href="agent-guide.md">agent guide</a></p>
+  <p><a href="https://github.com/Ombuntu/Ombuntu">Source, documentation and issues on GitHub</a> &middot; <a href="https://github.com/Ombuntu/Ombuntu/blob/main/install.sh">read install.sh first</a> &middot; <a href="docs/">docs</a> &middot; <a href="agent-guide.md">agent guide</a></p>
+  <p style="margin-top:28px">Using an AI coding agent? Paste this into it:</p>
+  <div class="cmd">
+    <pre id="prompt">Read https://ombuntu.org/agent-guide.md, then help me install Ombuntu on this Xubuntu 26.04 machine and walk me through the first login.</pre>
+    <button class="copy" data-for="prompt" type="button" title="Copy" aria-label="Copy agent prompt"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+  </div>
   <p><small>Independent community project. Not affiliated with Canonical, Ubuntu, Xubuntu or Omarchy.</small></p>
 </main>
-<script>
-  (function () {
-    var btn = document.getElementById('copy');
-    var cmd = document.getElementById('install-cmd').textContent.trim();
-    var icon = btn.innerHTML;
-    var check = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>';
-    function fallback() {
-      var ta = document.createElement('textarea');
-      ta.value = cmd; ta.setAttribute('readonly', ''); ta.style.position = 'absolute'; ta.style.left = '-9999px';
-      document.body.appendChild(ta); ta.select();
-      try { document.execCommand('copy'); } catch (e) {}
-      document.body.removeChild(ta);
-    }
-    btn.addEventListener('click', function () {
-      var p = (navigator.clipboard && window.isSecureContext) ? navigator.clipboard.writeText(cmd) : Promise.reject();
-      p.catch(fallback).finally(function () {
-        btn.classList.add('done'); btn.innerHTML = check; btn.title = 'Copied';
-        setTimeout(function () { btn.classList.remove('done'); btn.innerHTML = icon; btn.title = 'Copy to clipboard'; }, 1600);
-      });
-    });
-  })();
-</script>
+<script src="docs/copy.js"></script>
 </body>
 </html>

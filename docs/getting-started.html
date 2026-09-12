@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Getting started · Ombuntu</title>
+<link rel="icon" href="assets/favicon.ico">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <a href="https://ombuntu.org/"><img src="assets/ombuntu-logo.png" alt=""></a>
+  <a class="brand" href="https://ombuntu.org/"><span>Om</span>buntu</a>
+  <nav><a href="index.html">Docs</a><a href="getting-started.html" class="here">Getting started</a><a href="privacy.html">Privacy</a><a href="faq.html">FAQ</a><a href="uninstall.html">Uninstall</a><a href="about.html">About</a><a href="https://ombuntu.org/agent-guide.md">Agent guide</a></nav>
+</header>
+<main>
+<h1>Getting started</h1>
+<p class="lead">From a fresh Xubuntu to the Ombuntu desktop in one command.</p>
+
+<h2>Requirements</h2>
+<table>
+<tr><th>Distribution</th><td>Ubuntu 26.04 LTS or a flavour of it. Xubuntu 26.04 is what Ombuntu is built and tested on. Earlier releases do not ship Hyprland.</td></tr>
+<tr><th>Architecture</th><td>amd64 or arm64, detected automatically. On arm64 the launcher (Walker) and its data provider are compiled from source, which adds 10 to 30 minutes.</td></tr>
+<tr><th>Graphics</th><td>Anything with a Mesa Wayland driver: AMD, Intel, or NVIDIA with the open kernel modules.</td></tr>
+<tr><th>Account</th><td>A user with sudo, and internet access. About 250 MB is downloaded.</td></tr>
+<tr><th>Browser</th><td>Optional: a Chromium-based browser (Vivaldi, Chrome, Brave, Edge) makes Omarchy's web apps open as app windows. Firefox is used if none is present.</td></tr>
+</table>
+<h2>Install</h2>
+<div class="cmd"><pre id="install">curl -fsSL https://ombuntu.org/install.sh | bash</pre><button class="copy" data-for="install" type="button" title="Copy" aria-label="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+<p>The installer asks for your password once. It installs the Ubuntu packages, fetches upstream Omarchy at a pinned tag into <code>~/.local/share/omarchy</code>, lays the Ubuntu overlay on top, writes the configuration into <code>~/.config</code>, applies the Tokyo Night theme with an Ombuntu wallpaper, turns off telemetry, and adds the <b>Ombuntu</b> entry to the login screen. It is safe to run again; it only redoes what changed.</p>
+<p>Your XFCE session is not touched. Both are offered at the login screen.</p>
+<h3>Options</h3>
+<table>
+<tr><td><code>--user-only</code></td><td>Skip the steps that need root (apt, session file)</td></tr>
+<tr><td><code>--skip-bashrc</code></td><td>Leave <code>~/.bashrc</code> alone (Ombuntu replaces it; a backup is kept as <code>~/.bashrc.pre-omarchy</code>)</td></tr>
+<tr><td><code>--force-config</code></td><td>Overwrite <code>~/.config</code> files with Omarchy defaults; existing files are saved as <code>*.pre-omarchy</code></td></tr>
+</table>
+<p>Pass flags to the one-liner with <code>bash -s -- --skip-bashrc</code>. Or clone the repository and run <code>./install.sh</code> from it.</p>
+<h2>First login</h2>
+<p>Log out, pick <b>Ombuntu</b> in the greeter (the small icon next to your name in LightDM), and log in. <b>Super</b> is the Windows key.</p>
+<table>
+<tr><td><kbd>Super</kbd> + <kbd>Space</kbd></td><td>Open any app: start typing its name</td></tr>
+<tr><td><kbd>Super</kbd> + <kbd>Return</kbd></td><td>Terminal</td></tr>
+<tr><td><kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd></td><td>Browser</td></tr>
+<tr><td><kbd>Super</kbd> + <kbd>W</kbd></td><td>Close window</td></tr>
+<tr><td><kbd>Super</kbd> + <kbd>Alt</kbd> + <kbd>Space</kbd></td><td>Ombuntu menu: themes, setup, install, update, power</td></tr>
+<tr><td><kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd></td><td>Beginner cheatsheet</td></tr>
+<tr><td><kbd>Super</kbd> + <kbd>K</kbd></td><td>Every shortcut, searchable</td></tr>
+</table>
+<p>Themes: <kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Space</kbd>. Wallpapers: <kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>Space</kbd>. The full <a href="cheatsheet.html">cheatsheet</a> covers windows, workspaces, screenshots and more. Everything Omarchy documents applies; the <a href="https://manuals.omamix.org/2/the-omarchy-manual">Omarchy manual</a> is the long version.</p>
+<h2>Updating</h2>
+<p><code>ombuntu update</code> (or the menu: Update, Omarchy) upgrades Ubuntu packages and re-applies Ombuntu. Running the one-line installer again does the same.</p>
+
+</main>
+<footer>Ombuntu is an independent community project, not affiliated with Canonical, Ubuntu, Xubuntu or Omarchy. <a href="https://github.com/Ombuntu/Ombuntu">Source on GitHub</a>.</footer>
+<script src="copy.js"></script>
+</body>
+</html>

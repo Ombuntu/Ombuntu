@@ -331,6 +331,16 @@ coding agent to install, explain and troubleshoot Ombuntu for a human: the
 concept model, what differs from Omarchy on Arch, the security posture, and
 diagnosis recipes. Point your agent at it.
 
+## Documentation site
+
+`docs/` is a self-contained static site (getting started, privacy, FAQ,
+uninstall, about, cheatsheet) in the same style as the landing page. It is
+reachable at `ombuntu.org/docs/` from the root site, and it carries its own
+`CNAME` for `docs.ombuntu.org`. GitHub Pages publishes one site per
+repository, so the subdomain needs a second repository that contains only this
+folder; publish it with `git subtree push --prefix docs <docs-remote> main`
+and point `docs.ombuntu.org` at GitHub Pages in DNS.
+
 ## Hosting install.sh at ombuntu.org
 
 `ombuntu.org/install.sh` is this repository's root served by GitHub Pages:

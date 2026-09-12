@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAQ · Ombuntu</title>
+<link rel="icon" href="assets/favicon.ico">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <a href="https://ombuntu.org/"><img src="assets/ombuntu-logo.png" alt=""></a>
+  <a class="brand" href="https://ombuntu.org/"><span>Om</span>buntu</a>
+  <nav><a href="index.html">Docs</a><a href="getting-started.html">Getting started</a><a href="privacy.html">Privacy</a><a href="faq.html" class="here">FAQ</a><a href="uninstall.html">Uninstall</a><a href="about.html">About</a><a href="https://ombuntu.org/agent-guide.md">Agent guide</a></nav>
+</header>
+<main>
+<h1>FAQ</h1>
+<p class="lead">Short answers to the questions that come up.</p>
+
+<details><summary>Is this Omarchy?</summary><p>Yes, the real one. Upstream Omarchy is installed unchanged at a pinned tag, and an Ubuntu overlay replaces only what Arch has and Ubuntu does not. The CLI, menu, themes, bar, launcher, lock screen and keybindings are Omarchy's.</p></details>
+<details><summary>Why not just install Arch?</summary><p>Some people want the Omarchy experience on the Ubuntu they already run, with apt, Ubuntu's kernel and driver support, and their existing XFCE session as a fallback. Ombuntu is for them.</p></details>
+<details><summary>Does it replace Xubuntu's desktop?</summary><p>No. XFCE stays installed and untouched. You choose Ombuntu or Xubuntu Session at the login screen.</p></details>
+<details><summary>Why does the command say <code>omarchy</code> if this is Ombuntu?</summary><p>Everything Ombuntu adds is named Ombuntu: the session, branding, wallpapers, the <code>ombuntu</code> command. The upstream engine keeps its <code>omarchy-*</code> command names because its 280-plus scripts call each other by them. <code>ombuntu</code> and <code>omarchy</code> run the same dispatcher.</p></details>
+<details><summary>I see two top bars, or two error popups at login.</summary><p>Ubuntu's waybar and hypridle packages enable user services globally, which duplicated what Omarchy starts. Run the installer again; it masks them.</p></details>
+<details><summary>Signal says "file is not a database". My browser lost its passwords.</summary><p>Chromium and Electron apps only use the GNOME keyring on desktops they recognise; under Hyprland they fall back to plain-text storage and cannot decrypt what was saved under XFCE. Ombuntu launches them with the keyring backend selected. Use the launcher entries or the Super key bindings, not a bare command.</p></details>
+<details><summary>Firefox says it is already running after I switch from XFCE.</summary><p>The XFCE session left it running. <code>pkill -f /snap/firefox</code>, then open it again. Rebooting between desktops avoids this.</p></details>
+<details><summary>Where are the Omarchy plugins, hooks and extra themes?</summary><p>Disabled on purpose. Hooks, menu extensions and remote theme installs execute arbitrary code with your user rights on everyday actions. Use the bundled themes, or copy a theme you have reviewed into <code>~/.config/omarchy/themes/</code> by hand.</p></details>
+<details><summary>Why no minimize, maximize or close buttons in the browser?</summary><p>Hyprland is a tiling compositor and draws no title bars. Ombuntu sets browsers to system decorations so their own buttons disappear; <kbd>Super</kbd> + <kbd>W</kbd> closes, <kbd>Super</kbd> + <kbd>F</kbd> goes full screen. <code>ombuntu-browser-decorations on</code> brings the buttons back.</p></details>
+<details><summary>Does it work on arm64?</summary><p>Yes. Ubuntu builds the whole desktop for arm64. Walker and Elephant have no arm64 releases, so the installer compiles them from source, which takes 10 to 30 minutes.</p></details>
+<details><summary>How do I update?</summary><p><code>ombuntu update</code>, the menu's Update entry, or run the one-line installer again. Ubuntu packages come from apt; Ombuntu re-applies its overlay.</p></details>
+<details><summary>An Install menu entry says "not packaged for Ubuntu by Ombuntu".</summary><p>That is a deliberate stop, not a bug. The entry's software has no apt package, vendor repository or checksummed download, and Ombuntu does not pipe remote scripts into a shell. The message says where to get it by hand.</p></details>
+<details><summary>Is Ombuntu affiliated with Ubuntu or Omarchy?</summary><p>No. It is an independent community project. Ubuntu and Xubuntu are Canonical trademarks; Omarchy belongs to DHH and contributors.</p></details>
+
+</main>
+<footer>Ombuntu is an independent community project, not affiliated with Canonical, Ubuntu, Xubuntu or Omarchy. <a href="https://github.com/Ombuntu/Ombuntu">Source on GitHub</a>.</footer>
+<script src="copy.js"></script>
+</body>
+</html>
