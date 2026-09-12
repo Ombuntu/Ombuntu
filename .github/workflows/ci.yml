@@ -78,17 +78,26 @@ jobs:
       - name: Run install.sh
         run: |
           sudo -u tester -H env OMBUNTU_CI=1 bash -c "cd '$GITHUB_WORKSPACE' && ./install.sh --skip-bashrc"
-      - name: Verify the result
+      - name: Verify - session entry and tools
         run: |
-          sudo -u tester -H bash -c '
-            set -e
-            export PATH=$HOME/.local/share/omarchy/bin:$HOME/.local/bin:$PATH OMARCHY_PATH=$HOME/.local/share/omarchy
-            test -f /usr/share/wayland-sessions/ombuntu.desktop
-            test -x $HOME/.local/bin/walker && test -x $HOME/.local/bin/elephant
-            ls $HOME/.config/elephant/providers/*.so | wc -l
-            Hyprland --verify-config 2>&1 | grep -q "config ok"
-            ombuntu-version
-            test -f /etc/firefox/policies/policies.json
-            grep -q "^enabled=0" /etc/default/apport
-            ! grep -q USER_EXTENSIONS $OMARCHY_PATH/bin/omarchy-menu
-          '
+          test -f /usr/share/wayland-sessions/ombuntu.desktop
+          test -x /home/tester/.local/bin/walker && test -x /home/tester/.local/bin/elephant && test -x /home/tester/.local/bin/satty && test -x /home/tester/.local/bin/mise
+          test "$(ls /home/tester/.config/elephant/providers/*.so | wc -l)" -ge 10
+      - name: Verify - Hyprland config parses
+        run: |
+          sudo -u tester -H bash -c 'Hyprland --verify-config 2>&1 | tail -5; Hyprland --verify-config 2>&1 | grep -q "config ok"'
+      - name: Verify - Ombuntu commands and menu
+        run: |
+          sudo -u tester -H bash -c 'export PATH=$HOME/.local/share/omarchy/bin:$HOME/.local/bin:$PATH OMARCHY_PATH=$HOME/.local/share/omarchy; ombuntu-version; bash -n $OMARCHY_PATH/bin/omarchy-menu; ! grep -q USER_EXTENSIONS $OMARCHY_PATH/bin/omarchy-menu; grep -q show_install_apps_menu $OMARCHY_PATH/bin/omarchy-menu'
+      - name: Verify - privacy files
+        run: |
+          test -f /etc/firefox/policies/policies.json
+          test -f /etc/chromium/policies/managed/ombuntu-privacy.json
+          if [ -f /etc/default/apport ]; then grep -q "^enabled=0" /etc/default/apport; fi
+          ! dpkg-query -W -f='${Status}' whoopsie 2>/dev/null | grep -q "install ok installed"
+      - name: Verify - user config written
+        run: |
+          sudo -u tester -H bash -c 'test -f ~/.config/hypr/hyprland.conf && test -f ~/.config/hypr/monitors.conf && test -f ~/.config/waybar/config.jsonc && test -f ~/.config/omarchy/current/theme.name && test -f ~/.config/Hyprland-mimeapps.list && test -f ~/.local/share/ombuntu/cheatsheet.html && grep -q "password-store=gnome-libsecret" ~/.config/hypr/bindings.conf'
+      - name: Verify - doctor runs
+        run: |
+          sudo -u tester -H bash -c 'export PATH=$HOME/.local/share/omarchy/bin:$HOME/.local/bin:$PATH OMARCHY_PATH=$HOME/.local/share/omarchy; ombuntu-doctor | tail -3'
