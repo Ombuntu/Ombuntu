@@ -121,6 +121,18 @@ sed -i 's/echo \\"Omarchy \$version\\"/echo \\"Ombuntu (Omarchy $version)\\"/' ~
 # About screen logo in Ombuntu purple (truecolor SGR), not Omarchy green
 sed -i 's/"color": { "1": "[^"]*" }/"color": { "1": "38;2;136;25;252" }/' ~/.config/fastfetch/config.jsonc
 sed -i 's/"keyColor": "[^"]*"/"keyColor": "38;2;136;25;252"/g' ~/.config/fastfetch/config.jsonc
+# ...and the usage percentages, which fastfetch colours green by default (yellow/red warnings stay)
+python3 - <<'PY'
+import json, os
+p = os.path.expanduser("~/.config/fastfetch/config.jsonc")
+try:
+    c = json.load(open(p))
+except Exception:
+    raise SystemExit(0)
+c.setdefault("display", {}).setdefault("percent", {})["color"] = {"green": "38;2;136;25;252", "yellow": "yellow", "red": "red"}
+json.dump(c, open(p, "w"), indent=2, ensure_ascii=False)
+open(p, "a").write("\n")
+PY
 ln -sfn "$OMARCHY_PATH/bin/omarchy" ~/.local/bin/ombuntu
 
 # 16. Electron/Chromium apps only use the GNOME keyring when they recognise the desktop;
