@@ -334,20 +334,16 @@ diagnosis recipes. Point your agent at it.
 ## Documentation site
 
 `docs/` is a self-contained static site (getting started, privacy, FAQ,
-uninstall, about, cheatsheet) in the same style as the landing page. It is
-reachable at `ombuntu.org/docs/` from the root site, and it carries its own
-`CNAME` for `docs.ombuntu.org`. GitHub Pages publishes one site per
-repository, so the subdomain needs a second repository that contains only this
-folder; publish it with `git subtree push --prefix docs <docs-remote> main`
-and point `docs.ombuntu.org` at GitHub Pages in DNS.
+uninstall, about, cheatsheet) in the same style as the landing page. GitHub
+Pages publishes it as **https://docs.ombuntu.org/**: the Pages source is the
+`main` branch, `/docs` folder, and `docs/CNAME` names the domain.
 
-## Hosting install.sh at ombuntu.org
+## Hosting ombuntu.org
 
-`ombuntu.org/install.sh` is this repository's root served by GitHub Pages:
-`CNAME` names the domain, `.nojekyll` keeps files verbatim, and `index.html`
-is the landing page. In the repository settings enable Pages from the `main`
-branch, root folder, and point the domain's DNS at GitHub Pages. Until then
-the same file is reachable at
+The landing page and installer at `ombuntu.org` are hosted separately, not on
+GitHub Pages. To deploy them, publish the repository root: `index.html`,
+`install.sh`, `agent-guide.md`, `favicon.ico`, `logo/` and `docs/copy.js`
+(the homepage's copy buttons). The same installer is always reachable at
 `https://raw.githubusercontent.com/Ombuntu/Ombuntu/main/install.sh`.
 
 ## Credits and license
