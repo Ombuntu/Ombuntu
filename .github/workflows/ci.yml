@@ -85,7 +85,8 @@ jobs:
           test "$(ls /home/tester/.config/elephant/providers/*.so | wc -l)" -ge 10
       - name: Verify - Hyprland config parses
         run: |
-          sudo -u tester -H bash -c 'Hyprland --verify-config 2>&1 | tail -5; Hyprland --verify-config 2>&1 | grep -q "config ok"'
+          # Hyprland wants a private XDG_RUNTIME_DIR even just to parse the config
+          sudo -u tester -H bash -c 'export XDG_RUNTIME_DIR=/tmp/xdg-tester; mkdir -p -m 700 $XDG_RUNTIME_DIR; Hyprland --verify-config 2>&1 | grep -v DEBUG | tail -5; Hyprland --verify-config 2>&1 | grep -q "config ok"'
       - name: Verify - Ombuntu commands and menu
         run: |
           sudo -u tester -H bash -c 'export PATH=$HOME/.local/share/omarchy/bin:$HOME/.local/bin:$PATH OMARCHY_PATH=$HOME/.local/share/omarchy; ombuntu-version; bash -n $OMARCHY_PATH/bin/omarchy-menu; ! grep -q USER_EXTENSIONS $OMARCHY_PATH/bin/omarchy-menu; grep -q show_install_apps_menu $OMARCHY_PATH/bin/omarchy-menu'

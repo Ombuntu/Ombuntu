@@ -4,6 +4,11 @@ set -eEo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
 if command -v Hyprland >/dev/null; then
+  # Hyprland needs XDG_RUNTIME_DIR even for --verify-config (absent in containers and some sudo contexts)
+  if [[ -z ${XDG_RUNTIME_DIR:-} || ! -d ${XDG_RUNTIME_DIR:-/nonexistent} ]]; then
+    export XDG_RUNTIME_DIR="/tmp/ombuntu-runtime-$(id -u)"
+    mkdir -p -m 700 "$XDG_RUNTIME_DIR"
+  fi
   if out=$(Hyprland --verify-config 2>&1); then
     log "Hyprland config OK"
   else
