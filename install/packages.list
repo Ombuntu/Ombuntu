@@ -92,6 +92,12 @@ libqalculate23
 git
 curl
 wget
+ca-certificates
+gnupg
+xz-utils
+zstd
+fontconfig
+python3
 
 # Fonts
 fonts-noto-core

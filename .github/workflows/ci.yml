@@ -54,7 +54,8 @@ jobs:
         run: |
           set -e
           missing=0
-          for cmd in $(grep -oE '\b(omarchy|ombuntu)-[a-z0-9-]+' /tmp/omarchy/bin/omarchy-menu | sort -u); do
+          # tokens in command position only (not inside URLs such as .../the-omarchy-manual)
+          for cmd in $(grep -oE '(^|[[:space:];("])(omarchy|ombuntu)-[a-z0-9-]+' /tmp/omarchy/bin/omarchy-menu | sed -E 's/^[[:space:];("]//' | sort -u); do
             [[ -f /tmp/omarchy/bin/$cmd ]] || { echo "menu references missing command: $cmd"; missing=1; }
           done
           exit $missing
