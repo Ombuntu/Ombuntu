@@ -140,13 +140,17 @@ update-desktop-database ~/.local/share/applications 2>/dev/null || true
 # 17. Beginner cheatsheet: app entry plus Super+Shift+K
 mkdir -p ~/.local/share/ombuntu
 cp -f "$OMBUNTU_REPO/docs/cheatsheet.html" ~/.local/share/ombuntu/cheatsheet.html
+cp -f "$OMBUNTU_REPO/logo/ombuntu-logo.png" ~/.local/share/ombuntu/ombuntu-logo.png
+mkdir -p ~/.local/share/icons/hicolor/512x512/apps
+cp -f "$OMBUNTU_REPO/logo/ombuntu-512.png" ~/.local/share/icons/hicolor/512x512/apps/ombuntu.png
+gtk-update-icon-cache -q ~/.local/share/icons/hicolor 2>/dev/null || true
 cat >~/.local/share/applications/ombuntu-cheatsheet.desktop <<'DESK'
 [Desktop Entry]
 Type=Application
 Name=Ombuntu Cheatsheet
 Comment=Keyboard shortcuts for beginners
 Exec=ombuntu-cheatsheet
-Icon=input-keyboard
+Icon=ombuntu
 Terminal=false
 Categories=Documentation;
 DESK

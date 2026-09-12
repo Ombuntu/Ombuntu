@@ -1,3 +1,5 @@
+<p align="center"><img src="logo/ombuntu-logo-source.jpg" alt="Ombuntu logo" width="180"></p>
+
 # Ombuntu
 
 **The [Omarchy](https://omarchy.org) Hyprland desktop on Xubuntu / Ubuntu 26.04.**
@@ -317,6 +319,7 @@ config/               extra ~/.config files (elephant.service, POSIX uwsm env)
 config-system/        the Wayland session entry installed to /usr/share
 branding/             Ombuntu ASCII art for the About screen and screensaver
 docs/                 beginner keyboard cheatsheet (HTML)
+logo/                 Ombuntu logo (source JPG, transparent PNGs, icon sizes)
 backgrounds/          Ombuntu wallpapers, linked into every theme
 ```
 
