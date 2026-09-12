@@ -118,6 +118,8 @@ fi
 # 15. Ombuntu naming in the places the user sees it
 sed -i 's/"Omarchy Menu\\n/"Ombuntu Menu\\n/; s/Omarchy update available/Ubuntu updates available/' ~/.config/waybar/config.jsonc
 sed -i 's/echo \\"Omarchy \$version\\"/echo \\"Ombuntu (Omarchy $version)\\"/' ~/.config/fastfetch/config.jsonc
+# About screen logo in Ombuntu purple (truecolor SGR), not Omarchy green
+sed -i 's/"color": { "1": "[^"]*" }/"color": { "1": "38;2;136;25;252" }/' ~/.config/fastfetch/config.jsonc
 ln -sfn "$OMARCHY_PATH/bin/omarchy" ~/.local/bin/ombuntu
 
 # 16. Electron/Chromium apps only use the GNOME keyring when they recognise the desktop;

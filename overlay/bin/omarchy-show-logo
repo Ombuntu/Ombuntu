@@ -3,7 +3,7 @@
 # omarchy:summary=Display the Ombuntu logo in the terminal.
 
 clear
-echo -e "\033[35m"
+echo -e "\033[38;2;136;25;252m"
 cat <~/.config/omarchy/branding/screensaver.txt 2>/dev/null || cat <~/.local/share/omarchy/logo.txt
 echo -e "\033[0m"
 echo
