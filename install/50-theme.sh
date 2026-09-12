@@ -6,11 +6,8 @@ source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 mkdir -p ~/.config/omarchy/themes ~/.config/btop/themes ~/.config/mako
 
 if [[ ! -f ~/.config/omarchy/current/theme.name ]]; then
-  OMARCHY_THEME_SKIP_BACKGROUND=1 omarchy-theme-set tokyo-night >/dev/null 2>&1 || omarchy-theme-set tokyo-night
-  # Pick the first background without needing a running compositor
-  theme_bg_dir=~/.config/omarchy/current/theme/backgrounds
-  first_bg=$(find -L "$theme_bg_dir" -maxdepth 1 -type f 2>/dev/null | sort | head -1)
-  [[ -n $first_bg ]] && ln -nsf "$first_bg" ~/.config/omarchy/current/background
+  # The background is chosen below from the Ombuntu set (themes carry no images of their own)
+  OMARCHY_THEME_SKIP_BACKGROUND=1 omarchy-theme-set tokyo-night >/dev/null 2>&1 || OMARCHY_THEME_SKIP_BACKGROUND=1 omarchy-theme-set tokyo-night
 fi
 
 ln -snf ~/.config/omarchy/current/theme/btop.theme ~/.config/btop/themes/current.theme
