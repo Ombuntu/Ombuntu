@@ -23,6 +23,7 @@
 <li><b>Crash reporting.</b> apport is disabled (<code>/etc/default/apport</code>) and whoopsie, the uploader, is removed. ubuntu-report, popularity-contest and kerneloops are removed if present.</li>
 <li><b>Ubuntu Pro adverts.</b> Off in the login message (<code>/etc/default/motd-news</code>) and in apt output (<code>pro config set apt_news=false</code>). The Pro timer is disabled.</li>
 <li><b>Desktop statistics.</b> Usage statistics and problem reporting are off in the GNOME privacy settings that GTK apps read.</li>
+<li><b>Connectivity probe.</b> NetworkManager's check against <code>connectivity-check.ubuntu.com</code> is off (<code>/etc/NetworkManager/conf.d/99-ombuntu-no-connectivity-check.conf</code>). The trade-off: captive-portal login pages are no longer detected, so on hotel or airport Wi-Fi open any plain <code>http://</code> page to reach the login. Delete the file and reload NetworkManager to restore it.</li>
 </ul>
 <h2>Firefox</h2>
 <p>A policy file at <code>/etc/firefox/policies/policies.json</code>, which the snap reads too: telemetry, Firefox Studies, Pocket, sponsored tiles and suggestions, and recommendation nags are off; tracking protection is strict with cryptomining and fingerprinting blocked.</p>
@@ -34,7 +35,6 @@
 <h2>Left alone, and why</h2>
 <ul>
 <li>snapd talks to the Snap Store; that is how the Firefox snap updates.</li>
-<li>NetworkManager's captive-portal check contacts <code>connectivity-check.ubuntu.com</code> when a network comes up. It is what makes hotel Wi-Fi login pages appear. Disable it with a <code>[connectivity] enabled=false</code> NetworkManager config if you prefer.</li>
 <li>Vivaldi sends its own anonymous usage-count ping, which has no policy switch.</li>
 <li>apt downloads package lists from Ubuntu mirrors.</li>
 </ul>

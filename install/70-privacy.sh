@@ -26,6 +26,16 @@ if command -v pro >/dev/null; then
 fi
 systemctl disable --now ua-timer.timer motd-news.timer >/dev/null 2>&1 || true
 
+# NetworkManager's captive-portal probe to connectivity-check.ubuntu.com. Off means
+# hotel/airport login pages are not detected automatically; open any http:// page to
+# reach one. Delete the file below to restore the probe.
+install -d -m 0755 /etc/NetworkManager/conf.d
+cat >/etc/NetworkManager/conf.d/99-ombuntu-no-connectivity-check.conf <<'NM'
+[connectivity]
+enabled=false
+NM
+systemctl reload NetworkManager >/dev/null 2>&1 || true
+
 # --- Firefox (deb or snap: both read /etc/firefox/policies) -----------------
 if [[ $OMBUNTU_NO_FIREFOX_POLICY != true ]]; then
   install -d -m 0755 /etc/firefox/policies

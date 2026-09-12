@@ -42,6 +42,8 @@ if [[ $RESTORE == true ]]; then
   [[ -f /etc/default/motd-news ]] && sudo sed -i 's/^ENABLED=.*/ENABLED=1/' /etc/default/motd-news
   command -v pro >/dev/null && sudo pro config set apt_news=true >/dev/null 2>&1 || true
   sudo systemctl enable ua-timer.timer >/dev/null 2>&1 || true
+  sudo rm -f /etc/NetworkManager/conf.d/99-ombuntu-no-connectivity-check.conf
+  sudo systemctl reload NetworkManager >/dev/null 2>&1 || true
   sudo rm -f /etc/firefox/policies/policies.json
   sudo rm -f /etc/opt/chrome/policies/managed/ombuntu-privacy.json /etc/chromium/policies/managed/ombuntu-privacy.json \
     /etc/brave/policies/managed/ombuntu-privacy.json /etc/opt/edge/policies/managed/ombuntu-privacy*.json /etc/vivaldi/policies/managed/ombuntu-privacy.json

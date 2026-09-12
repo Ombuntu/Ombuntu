@@ -277,6 +277,11 @@ turns that off; each item is a config file or service state you can reverse.
   Ubuntu Pro adverts off in the login message (`/etc/default/motd-news`) and in
   apt (`pro config set apt_news=false`), and the Pro timer disabled. The desktop
   privacy settings for usage statistics and problem reports are off.
+  NetworkManager's connectivity probe to `connectivity-check.ubuntu.com` is off
+  (`/etc/NetworkManager/conf.d/99-ombuntu-no-connectivity-check.conf`); the
+  trade-off is that captive-portal login pages are no longer detected, so on
+  hotel or airport Wi-Fi open any plain `http://` page to reach the login.
+  Delete that file and reload NetworkManager to restore the probe.
 - **Firefox:** telemetry, studies, Pocket, sponsored tiles and suggestions off
   via `/etc/firefox/policies/policies.json` (the snap reads it too). Tracking
   protection is set to strict.
@@ -292,11 +297,8 @@ turns that off; each item is a config file or service state you can reverse.
   installed from the menu get telemetry off in their settings.
 
 Left alone, and why: snapd talks to the Snap Store to keep Firefox updated
-(inherent to snaps); NetworkManager's captive-portal check contacts
-`connectivity-check.ubuntu.com` when a network comes up, which is what makes
-hotel Wi-Fi login pages appear (disable with a `[connectivity] enabled=false`
-NetworkManager config if you prefer); apt itself downloads package lists from
-Ubuntu mirrors. Signal, Walker, Elephant, Mako, Waybar and the rest of the
+(inherent to snaps), and apt itself downloads package lists from Ubuntu
+mirrors. Signal, Walker, Elephant, Mako, Waybar and the rest of the
 desktop have no telemetry.
 
 ## Uninstall

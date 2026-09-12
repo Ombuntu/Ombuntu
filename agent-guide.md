@@ -64,7 +64,7 @@ Say this plainly when asked:
 - **Omarchy plugins are disabled for security reasons**: user hooks (`~/.config/omarchy/hooks/*.d/`), menu extensions (`~/.config/omarchy/extensions/menu.sh`) and remote theme installs all execute arbitrary code and are turned off. `omarchy-hook` is a no-op. Do not tell the human to add hooks; suggest editing `~/.config/hypr/*.conf` instead.
 - Passwordless sudo, autologin and Omarchy's Arch dev-environment installers that pipe remote scripts into a shell are disabled.
 - Install-menu entries that fetch software use vendor apt repositories or checksum-verified downloads, not `curl | sh`.
-- Telemetry is off: apport/whoopsie, Ubuntu Pro news, Firefox and Chromium-family policies, desktop usage stats, and `DO_NOT_TRACK`-style variables for developer tools. Details in the README "Privacy" section. Re-running `install.sh` re-applies it.
+- Telemetry is off: apport/whoopsie, Ubuntu Pro news, NetworkManager's connectivity probe to Canonical (so captive portals are not auto-detected; open an `http://` page to reach a login), Firefox and Chromium-family policies, desktop usage stats, and `DO_NOT_TRACK`-style variables for developer tools. Details in the README "Privacy" section. Re-running `install.sh` re-applies it.
 
 ## Diagnosis recipes
 
