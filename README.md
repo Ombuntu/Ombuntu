@@ -2,18 +2,18 @@
 
 # Ombuntu
 
-**The [Omarchy](https://omarchy.org) Hyprland desktop on Xubuntu / Ubuntu 26.04.**
+**A per-configured Hyprland desktop installer on Xubuntu / Ubuntu 26.04.**
 
 Documentation: **https://docs.ombuntu.org/** (getting started, privacy, FAQ,
 uninstall, cheatsheet). Site and installer: https://ombuntu.org/.
 
-Ombuntu installs upstream Omarchy (pinned to tag `v3.8.4`) next to your
+Ombuntu installs upstream Omarchy (security audited and pinned to tag `v3.8.4`) next to your
 existing XFCE session and lays a small Ubuntu overlay on top of it. You get the
 real thing: the `omarchy` CLI and menu, all 19 themes, Waybar, Walker, Mako,
 Hyprlock, Hypridle, SwayOSD, the full keybinding set, web apps, and the
 bash/starship/eza/zoxide shell. The overlay only swaps out what Arch has and
 Ubuntu does not (package manager, a few tools, some paths) and works around a
-couple of Ubuntu packaging quirks.
+couple of Ubuntu packaging quirks. As well as disabling security issues and auditing for any additional.
 
 Nothing about XFCE is removed. You pick **Ombuntu** or **Xubuntu Session** in
 the login screen.
