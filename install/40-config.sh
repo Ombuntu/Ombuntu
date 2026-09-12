@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC2154  # hw_* variables come from eval of detect-hardware.py
 # Populate ~/.config the way Omarchy's install/config/*.sh does, adapted for Ubuntu.
 set -eEo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
@@ -15,7 +16,6 @@ fi
 # 2. Hardware-derived defaults for a first install: display scaling from the panel's
 #    EDID, keyboard layout from the system/XFCE keyboard settings. Only written when the
 #    user has no monitors.conf / no active kb_layout yet; never overwritten afterwards.
-# shellcheck disable=SC2154  # hw_* come from the eval below
 eval "$(python3 "$OMBUNTU_REPO/install/detect-hardware.py" | sed 's/^/hw_/')"
 if [[ ! -f ~/.config/hypr/monitors.conf ]]; then
   mkdir -p ~/.config/hypr
