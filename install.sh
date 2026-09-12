@@ -57,6 +57,10 @@ if [[ -z ${BASH_SOURCE[0]} ]] || ! is_own_checkout "$(cd "$(dirname "${BASH_SOUR
       *ubuntu* | *debian*) ;;
       *) printf '\033[31m==> ERROR:\033[0m %s\n' "This installer is for Ubuntu / Xubuntu 26.04 (found ${PRETTY_NAME:-unknown})." >&2; exit 1 ;;
     esac
+    if [[ ${ID:-} == ubuntu && $(printf '%s\n' "${VERSION_ID:-0}" 26.04 | sort -V | head -1) != 26.04 ]]; then
+      printf '\033[31m==> ERROR:\033[0m %s\n' "Ombuntu needs Ubuntu 26.04 or newer, found ${PRETTY_NAME:-unknown}. Earlier releases do not ship Hyprland." >&2
+      exit 1
+    fi
   fi
 
   if ! command -v git >/dev/null || ! command -v curl >/dev/null; then

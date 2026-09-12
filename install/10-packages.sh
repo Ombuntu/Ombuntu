@@ -18,7 +18,8 @@ record_new_packages() {
 trap record_new_packages EXIT
 
 apt-get update
-apt-get install -y --no-install-recommends "${packages[@]}"
+apt-get install -y --no-install-recommends "${packages[@]}" ||
+  die "apt could not install every package in install/packages.list (see the errors above). Ombuntu is built for Ubuntu 26.04 or newer."
 # Recommends matter for a few desktop-facing packages (portals, blueman tray, qt styles)
 apt-get install -y xdg-desktop-portal-hyprland xdg-desktop-portal-gtk blueman network-manager-gnome hyprpolkitagent
 
