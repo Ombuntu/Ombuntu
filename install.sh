@@ -87,6 +87,9 @@ step "Preflight" "$OMBUNTU_REPO/install/00-preflight.sh"
 
 if [[ $OMARCHY_USER_ONLY == false ]]; then
   log "Root access is needed for apt and the login session file"
+  if ! sudo -n true 2>/dev/null && ! ( : </dev/tty ) 2>/dev/null; then
+    die "sudo needs a terminal to ask for your password. Run this from a terminal window (Super + Return), or use --user-only."
+  fi
   sudo -v
   step "Packages (apt)" "$OMBUNTU_REPO/install/10-packages.sh" root
   step "Third-party apt repos (Signal)" "$OMBUNTU_REPO/install/15-third-party.sh" root
