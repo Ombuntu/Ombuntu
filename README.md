@@ -4,6 +4,9 @@
 
 **The [Omarchy](https://omarchy.org) Hyprland desktop on Xubuntu / Ubuntu 26.04.**
 
+Documentation: **https://docs.ombuntu.org/** (getting started, privacy, FAQ,
+uninstall, cheatsheet). Site and installer: https://ombuntu.org/.
+
 Ombuntu installs upstream Omarchy (pinned to tag `v3.8.4`) next to your
 existing XFCE session and lays a small Ubuntu overlay on top of it. You get the
 real thing: the `omarchy` CLI and menu, all 19 themes, Waybar, Walker, Mako,
@@ -224,9 +227,10 @@ other way, add that flag.
 `systemctl --user status elephant.service`. Elephant's providers live in
 `~/.config/elephant/providers`.
 
-**Something in the Hyprland session is off.** `journalctl --user -b -p err` and
-the Hyprland log under `/run/user/$UID/hypr/*/hyprland.log` are the places to
-look. Include their output if you open an issue.
+**Something in the Hyprland session is off.** Run `ombuntu-doctor` first, then
+`journalctl --user -b -p err` and the Hyprland log under
+`/run/user/$UID/hypr/*/hyprland.log`. Include their output if you open an
+issue. More answers: https://docs.ombuntu.org/faq.html
 
 ## Security notes
 
