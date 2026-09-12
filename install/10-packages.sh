@@ -28,6 +28,17 @@ if [[ $OMBUNTU_ARCH != amd64 || $OMBUNTU_BUILD_FROM_SOURCE == true ]]; then
   apt-get install -y --no-install-recommends "${build_packages[@]}"
 fi
 
+# Sanity check: the tools later steps rely on must exist now (a package can be "installed"
+# in a minimised image yet lack its binary); reinstall the owner if one is missing.
+declare -A tool_pkg=([xz]=xz-utils [zstd]=zstd [gpg]=gnupg [python3]=python3 [fc-cache]=fontconfig [tar]=tar [curl]=curl [git]=git [jq]=jq [unzip]=unzip)
+for tool in "${!tool_pkg[@]}"; do
+  if ! command -v "$tool" >/dev/null 2>&1; then
+    echo "==> $tool missing after install; reinstalling ${tool_pkg[$tool]}"
+    apt-get install -y --reinstall "${tool_pkg[$tool]}"
+    command -v "$tool" >/dev/null 2>&1 || { echo "ERROR: $tool still missing" >&2; exit 1; }
+  fi
+done
+
 # Omarchy expects these command names
 command -v bat >/dev/null 2>&1 || ln -sf /usr/bin/batcat /usr/local/bin/bat
 command -v fd >/dev/null 2>&1 || ln -sf /usr/bin/fdfind /usr/local/bin/fd
