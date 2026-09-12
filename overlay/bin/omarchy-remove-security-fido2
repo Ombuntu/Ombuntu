@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# omarchy:summary=Remove FIDO2 key authentication
+# omarchy:requires-sudo=true
+
+set -e
+echo -e "\e[32mRemoving FIDO2 authentication.\n\e[0m"
+for f in /etc/pam.d/sudo /etc/pam.d/polkit-1 /etc/pam.d/hyprlock; do
+  [[ -f $f ]] && sudo sed -i '/pam_u2f\.so/d' "$f"
+done
+sudo rm -rf /etc/fido2
+omarchy-pkg-drop libpam-u2f pamu2fcfg fido2-tools
+echo -e "\e[32mFIDO2 authentication removed.\e[0m"

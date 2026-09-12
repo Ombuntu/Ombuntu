@@ -51,7 +51,9 @@ Tell the human these before they follow Omarchy documentation literally:
 - Browsers and Signal are launched with `--password-store=gnome-libsecret`, and browsers are set to system decorations, so they show no title-bar buttons. `ombuntu-browser-decorations on` restores them.
 - Default applications are set only for the Hyprland session, in `~/.config/Hyprland-mimeapps.list`.
 - The `scrolling` layout needs Hyprland 0.54; Ubuntu ships 0.53, so that block is guarded.
-- Not installed: 1Password, Spotify, Obsidian, Typora, LocalSend, Pinta, Docker, snapper, limine, fcitx5, Plymouth, SDDM.
+- Not installed by default: Docker, snapper, limine, fcitx5, Plymouth, SDDM. Spotify, Obsidian, Typora, 1Password, LocalSend and Pinta are under the menu's Install, Apps (snaps, vendor apt repositories, Flathub). Fingerprint/FIDO2 login and hibernation have Ubuntu implementations under Setup.
+- Install flags: `--keep-telemetry`, `--keep-browser-buttons`, `--no-firefox-policy`. Uninstall: `uninstall.sh` in the repository (`--purge-packages`, `--restore-telemetry`).
+- `ombuntu-upstream-check` reports whether a newer Omarchy tag would still fit the overlay; bumping means editing `OMARCHY_REF` and re-running `install.sh`.
 
 ## Security posture
 
@@ -65,6 +67,9 @@ Say this plainly when asked:
 - Telemetry is off: apport/whoopsie, Ubuntu Pro news, Firefox and Chromium-family policies, desktop usage stats, and `DO_NOT_TRACK`-style variables for developer tools. Details in the README "Privacy" section. Re-running `install.sh` re-applies it.
 
 ## Diagnosis recipes
+
+Start with `ombuntu-doctor`: one line per check (session, duplicate services, tools on PATH, keyring flags, privacy files, failed units). Ask the human to paste its output. Most warnings are fixed by re-running `install.sh`.
+
 
 - **Two bars or duplicate daemons at login:** Ubuntu's waybar/hypridle/foot/hyprpolkitagent packages enable user services globally. Re-run `install.sh`; it masks them. Check with `systemctl --user is-enabled waybar.service` (should say masked).
 - **Config error banner from Hyprland:** `hyprctl configerrors` shows the cause; `hyprctl reload` clears a stale banner. The installer reloads at the end.

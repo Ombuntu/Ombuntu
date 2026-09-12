@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['docs/**', '*.md', 'logo/**', 'backgrounds/**', 'index.html']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint scripts and data
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install shellcheck
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+      - name: bash -n on every script
+        run: |
+          set -e
+          for f in install.sh uninstall.sh install/*.sh overlay/bin/* overlay/default/waybar/indicators/*.sh; do
+            [[ -f $f ]] || continue
+            head -1 "$f" | grep -q '^#!/bin/bash' || continue
+            bash -n "$f"
+          done
+      - name: shellcheck (warnings and errors)
+        run: |
+          shellcheck -S warning -e SC1090,SC1091,SC2016,SC2034 install.sh uninstall.sh install/*.sh overlay/bin/omarchy-* overlay/bin/ombuntu-*
+      - name: sh -n on the POSIX uwsm env
+        run: sh -n config/uwsm/env
+      - name: JSON files parse
+        run: |
+          python3 -c "import json,glob; [json.load(open(f)) for f in glob.glob('privacy/*.json')]"
+      - name: Checksums file is well formed
+        run: |
+          grep -vE '^\s*(#|$)' install/checksums.sha256 | awk 'NF != 2 || length($1) != 64 {print "bad line:", $0; bad=1} END {exit bad}'
+
+  menu-patch:
+    name: Menu patch applies to the pinned Omarchy tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read the pinned tag
+        id: tag
+        run: echo "ref=$(grep -oE 'OMARCHY_REF:-v[0-9.]+' install/lib.sh | head -1 | cut -d- -f2)" >> "$GITHUB_OUTPUT"
+      - name: Clone upstream Omarchy at that tag
+        run: git clone -q --depth 1 --branch "${{ steps.tag.outputs.ref }}" https://github.com/basecamp/omarchy.git /tmp/omarchy
+      - name: Apply the overlay and the menu patch
+        run: |
+          cp -R overlay/. /tmp/omarchy/
+          python3 install/patch-menu.py /tmp/omarchy/bin/omarchy-menu
+          bash -n /tmp/omarchy/bin/omarchy-menu
+      - name: Every overlay script Omarchy's menu calls exists
+        run: |
+          set -e
+          missing=0
+          for cmd in $(grep -oE '\b(omarchy|ombuntu)-[a-z0-9-]+' /tmp/omarchy/bin/omarchy-menu | sort -u); do
+            [[ -f /tmp/omarchy/bin/$cmd ]] || { echo "menu references missing command: $cmd"; missing=1; }
+          done
+          exit $missing
+
+  smoke:
+    name: Full install inside an Ubuntu 26.04 container
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:26.04
+      options: --user root
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare a user with sudo (the installer refuses to run as root)
+        run: |
+          apt-get update -qq
+          DEBIAN_FRONTEND=noninteractive apt-get install -y -qq sudo git curl ca-certificates python3
+          useradd -m -s /bin/bash tester
+          echo 'tester ALL=(ALL) NOPASSWD:ALL' >/etc/sudoers.d/tester
+          chown -R tester:tester "$GITHUB_WORKSPACE"
+      - name: Run install.sh
+        run: |
+          sudo -u tester -H env OMBUNTU_CI=1 bash -c "cd '$GITHUB_WORKSPACE' && ./install.sh --skip-bashrc"
+      - name: Verify the result
+        run: |
+          sudo -u tester -H bash -c '
+            set -e
+            export PATH=$HOME/.local/share/omarchy/bin:$HOME/.local/bin:$PATH OMARCHY_PATH=$HOME/.local/share/omarchy
+            test -f /usr/share/wayland-sessions/ombuntu.desktop
+            test -x $HOME/.local/bin/walker && test -x $HOME/.local/bin/elephant
+            ls $HOME/.config/elephant/providers/*.so | wc -l
+            Hyprland --verify-config 2>&1 | grep -q "config ok"
+            ombuntu-version
+            test -f /etc/firefox/policies/policies.json
+            grep -q "^enabled=0" /etc/default/apport
+            ! grep -q USER_EXTENSIONS $OMARCHY_PATH/bin/omarchy-menu
+          '

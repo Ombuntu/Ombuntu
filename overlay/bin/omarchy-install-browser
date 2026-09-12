@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # omarchy:summary=Install a browser from its vendor's Ubuntu repository and prepare it for Ombuntu
-# omarchy:args=<chrome|edge|brave|brave-origin|firefox|zen>
+# omarchy:args=<chrome|edge|brave|firefox|firefox-deb>
 # omarchy:requires-sudo=true
 
 case $1 in
@@ -10,8 +10,9 @@ edge) echo "Installing Edge..."; omarchy-pkg-add microsoft-edge-stable-bin || ex
 brave) echo "Installing Brave..."; omarchy-pkg-add brave-bin || exit 1; name=Brave ;;
 brave-origin) omarchy-pkg-add brave-origin-beta-bin; exit 1 ;;
 firefox) echo "Installing Firefox..."; omarchy-pkg-add firefox || exit 1; name=Firefox ;;
+firefox-deb) echo "Installing Firefox from Mozilla's apt repository..."; omarchy-pkg-add firefox-deb || exit 1; name=Firefox ;;
 zen) omarchy-pkg-add zen-browser-bin; exit 1 ;;
-*) echo "Usage: omarchy-install-browser <chrome|edge|brave|firefox|zen>"; exit 1 ;;
+*) echo "Usage: omarchy-install-browser <chrome|edge|brave|firefox|firefox-deb>"; exit 1 ;;
 esac
 
 # Keyring backend + no title-bar buttons, same as the browsers installed by default

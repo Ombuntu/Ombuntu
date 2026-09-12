@@ -1,0 +1,8 @@
+#!/bin/bash
+# LocalSend's official .deb from its GitHub release
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
+set -e
+command -v localsend_app >/dev/null && exit 0
+case "$(ombuntu_arch)" in amd64) a=x86-64 ;; arm64) a=arm-64 ;; *) exit 1 ;; esac
+LOCALSEND_VERSION="${LOCALSEND_VERSION:-$(curl -fsSL https://api.github.com/repos/localsend/localsend/releases/latest | jq -r .tag_name)}"
+deb_install "$(gh_asset_url localsend/localsend "$LOCALSEND_VERSION" "LocalSend-${LOCALSEND_VERSION#v}-linux-$a.deb")"

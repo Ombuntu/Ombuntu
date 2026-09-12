@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# omarchy:summary=Enable hibernation: a swapfile the size of RAM, plus resume parameters for GRUB and the initramfs (Ubuntu, ext4)
+# omarchy:args=[--force]
+# omarchy:requires-sudo=true
+
+set -e
+FORCE=false; [[ ${1:-} == --force ]] && FORCE=true
+SWAP_FILE=/swapfile
+
+if [[ ! -f /sys/power/image_size ]] || ! grep -qw disk /sys/power/state; then
+  echo "Hibernation is not supported by this kernel/firmware." >&2; exit 1
+fi
+fstype=$(findmnt -no FSTYPE /)
+if [[ $fstype != ext4 ]]; then
+  echo "Ombuntu sets up hibernation on ext4 root filesystems only (this one is $fstype)." >&2; exit 1
+fi
+if omarchy-hibernation-available; then echo "Hibernation is already set up."; exit 0; fi
+
+mem_kb=$(awk '/MemTotal/ {print $2}' /proc/meminfo)
+mem_human=$(free --human | awk '/Mem/ {print $2}')
+
+# Reuse Ubuntu's default /swap.img when it is big enough
+if [[ -f /swap.img ]] && (( $(stat -c %s /swap.img) / 1024 >= mem_kb )); then
+  SWAP_FILE=/swap.img
+fi
+
+if [[ ! -f $SWAP_FILE ]]; then
+  $FORCE || gum confirm "Create a $mem_human swapfile on the root drive for hibernation?" || exit 0
+  echo "Creating $SWAP_FILE ($mem_human)"
+  sudo fallocate -l "${mem_kb}K" "$SWAP_FILE"
+  sudo chmod 600 "$SWAP_FILE"
+  sudo mkswap "$SWAP_FILE" >/dev/null
+fi
+grep -Fq "$SWAP_FILE" /etc/fstab || { sudo cp -a /etc/fstab "/etc/fstab.$(date +%Y%m%d%H%M%S).back"; printf '%s none swap sw 0 0\n' "$SWAP_FILE" | sudo tee -a /etc/fstab >/dev/null; }
+swapon --show=NAME --noheadings | grep -qx "$SWAP_FILE" || sudo swapon "$SWAP_FILE"
+
+uuid=$(findmnt -no UUID /)
+offset=$(sudo filefrag -v "$SWAP_FILE" | awk '$1=="0:" {gsub(/\.\./,"",$4); print $4; exit}')
+[[ -n $uuid && -n $offset ]] || { echo "Could not determine resume UUID/offset" >&2; exit 1; }
+
+echo "Configuring resume=UUID=$uuid resume_offset=$offset"
+echo "RESUME=UUID=$uuid" | sudo tee /etc/initramfs-tools/conf.d/ombuntu-resume >/dev/null
+sudo sed -i -E 's/ ?resume=UUID=[^ "]*//; s/ ?resume_offset=[0-9]*//' /etc/default/grub
+sudo sed -i -E "s|^GRUB_CMDLINE_LINUX_DEFAULT=\"([^\"]*)\"|GRUB_CMDLINE_LINUX_DEFAULT=\"\1 resume=UUID=$uuid resume_offset=$offset\"|" /etc/default/grub
+sudo update-initramfs -u
+sudo update-grub
+
+sudo mkdir -p /etc/systemd/sleep.conf.d
+printf '[Sleep]\nHibernateDelaySec=2h\n' | sudo tee /etc/systemd/sleep.conf.d/ombuntu-hibernate.conf >/dev/null
+echo
+echo "Hibernation is set up (takes effect after the next boot). Suspend hands over to hibernate after 2 hours."

@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# omarchy:summary=Try a newer upstream Omarchy tag in a temporary directory and report whether the Ombuntu overlay still fits
+# omarchy:args=[tag]
+# omarchy:examples=ombuntu-upstream-check | ombuntu-upstream-check v3.9.0
+
+set -o pipefail
+repo=$(cat "$OMARCHY_PATH/ombuntu-repo.path" 2>/dev/null)
+[[ -d $repo/overlay ]] || { echo "Ombuntu repository not found (expected at $repo)" >&2; exit 1; }
+upstream="${OMARCHY_UPSTREAM:-https://github.com/basecamp/omarchy.git}"
+current=$(git -C "$OMARCHY_PATH" describe --tags --exact-match 2>/dev/null)
+
+tag="${1:-}"
+if [[ -z $tag ]]; then
+  tag=$(git ls-remote --tags "$upstream" 2>/dev/null | grep -v '\^{}' | sed 's|.*refs/tags/||' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
+  [[ -n $tag ]] || { echo "Could not list upstream tags" >&2; exit 1; }
+fi
+echo "Installed: $current   Candidate: $tag"
+[[ $tag == "$current" ]] && { echo "Already on the newest stable tag."; exit 0; }
+
+tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
+echo "Fetching $tag..."
+git clone -q --depth 1 --branch "$tag" "$upstream" "$tmp/omarchy" || exit 1
+git -C "$tmp/omarchy" fetch -q --depth 1 origin "refs/tags/$current:refs/tags/$current" 2>/dev/null || true
+
+status=0
+echo
+echo "1. Menu patch (install/patch-menu.py)"
+if python3 "$repo/install/patch-menu.py" "$tmp/omarchy/bin/omarchy-menu" >/dev/null 2>"$tmp/patch.err"; then
+  echo "   applies cleanly"
+else
+  echo "   FAILS: $(tail -1 "$tmp/patch.err")"; status=1
+fi
+
+echo
+echo "2. Overlay files whose upstream original changed between $current and $tag"
+echo "   (the overlay copy may need the same change)"
+changed=0
+while IFS= read -r -d '' f; do
+  rel="${f#$repo/overlay/}"
+  [[ -f $tmp/omarchy/$rel ]] || continue
+  if [[ -n $current ]] && ! git -C "$tmp/omarchy" diff --quiet "$current" "$tag" -- "$rel" 2>/dev/null; then
+    echo "   $rel"; changed=1
+  fi
+done < <(find "$repo/overlay" -type f -print0)
+(( changed )) || echo "   none"
+
+echo
+echo "3. Upstream scripts that Ombuntu does not override and that mention pacman/yay (new Arch-only entry points)"
+new_arch=0
+for f in "$tmp"/omarchy/bin/*; do
+  n=$(basename "$f")
+  [[ -f $repo/overlay/bin/$n ]] && continue
+  if grep -qE '\b(pacman|yay|paru)\b' "$f" 2>/dev/null && { [[ ! -f $OMARCHY_PATH/bin/$n ]] || ! grep -qE '\b(pacman|yay|paru)\b' "$OMARCHY_PATH/bin/$n"; }; then
+    echo "   $n"; new_arch=1
+  fi
+done
+(( new_arch )) || echo "   none"
+
+echo
+if (( status == 0 )); then
+  echo "Looks compatible. To move: set OMARCHY_REF=$tag in install.sh (and lib.sh), run install.sh, then ombuntu-doctor."
+else
+  echo "Not compatible as-is; fix the items above before bumping OMARCHY_REF."
+fi
+exit $status

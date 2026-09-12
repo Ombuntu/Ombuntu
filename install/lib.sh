@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # Shared helpers for the installer steps
 
 # Defaults so each step can also be run on its own (install.sh exports these)
@@ -8,6 +9,9 @@ export OMARCHY_UPSTREAM="${OMARCHY_UPSTREAM:-https://github.com/basecamp/omarchy
 export OMARCHY_USER_ONLY="${OMARCHY_USER_ONLY:-false}"
 export OMARCHY_SKIP_BASHRC="${OMARCHY_SKIP_BASHRC:-false}"
 export OMARCHY_FORCE_CONFIG="${OMARCHY_FORCE_CONFIG:-false}"
+export OMBUNTU_KEEP_TELEMETRY="${OMBUNTU_KEEP_TELEMETRY:-false}"
+export OMBUNTU_KEEP_BROWSER_BUTTONS="${OMBUNTU_KEEP_BROWSER_BUTTONS:-false}"
+export OMBUNTU_NO_FIREFOX_POLICY="${OMBUNTU_NO_FIREFOX_POLICY:-false}"
 export PATH="$OMARCHY_PATH/bin:$HOME/.local/bin:$PATH"
 
 # CPU architecture, in Debian naming (amd64 / arm64). Prebuilt GitHub releases
@@ -29,7 +33,7 @@ step() {
   echo
   log "$label"
   if [[ $mode == root ]]; then
-    sudo --preserve-env=OMBUNTU_REPO,OMBUNTU_ARCH,OMBUNTU_BUILD_FROM_SOURCE,OMARCHY_PATH,OMARCHY_REF,OMARCHY_USER_ONLY,OMARCHY_SKIP_BASHRC,OMARCHY_FORCE_CONFIG \
+    sudo --preserve-env=OMBUNTU_REPO,OMBUNTU_ARCH,OMBUNTU_BUILD_FROM_SOURCE,OMARCHY_PATH,OMARCHY_REF,OMARCHY_USER_ONLY,OMARCHY_SKIP_BASHRC,OMARCHY_FORCE_CONFIG,OMBUNTU_KEEP_TELEMETRY,OMBUNTU_KEEP_BROWSER_BUTTONS,OMBUNTU_NO_FIREFOX_POLICY \
       bash "$script"
   else
     bash "$script"

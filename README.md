@@ -69,6 +69,9 @@ changed.
 | `--user-only` | Skip the steps that need root (apt, session file) |
 | `--skip-bashrc` | Leave `~/.bashrc` alone |
 | `--force-config` | Overwrite `~/.config` files with Omarchy defaults (existing files saved as `*.pre-omarchy`) |
+| `--keep-telemetry` | Leave Canonical and browser telemetry at Ubuntu defaults |
+| `--keep-browser-buttons` | Keep browsers' own minimize/maximize/close buttons |
+| `--no-firefox-policy` | Do not install the Firefox policy file (managed machines) |
 
 The piped form takes the same flags: `curl -fsSL https://ombuntu.org/install.sh | bash -s -- --skip-bashrc`.
 
@@ -133,7 +136,9 @@ The full manual is at <https://manuals.omamix.org/2/the-omarchy-manual>.
 | Default apps set globally | Set only for the Hyprland session (`~/.config/Hyprland-mimeapps.list`) | Keeps XFCE defaults intact |
 | Hooks, menu extensions, remote theme install | Disabled | Security: they execute arbitrary user-supplied code |
 | Install menu (editors, browsers, AI, gaming, services) | Vendor apt repositories, checksum-verified downloads, snaps, or "not available" | No AUR; no `curl \| sh` |
-| Menu entries with no Ubuntu path (AUR, Windows VM, ONCE, Brave Origin, Zen, Cursor, LM Studio, hibernation, fingerprint/FIDO2, release channels, Plymouth) | Removed from the menu | See `install/patch-menu.py` |
+| Menu entries with no Ubuntu path (AUR, Windows VM, ONCE, Brave Origin, Zen, Cursor, LM Studio, release channels, Plymouth) | Removed from the menu | See `install/patch-menu.py` |
+| Fingerprint / FIDO2 login, hibernation | Ubuntu versions: fprintd and libpam-u2f via PAM; ext4 swapfile with GRUB and initramfs resume | Omarchy's use Arch PAM layout, limine and mkinitcpio |
+| Preinstalled Spotify, Obsidian, Typora, 1Password, LocalSend, Pinta | Install menu, Apps: official snaps, vendor apt repositories, or Flathub | Not in the Ubuntu archive |
 | Browser title-bar buttons | Chromium-family browsers and Firefox switched to system decorations, so no minimize/maximize/close buttons | Hyprland draws no decorations; `ombuntu-browser-decorations on` restores them |
 
 Signal Desktop is installed from Signal's own apt repository, as on Arch.
@@ -145,9 +150,9 @@ arbitrary code with your user rights, triggered by everyday actions such as
 booting, changing theme or updating. Ombuntu turns these off; see
 [Security notes](#security-notes) for the full list.
 
-Skipped entirely: 1Password, Spotify, Obsidian, Typora, LocalSend, Pinta,
-Docker, snapper/limine, the Arch hardware fix-ups, and the HEY, Basecamp and
-Fizzy web apps and bindings. Their keybindings stay in
+Skipped entirely: Docker, snapper/limine, the Arch hardware fix-ups, and the
+HEY, Basecamp and Fizzy web apps and bindings. Spotify, Obsidian, Typora,
+1Password, LocalSend and Pinta are one click away under Install, Apps. Their keybindings stay in
 `~/.config/hypr/bindings.conf` so you can point them at snaps or debs if you
 install them.
 
@@ -167,6 +172,22 @@ screen and screensaver, the `ombuntu` command. The upstream engine keeps its
 `omarchy-*` command names and `~/.local/share/omarchy` path, because its 280+
 scripts call each other by those names. `ombuntu` is the same dispatcher, so
 `ombuntu theme set nord` and `omarchy theme set nord` are equivalent.
+
+## Commands Ombuntu adds
+
+| Command | What it does |
+| --- | --- |
+| `ombuntu` | Same dispatcher as `omarchy` (`ombuntu theme set nord`, `ombuntu update`) |
+| `ombuntu-doctor` | One line per check: session, duplicate services, tools, keyring flags, privacy files. Paste its output when asking for help. |
+| `ombuntu-version` | Ombuntu version and the upstream Omarchy tag |
+| `ombuntu-upstream-check [tag]` | Tries a newer Omarchy tag in a temp directory and reports whether the overlay and menu patch still fit |
+| `ombuntu-browser-decorations on\|off` | Show or hide browsers' title-bar buttons |
+| `ombuntu-cheatsheet` | The beginner cheatsheet window |
+
+Detected at first install: display scaling from the panel's size and resolution
+(1x, 1.6x or 2x, written to `~/.config/hypr/monitors.conf`), and the keyboard
+layout from the system or XFCE settings (into `~/.config/hypr/input.conf`).
+Both are ordinary files you can edit afterwards.
 
 ## Updating
 
@@ -280,20 +301,16 @@ desktop have no telemetry.
 
 ## Uninstall
 
-XFCE is untouched, so removal is:
+XFCE is untouched. From the Xubuntu session:
 
 ```bash
-sudo rm /usr/share/wayland-sessions/ombuntu.desktop
-rm -rf ~/.local/share/omarchy ~/.config/omarchy ~/.local/state/omarchy
-rm -rf ~/.config/{hypr,waybar,walker,elephant,mako,swayosd,alacritty,uwsm}
-rm ~/.local/bin/{walker,elephant,satty,mise,omarchy,ombuntu}
-mv ~/.bashrc.pre-omarchy ~/.bashrc
-systemctl --user unmask waybar.service hypridle.service foot-server.service foot-server.socket hyprpolkitagent.service
+~/.local/share/ombuntu/repo/uninstall.sh
 ```
 
-Then `sudo apt remove` whichever packages from `install/packages.list` you do
-not want. Other Omarchy files under `~/.config` (btop, fastfetch, starship,
-tmux, git, fontconfig) are harmless to keep or delete.
+Flags: `--purge-packages` also removes the apt packages the installer added,
+`--restore-telemetry` puts Canonical and browser telemetry back to Ubuntu
+defaults, `--yes` skips the confirmation. Backed-up files (`~/.bashrc`,
+`~/.config/git/config`, `~/.XCompose`) are restored.
 
 ## Files this touches
 

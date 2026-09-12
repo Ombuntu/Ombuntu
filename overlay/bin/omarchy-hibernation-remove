@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# omarchy:summary=Undo the hibernation setup (resume parameters; the swapfile is kept unless it was created by Ombuntu)
+# omarchy:requires-sudo=true
+
+set -e
+if [[ ! -f /etc/initramfs-tools/conf.d/ombuntu-resume ]]; then echo "Hibernation is not set up."; exit 0; fi
+gum confirm "Remove hibernation setup?" || exit 0
+sudo rm -f /etc/initramfs-tools/conf.d/ombuntu-resume /etc/systemd/sleep.conf.d/ombuntu-hibernate.conf
+sudo sed -i -E 's/ ?resume=UUID=[^ "]*//; s/ ?resume_offset=[0-9]*//' /etc/default/grub
+if [[ -f /swapfile ]] && grep -q '^/swapfile ' /etc/fstab; then
+  sudo swapoff /swapfile 2>/dev/null || true
+  sudo sed -i '\|^/swapfile |d' /etc/fstab
+  sudo rm -f /swapfile
+fi
+sudo update-initramfs -u
+sudo update-grub
+echo "Hibernation removed."

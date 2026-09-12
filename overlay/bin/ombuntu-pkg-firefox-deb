@@ -1,0 +1,10 @@
+#!/bin/bash
+# Firefox as a deb from Mozilla's own apt repository, pinned above the Ubuntu snap transitional package
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
+set -e
+apt_repo_add packages.mozilla.org https://packages.mozilla.org/apt/repo-signing-key.gpg "deb https://packages.mozilla.org/apt mozilla main"
+printf 'Package: *\nPin: origin packages.mozilla.org\nPin-Priority: 1000\n' | sudo tee /etc/apt/preferences.d/mozilla >/dev/null
+sudo apt-get update -qq
+sudo apt-get install -y firefox
+echo
+echo "Mozilla's Firefox deb is installed. The snap (firefox_firefox) can be removed with: sudo snap remove firefox"

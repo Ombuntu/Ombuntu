@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# omarchy:summary=Exit 0 when hibernation has been set up by Ombuntu and swap is large enough
+
+[[ -f /sys/power/image_size && -f /etc/initramfs-tools/conf.d/ombuntu-resume ]] || exit 1
+swap_kb=$(awk '!/Filename|zram/ {s += $3} END {print s+0}' /proc/swaps)
+(( swap_kb * 1024 > $(cat /sys/power/image_size) )) && grep -q 'resume=UUID=' /proc/cmdline

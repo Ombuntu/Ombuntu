@@ -61,12 +61,7 @@ drop_option("Passwordless Sudo"); drop_line(r'\*"Passwordless Sudo"\*\)')
 drop_block(r'  if omarchy-hw-hybrid-gpu; then\n.*?\n  fi\n\n')
 drop_line(r'\*"Hybrid GPU"\*\)')
 
-# Setup: security (fingerprint/fido2) and hibernation are Arch-specific
-drop_option("Security"); drop_line(r'\*Security\*\) show_setup_security_menu')
-drop_block(r'  if omarchy-hibernation-available; then\n    options="\$options\\n\S  Disable Hibernate"\n  else\n    options="\$options\\n\S  Enable Hibernate"\n  fi\n')
-drop_line(r'\*"Enable Hibernate"\*\)'); drop_line(r'\*"Disable Hibernate"\*\)')
-drop_line(r'omarchy-hibernation-available && options=.*Hibernate')
-drop_line(r'\*Hibernate\*\) systemctl hibernate')
+# Setup > Security and the hibernation entries stay: Ombuntu ships Ubuntu versions of those scripts.
 
 # Install: no AUR, no Windows VM
 drop_option("AUR"); drop_line(r'\*AUR\*\) terminal omarchy-pkg-aur-install')
@@ -93,12 +88,48 @@ drop_line(r'\*Theme\*\) present_terminal omarchy-theme-install')
 drop_option_in("Remove", "Development"); drop_line(r'\*Development\*\) show_remove_development_menu')
 drop_option_in("Remove", "Gaming"); drop_line(r'\*Gaming\*\) show_remove_gaming_menu')
 drop_option("Preinstalls"); drop_line(r'\*Preinstalls\*\) present_terminal omarchy-remove-preinstalls')
-drop_line(r'\*Security\*\) show_remove_security_menu')
 
 # Update: no release channels, no git-installed extra themes, no Plymouth
 drop_option("Channel"); drop_line(r'\*Channel\*\) show_update_channel_menu')
 drop_option("Extra Themes"); drop_line(r'\*Themes\*\) present_terminal omarchy-theme-update')
 drop_option("Plymouth"); drop_line(r'\*Plymouth\*\) present_terminal omarchy-refresh-plymouth')
+
+# Install > Browser: Firefox from Mozilla's apt repository (the Ubuntu one is a snap)
+def add_after_in(menu_title, marker, after_label, new_item):
+    """Append '<glyph>  Label' after an existing item, only in the option string of the menu whose line contains marker."""
+    global s
+    def fix(m):
+        line = m.group(0)
+        out = re.sub(r'(\S  ' + re.escape(after_label) + r')(?=\\n|")', lambda mm: mm.group(1) + '\\n' + new_item, line, count=1)
+        assert out != line, f"menu patch: {after_label!r} not in that menu"
+        return out
+    new = re.sub(r'^.*menu "' + re.escape(menu_title) + r'" "[^"]*' + re.escape(marker) + r'[^"]*".*$', fix, s, count=1, flags=re.M)
+    assert new != s, f"menu patch: menu {menu_title!r} with {marker!r} not found"
+    s = new
+add_after_in("Install", "Chrome", "Firefox", "\uf269  Firefox (Mozilla apt)")
+s2 = s.replace('  *Firefox*) present_terminal "omarchy-install-browser firefox" ;;',
+               '  *"Firefox (Mozilla apt)"*) present_terminal "omarchy-install-browser firefox-deb" ;;\n  *Firefox*) present_terminal "omarchy-install-browser firefox" ;;', 1)
+assert s2 != s; s = s2
+
+# Install > Apps: the applications behind Omarchy's default shortcuts (Spotify, Obsidian, Typora,
+# 1Password, LocalSend, Pinta), which Omarchy preinstalls on Arch and Ombuntu offers on demand.
+s2 = re.sub(r'(?<=")(\S  Package\\n)(?=\S  Web App)', lambda m: m.group(1) + '\uf40e  Apps\\n', s, count=1); assert s2 != s; s = s2
+s2 = s.replace('  *Package*) terminal omarchy-pkg-install ;;', '  *Package*) terminal omarchy-pkg-install ;;\n  *Apps*) show_install_apps_menu ;;', 1)
+assert s2 != s; s = s2
+apps_menu = """show_install_apps_menu() {
+  case $(menu "Install" "\uf1bc  Spotify\\n\U000f0d5c  Obsidian\\n\uf15c  Typora\\n\U000f07f5  1Password\\n\uf1e0  LocalSend\\n\uf1fc  Pinta") in
+  *Spotify*) install_and_launch "Spotify" "spotify" "spotify_spotify" ;;
+  *Obsidian*) install_and_launch "Obsidian" "obsidian" "obsidian_obsidian" ;;
+  *Typora*) install_and_launch "Typora" "typora" "typora" ;;
+  *1Password*) install_and_launch "1Password" "1password" "1password" ;;
+  *LocalSend*) install_and_launch "LocalSend" "localsend" "localsend_app" ;;
+  *Pinta*) install "Pinta" "pinta" ;;
+  *) show_install_menu ;;
+  esac
+}
+
+"""
+s2 = s.replace("show_install_browser_menu() {", apps_menu + "show_install_browser_menu() {", 1); assert s2 != s; s = s2
 
 # No menu extensions (arbitrary user shell sourced into the menu)
 drop_line(r'^USER_EXTENSIONS=')

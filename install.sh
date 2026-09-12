@@ -14,6 +14,9 @@
 #   ./install.sh --user-only     skip the steps that need root (apt packages, session file)
 #   ./install.sh --skip-bashrc   leave ~/.bashrc alone
 #   ./install.sh --force-config  overwrite ~/.config files with Omarchy defaults (backups are made)
+#   ./install.sh --keep-telemetry        leave Canonical/browser telemetry at Ubuntu defaults
+#   ./install.sh --keep-browser-buttons  keep browsers' own minimize/maximize/close buttons
+#   ./install.sh --no-firefox-policy     do not install the Firefox policy file (managed machines)
 #
 # Piped form takes the same flags:  curl -fsSL https://ombuntu.org/install.sh | bash -s -- --skip-bashrc
 #
@@ -61,7 +64,8 @@ if [[ -z ${BASH_SOURCE[0]} || ! -d "$(dirname "${BASH_SOURCE[0]}")/install" ]]; 
   fi
 fi
 
-export OMBUNTU_REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+OMBUNTU_REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export OMBUNTU_REPO
 export OMARCHY_PATH="$HOME/.local/share/omarchy"
 export OMARCHY_REF="${OMARCHY_REF:-v3.8.4}"
 export OMARCHY_UPSTREAM="${OMARCHY_UPSTREAM:-https://github.com/basecamp/omarchy.git}"
@@ -70,12 +74,18 @@ export PATH="$OMARCHY_PATH/bin:$HOME/.local/bin:$PATH"
 export OMARCHY_USER_ONLY=false
 export OMARCHY_SKIP_BASHRC=false
 export OMARCHY_FORCE_CONFIG=false
+export OMBUNTU_KEEP_TELEMETRY=false
+export OMBUNTU_KEEP_BROWSER_BUTTONS=false
+export OMBUNTU_NO_FIREFOX_POLICY=false
 
 for arg in "$@"; do
   case "$arg" in
   --user-only) OMARCHY_USER_ONLY=true ;;
   --skip-bashrc) OMARCHY_SKIP_BASHRC=true ;;
   --force-config) OMARCHY_FORCE_CONFIG=true ;;
+  --keep-telemetry) OMBUNTU_KEEP_TELEMETRY=true ;;
+  --keep-browser-buttons) OMBUNTU_KEEP_BROWSER_BUTTONS=true ;;
+  --no-firefox-policy) OMBUNTU_NO_FIREFOX_POLICY=true ;;
   -h | --help) sed -n '2,/^set -eEo/p' "$0" | head -n -1; exit 0 ;;
   *) echo "Unknown option: $arg" >&2; exit 1 ;;
   esac
@@ -103,7 +113,9 @@ step "Theme" "$OMBUNTU_REPO/install/50-theme.sh"
 
 if [[ $OMARCHY_USER_ONLY == false ]]; then
   step "Login session" "$OMBUNTU_REPO/install/60-session.sh" root
-  step "Privacy (telemetry off)" "$OMBUNTU_REPO/install/70-privacy.sh" root
+  if [[ $OMBUNTU_KEEP_TELEMETRY != true ]]; then
+    step "Privacy (telemetry off)" "$OMBUNTU_REPO/install/70-privacy.sh" root
+  fi
 fi
 
 step "Verify Hyprland config" "$OMBUNTU_REPO/install/90-verify.sh"

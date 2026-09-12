@@ -17,18 +17,17 @@
 <h1>Uninstall</h1>
 <p class="lead">Back to plain Xubuntu. XFCE was never touched, so this is short.</p>
 
-<p>Remove the login entry, Omarchy, and the configuration Ombuntu wrote:</p>
-<div class="cmd"><pre id="rm1">sudo rm /usr/share/wayland-sessions/ombuntu.desktop
-rm -rf ~/.local/share/omarchy ~/.local/share/ombuntu ~/.config/omarchy ~/.local/state/omarchy
-rm -rf ~/.config/{hypr,waybar,walker,elephant,mako,swayosd,alacritty,uwsm}
-rm -f ~/.local/bin/{walker,elephant,satty,mise,omarchy,ombuntu}
-rm -f ~/.config/Hyprland-mimeapps.list ~/.config/hyprland-mimeapps.list
-mv ~/.bashrc.pre-omarchy ~/.bashrc</pre><button class="copy" data-for="rm1" type="button" title="Copy" aria-label="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
-<p>Restore the user services Ombuntu masked:</p>
-<div class="cmd"><pre id="rm2">systemctl --user unmask waybar.service hypridle.service foot-server.service foot-server.socket hyprpolkitagent.service update-notifier-crash.path update-notifier-crash.service</pre><button class="copy" data-for="rm2" type="button" title="Copy" aria-label="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
-<p>Then remove whichever packages from <code>install/packages.list</code> in the repository you do not want, with <code>sudo apt remove</code>. Other Omarchy files under <code>~/.config</code> (btop, fastfetch, starship, tmux, git, fontconfig) are harmless to keep or delete.</p>
+<p>From the Xubuntu session (log out of Ombuntu first), run the uninstaller that came with the install:</p>
+<div class="cmd"><pre id="un1">~/.local/share/ombuntu/repo/uninstall.sh</pre><button class="copy" data-for="un1" type="button" title="Copy" aria-label="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
+<p>It removes the login entry, upstream Omarchy, the Ombuntu data and every configuration file the installer wrote, unmasks the user services it masked, and restores your backed-up <code>~/.bashrc</code>, git config and XCompose file.</p>
+<table>
+<tr><td><code>--purge-packages</code></td><td>Also apt-remove the packages the installer added (Hyprland, Waybar, Alacritty and so on)</td></tr>
+<tr><td><code>--restore-telemetry</code></td><td>Put Canonical and browser telemetry back to Ubuntu defaults</td></tr>
+<tr><td><code>--yes</code></td><td>Skip the confirmation</td></tr>
+</table>
+<p>If you cloned the repository somewhere else, run <code>uninstall.sh</code> from there instead.</p>
 <h2>Privacy settings</h2>
-<p>The telemetry changes stay unless you undo them. To return to Ubuntu defaults: set <code>enabled=1</code> in <code>/etc/default/apport</code> and <code>sudo apt install whoopsie</code>; <code>pro config set apt_news=true</code>; delete <code>/etc/firefox/policies/policies.json</code> and the <code>ombuntu-privacy*.json</code> files under each browser's <code>policies/managed</code> directory.</p>
+<p>Without <code>--restore-telemetry</code> the telemetry changes stay. To return to Ubuntu defaults: set <code>enabled=1</code> in <code>/etc/default/apport</code> and <code>sudo apt install whoopsie</code>; <code>pro config set apt_news=true</code>; delete <code>/etc/firefox/policies/policies.json</code> and the <code>ombuntu-privacy*.json</code> files under each browser's <code>policies/managed</code> directory.</p>
 
 </main>
 <footer>Ombuntu is an independent community project, not affiliated with Canonical, Ubuntu, Xubuntu or Omarchy. <a href="https://github.com/Ombuntu/Ombuntu">Source on GitHub</a>.</footer>

@@ -1,0 +1,79 @@
+#!/bin/bash
+
+# omarchy:summary=Check an Ombuntu install for the problems people actually hit, and print one line per check
+# omarchy:examples=ombuntu-doctor
+
+ok=0; warn=0
+pass() { printf '\033[32m  ok  \033[0m %s\n' "$*"; ((ok++)); }
+fail() { printf '\033[33m warn \033[0m %s\n' "$*"; ((warn++)); }
+check() { # check <description> <command...>
+  local d="$1"; shift
+  if "$@" >/dev/null 2>&1; then pass "$d"; else fail "$d"; fi
+}
+
+echo "Ombuntu doctor"
+echo
+
+echo "Versions"
+printf '       %s\n' "$(ombuntu-version 2>/dev/null || echo 'ombuntu-version missing')"
+printf '       Hyprland %s\n' "$(Hyprland --version 2>/dev/null | head -1 | awk '{print $2}')"
+printf '       %s\n' "$(. /etc/os-release && echo "$PRETTY_NAME") $(dpkg --print-architecture)"
+echo
+
+echo "Session"
+check "Running inside the Ombuntu (Hyprland) session" test "$XDG_CURRENT_DESKTOP" = Hyprland
+check "Ombuntu login entry installed" test -f /usr/share/wayland-sessions/ombuntu.desktop
+check "Omarchy checkout present" test -d "$OMARCHY_PATH/.git"
+check "Ubuntu overlay applied" test -f "$OMARCHY_PATH/bin/ombuntu-lib.sh"
+check "Hyprland config parses" bash -c 'Hyprland --verify-config 2>&1 | grep -q "config ok"'
+if [[ $XDG_CURRENT_DESKTOP == Hyprland ]]; then
+  check "No live config errors" bash -c '[[ -z $(hyprctl configerrors 2>/dev/null) ]]'
+  check "Exactly one Waybar" test "$(pgrep -x -c waybar)" -eq 1
+  check "Exactly one hypridle" test "$(pgrep -x -c hypridle)" -eq 1
+  check "A polkit agent is running" pgrep -x hyprpolkitagent
+  check "Mako is running" pgrep -x mako
+  check "Elephant is running" pgrep -x elephant
+  check "Walker service is running" pgrep -f 'walker --gapplication-service'
+fi
+echo
+
+echo "Services"
+for u in waybar.service hypridle.service foot-server.service foot-server.socket hyprpolkitagent.service update-notifier-crash.path; do
+  check "$u masked (would duplicate or fail otherwise)" bash -c "[[ \$(systemctl --user is-enabled $u 2>&1) == masked ]]"
+done
+check "No failed user units" bash -c '[[ -z $(systemctl --user --failed --no-legend 2>/dev/null) ]]'
+check "elephant.service enabled" systemctl --user is-enabled elephant.service
+echo
+
+echo "Tools"
+for c in walker elephant satty mise alacritty hyprlock swaybg swayosd-server uwsm xdg-terminal-exec tte wlsunset wf-recorder pulsemixer nmtui blueman-manager qalc fd bat; do
+  check "$c on PATH" command -v "$c"
+done
+check "Elephant providers installed" bash -c "ls ~/.config/elephant/providers/*.so >/dev/null"
+check "JetBrainsMono Nerd Font installed" bash -c 'fc-list | grep -q "JetBrainsMono Nerd Font"'
+echo
+
+echo "Config"
+check "uwsm env is POSIX (no 'source')" bash -c "! grep -q '^source ' ~/.config/uwsm/env"
+check "Signal binding uses the keyring backend" grep -q 'signal-desktop --password-store=gnome-libsecret' ~/.config/hypr/bindings.conf
+check "Browser launcher forces the keyring backend" grep -q 'password-store=gnome-libsecret' "$OMARCHY_PATH/bin/omarchy-launch-browser"
+check "GNOME keyring reachable on the bus" busctl --user status org.freedesktop.secrets
+check "Default apps scoped to Hyprland" test -f ~/.config/Hyprland-mimeapps.list
+check "Hooks and menu extensions absent" bash -c '[[ ! -d ~/.config/omarchy/hooks && ! -d ~/.config/omarchy/extensions ]]'
+check "Theme set" test -f ~/.config/omarchy/current/theme.name
+check "Background set" test -e ~/.config/omarchy/current/background
+echo
+
+echo "Privacy"
+check "apport disabled" bash -c "grep -q '^enabled=0' /etc/default/apport"
+check "whoopsie absent" bash -c "! dpkg-query -W -f='\${Status}' whoopsie 2>/dev/null | grep -q 'install ok installed'"
+check "Firefox policy installed" test -f /etc/firefox/policies/policies.json
+check "Chromium-family policy installed" test -f /etc/chromium/policies/managed/ombuntu-privacy.json
+check "DO_NOT_TRACK set in the session" test "${DO_NOT_TRACK:-}" = 1
+echo
+
+printf '%d ok, %d warnings\n' "$ok" "$warn"
+if (( warn > 0 )); then
+  echo "Most warnings are fixed by re-running the installer: bash \"$(cat "$OMARCHY_PATH/ombuntu-repo.path" 2>/dev/null || echo ~/.local/share/ombuntu/repo)/install.sh\""
+fi
+exit 0

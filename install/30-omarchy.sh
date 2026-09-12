@@ -27,6 +27,7 @@ chmod +x "$OMARCHY_PATH"/bin/* "$OMARCHY_PATH"/default/waybar/indicators/*.sh 2>
 
 # Remember where this installer lives so `omarchy-update` can re-apply it
 echo "$OMBUNTU_REPO" >"$OMARCHY_PATH/ombuntu-repo.path"
+cp -f "$OMBUNTU_REPO/VERSION" "$OMARCHY_PATH/ombuntu-version"
 
 # Walker autostart entry needs an absolute path (systemd's xdg-autostart
 # generator does not see ~/.local/bin) and must not start under XFCE.

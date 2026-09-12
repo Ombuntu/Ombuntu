@@ -1,0 +1,5 @@
+#!/bin/bash
+# Obsidian's official snap
+set -e
+snap list obsidian >/dev/null 2>&1 && exit 0
+sudo snap install obsidian --classic

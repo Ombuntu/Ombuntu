@@ -29,6 +29,10 @@
 <details><summary>Does it work on arm64?</summary><p>Yes. Ubuntu builds the whole desktop for arm64. Walker and Elephant have no arm64 releases, so the installer compiles them from source, which takes 10 to 30 minutes.</p></details>
 <details><summary>How do I update?</summary><p><code>ombuntu update</code>, the menu's Update entry, or run the one-line installer again. Ubuntu packages come from apt; Ombuntu re-applies its overlay.</p></details>
 <details><summary>An Install menu entry says "not packaged for Ubuntu by Ombuntu".</summary><p>That is a deliberate stop, not a bug. The entry's software has no apt package, vendor repository or checksummed download, and Ombuntu does not pipe remote scripts into a shell. The message says where to get it by hand.</p></details>
+<details><summary>Where are Spotify, Obsidian, Typora, 1Password?</summary><p>Omarchy preinstalls them on Arch. Ombuntu offers them under the menu's Install, Apps, from the official snaps and vendor apt repositories. Once installed, Omarchy's shortcuts for them (Super + Shift + M, O, W, /) work.</p></details>
+<details><summary>Can I use my fingerprint reader or a security key?</summary><p>Yes: Setup, Security in the menu enrols a fingerprint (fprintd) or registers a FIDO2 key (pam_u2f) for sudo, polkit and the lock screen, using Ubuntu's PAM layout.</p></details>
+<details><summary>Does hibernation work?</summary><p>On an ext4 root, yes: Setup, System, Enable Hibernate creates a swapfile the size of RAM (or reuses Ubuntu's), sets the resume parameters for GRUB and the initramfs, and makes suspend hand over to hibernate after two hours.</p></details>
+<details><summary>How do I check my install is healthy?</summary><p><code>ombuntu-doctor</code>. One line per check; re-running the installer fixes most warnings.</p></details>
 <details><summary>Is Ombuntu affiliated with Ubuntu or Omarchy?</summary><p>No. It is an independent community project. Ubuntu and Xubuntu are Canonical trademarks; Omarchy belongs to DHH and contributors.</p></details>
 
 </main>

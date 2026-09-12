@@ -27,8 +27,10 @@ fi
 systemctl disable --now ua-timer.timer motd-news.timer >/dev/null 2>&1 || true
 
 # --- Firefox (deb or snap: both read /etc/firefox/policies) -----------------
-install -d -m 0755 /etc/firefox/policies
-install -m 0644 "$OMBUNTU_REPO/privacy/firefox-policies.json" /etc/firefox/policies/policies.json
+if [[ $OMBUNTU_NO_FIREFOX_POLICY != true ]]; then
+  install -d -m 0755 /etc/firefox/policies
+  install -m 0644 "$OMBUNTU_REPO/privacy/firefox-policies.json" /etc/firefox/policies/policies.json
+fi
 
 # --- Chromium family: Chrome, Chromium, Brave, Edge, Vivaldi ------------------
 for dir in /etc/opt/chrome/policies/managed /etc/chromium/policies/managed /etc/brave/policies/managed /etc/opt/edge/policies/managed /etc/vivaldi/policies/managed; do

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# omarchy:summary=Print the Ombuntu version and the upstream Omarchy tag it is built on
+
+repo=$(cat "$OMARCHY_PATH/ombuntu-repo.path" 2>/dev/null)
+ver=$(cat "$repo/VERSION" 2>/dev/null || cat "$OMARCHY_PATH/ombuntu-version" 2>/dev/null || echo unknown)
+tag=$(git -C "$OMARCHY_PATH" describe --tags --exact-match 2>/dev/null || cat "$OMARCHY_PATH/version" 2>/dev/null)
+echo "Ombuntu $ver (Omarchy $tag)"

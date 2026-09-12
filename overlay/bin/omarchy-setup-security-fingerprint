@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# omarchy:summary=Enrol a fingerprint and use it for sudo, polkit and the lock screen (Ubuntu fprintd + PAM)
+# omarchy:requires-sudo=true
+
+set -e
+echo -e "\e[32mSetting up fingerprint authentication.\n\e[0m"
+omarchy-pkg-add fprintd libpam-fprintd usbutils
+
+if [[ -z $(fprintd-list "$USER" 2>/dev/null) ]]; then
+  echo -e "\e[31m\nNo fingerprint sensor detected (fprintd-list found nothing).\e[0m"
+  exit 1
+fi
+
+# Ubuntu wires PAM through common-auth; pam-auth-update adds pam_fprintd there, which
+# covers sudo, polkit, LightDM and hyprlock (whose PAM file includes login).
+sudo pam-auth-update --enable fprintd --package
+
+sed -i 's/placeholder_text = .*/placeholder_text = <span> Enter Password 󰈷 <\/span>/' ~/.config/hypr/hyprlock.conf
+sed -i 's/fingerprint:enabled = .*/fingerprint:enabled = true/' ~/.config/hypr/hyprlock.conf
+
+echo -e "\e[32m\nLet's enrol your right index finger.\e[0m"
+echo -e "Keep moving the finger around on the sensor until the process completes.\n"
+if fprintd-enroll "$USER"; then
+  echo -e "\e[32m\nFingerprint enrolled.\e[0m Verifying...\n"
+  if fprintd-verify; then
+    echo -e "\e[32m\nFingerprint authentication is configured for sudo, polkit and the lock screen.\e[0m"
+  else
+    echo -e "\e[31m\nVerification failed; try enrolling again.\e[0m"
+  fi
+else
+  echo -e "\e[31m\nEnrolment failed.\e[0m"
+  exit 1
+fi

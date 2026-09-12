@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# omarchy:summary=Register a FIDO2 key and use it for sudo, polkit and the lock screen (Ubuntu libpam-u2f)
+# omarchy:requires-sudo=true
+
+set -e
+AUTHFILE=/etc/fido2/fido2
+echo -e "\e[32mSetting up a FIDO2 security key for authentication.\n\e[0m"
+omarchy-pkg-add libpam-u2f pamu2fcfg fido2-tools
+
+if [[ -z $(fido2-token -L 2>/dev/null) ]]; then
+  echo -e "\e[31m\nNo FIDO2 device detected. Plug it in (and unlock it if needed).\e[0m"
+  exit 1
+fi
+
+if [[ ! -f $AUTHFILE ]]; then
+  sudo mkdir -p /etc/fido2
+  echo -e "\e[32m\nTouch your key when it lights up...\e[0m\n"
+  tmp=$(mktemp)
+  if pamu2fcfg >"$tmp"; then
+    sudo install -m 0644 "$tmp" "$AUTHFILE"; rm -f "$tmp"
+    echo -e "\e[32mKey registered.\e[0m"
+  else
+    rm -f "$tmp"; echo -e "\e[31m\nRegistration failed.\e[0m"; exit 1
+  fi
+else
+  echo "A FIDO2 key is already registered in $AUTHFILE."
+fi
+
+# pam_u2f in front of the password for sudo, polkit and hyprlock (which includes login)
+for f in /etc/pam.d/sudo /etc/pam.d/polkit-1 /etc/pam.d/hyprlock; do
+  [[ -f $f ]] || continue
+  grep -q pam_u2f.so "$f" || sudo sed -i "1i auth    sufficient pam_u2f.so cue authfile=$AUTHFILE" "$f"
+done
+
+echo -e "\nTesting with sudo: touch your key when prompted.\n"
+sudo -k
+if sudo true; then
+  echo -e "\e[32m\nFIDO2 authentication is configured for sudo, polkit and the lock screen.\e[0m"
+fi

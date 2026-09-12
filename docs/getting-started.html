@@ -34,6 +34,9 @@
 <tr><td><code>--user-only</code></td><td>Skip the steps that need root (apt, session file)</td></tr>
 <tr><td><code>--skip-bashrc</code></td><td>Leave <code>~/.bashrc</code> alone (Ombuntu replaces it; a backup is kept as <code>~/.bashrc.pre-omarchy</code>)</td></tr>
 <tr><td><code>--force-config</code></td><td>Overwrite <code>~/.config</code> files with Omarchy defaults; existing files are saved as <code>*.pre-omarchy</code></td></tr>
+<tr><td><code>--keep-telemetry</code></td><td>Leave Canonical and browser telemetry at Ubuntu defaults</td></tr>
+<tr><td><code>--keep-browser-buttons</code></td><td>Keep browsers' own minimize/maximize/close buttons</td></tr>
+<tr><td><code>--no-firefox-policy</code></td><td>Do not install the Firefox policy file</td></tr>
 </table>
 <p>Pass flags to the one-liner with <code>bash -s -- --skip-bashrc</code>. Or clone the repository and run <code>./install.sh</code> from it.</p>
 <h2>First login</h2>
@@ -48,6 +51,9 @@
 <tr><td><kbd>Super</kbd> + <kbd>K</kbd></td><td>Every shortcut, searchable</td></tr>
 </table>
 <p>Themes: <kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Space</kbd>. Wallpapers: <kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>Space</kbd>. The full <a href="cheatsheet.html">cheatsheet</a> covers windows, workspaces, screenshots and more. Everything Omarchy documents applies; the <a href="https://manuals.omamix.org/2/the-omarchy-manual">Omarchy manual</a> is the long version.</p>
+<h2>Something off? Run the doctor</h2>
+<p><code>ombuntu-doctor</code> prints one line per check: the session, duplicate services, tools on the path, keyring flags, privacy files, failed units. Most warnings are fixed by running the installer again. Paste its output when you ask for help.</p>
+<p>The installer detects your display scaling (from the panel's size and resolution) and keyboard layout on the first run and writes them to <code>~/.config/hypr/monitors.conf</code> and <code>input.conf</code>. Both are plain files; edit them if the guess is wrong.</p>
 <h2>Updating</h2>
 <p><code>ombuntu update</code> (or the menu: Update, Omarchy) upgrades Ubuntu packages and re-applies Ombuntu. Running the one-line installer again does the same.</p>
 
