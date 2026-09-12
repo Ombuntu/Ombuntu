@@ -1,0 +1,3 @@
+#!/bin/bash
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
+not_available "Brave Origin" "It is not published for Ubuntu yet; install regular Brave instead."

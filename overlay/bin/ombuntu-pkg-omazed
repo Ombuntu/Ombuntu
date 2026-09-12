@@ -1,0 +1,3 @@
+#!/bin/bash
+# omazed (Omarchy's Zed theme syncer) is an Arch package; Zed works without it.
+exit 0

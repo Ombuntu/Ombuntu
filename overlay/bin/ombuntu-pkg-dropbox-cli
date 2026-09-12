@@ -1,0 +1,3 @@
+#!/bin/bash
+# covered by ombuntu-pkg-dropbox (nautilus-dropbox)
+exit 0

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# omarchy:summary=Install Lutris with Wine (Ubuntu packages)
+# omarchy:requires-sudo=true
+
+set -e
+echo "Installing Lutris..."
+omarchy-install-gaming-gpu-lib32
+omarchy-pkg-add lutris wine winetricks
+cat <<'MSG'
+Lutris will open and fetch its runtimes in the background (watch the bottom status bar).
+Once that finishes, click + to add or install games.
+MSG
+setsid lutris >/dev/null 2>&1 &

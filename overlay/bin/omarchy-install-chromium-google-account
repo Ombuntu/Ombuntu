@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# omarchy:summary=Not needed on Ombuntu
+
+echo "This tweak is for Arch's Chromium build. Vivaldi, Chrome, Brave and Edge sign in to Google accounts as-is." >&2
+exit 1

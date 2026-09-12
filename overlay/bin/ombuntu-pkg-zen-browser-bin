@@ -1,0 +1,3 @@
+#!/bin/bash
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
+not_available "Zen Browser" "Zen ships as a Flatpak (app.zen_browser.zen) or AppImage: https://zen-browser.app/download/"

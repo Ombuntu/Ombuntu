@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# omarchy:summary=Xbox controller support on Ubuntu
+
+cat <<'MSG'
+Ubuntu's kernel already supports Xbox controllers over USB and Bluetooth (xpad driver);
+there is nothing to install. Pair the controller with Super + Ctrl + B.
+
+For rumble and battery reporting over Bluetooth the out-of-tree xpadneo driver can be
+built from https://github.com/atar-axis/xpadneo (needs dkms and the kernel headers).
+MSG

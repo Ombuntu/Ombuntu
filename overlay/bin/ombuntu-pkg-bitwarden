@@ -1,0 +1,5 @@
+#!/bin/bash
+# Bitwarden desktop from its official snap
+set -e
+snap list bitwarden >/dev/null 2>&1 && exit 0
+sudo snap install bitwarden

@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# omarchy:summary=Install Ubuntu packages (apt) if they are missing
+# omarchy:summary=Install packages if they are missing (apt, with Ubuntu handlers for names Omarchy takes from the AUR)
 # omarchy:args=<packages...>
 # omarchy:examples=omarchy pkg add jq ripgrep
 # omarchy:requires-sudo=true
 
-# Map the Arch package names Omarchy uses to Ubuntu equivalents
+# Arch package names that have a direct apt equivalent
 map_pkg() {
   case "$1" in
   mako) echo mako-notifier ;;
@@ -19,7 +19,8 @@ map_pkg() {
   emacs-wayland) echo emacs ;;
   docker) echo docker.io ;;
   docker-compose) echo docker-compose-v2 ;;
-  neovim) echo neovim ;;
+  libyaml) echo libyaml-dev ;;
+  linux-headers) echo linux-headers-generic ;;
   python-*) echo "python3-${1#python-}" ;;
   *) echo "$1" ;;
   esac
@@ -27,14 +28,14 @@ map_pkg() {
 
 packages=()
 for pkg in "$@"; do
-  case "$pkg" in
-  ttf-*-nerd)
+  if [[ $pkg == ttf-*-nerd ]]; then
     omarchy-nerd-font-install "$pkg" || exit 1
-    ;;
-  *)
+  elif command -v "ombuntu-pkg-$pkg" >/dev/null 2>&1; then
+    # Ubuntu handler: third-party apt repo, vendor .deb, snap, or a clear "not available"
+    "ombuntu-pkg-$pkg" || exit 1
+  else
     packages+=("$(map_pkg "$pkg")")
-    ;;
-  esac
+  fi
 done
 
 (( ${#packages[@]} )) || exit 0

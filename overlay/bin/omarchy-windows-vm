@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# omarchy:summary=The Windows VM helper is not available on Ombuntu
+# omarchy:args=<install|remove>
+
+echo "Omarchy's Windows VM helper depends on its Arch-specific Docker and KVM setup." >&2
+echo "On Ubuntu, install virt-manager (sudo apt install virt-manager) or use Boxes (sudo apt install gnome-boxes)." >&2
+exit 1

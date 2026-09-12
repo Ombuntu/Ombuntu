@@ -1,0 +1,2 @@
+#!/bin/bash
+echo "Bitwarden CLI: run 'sudo snap install bw' if you want it." ; exit 0

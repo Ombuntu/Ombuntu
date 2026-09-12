@@ -130,6 +130,7 @@ The full manual is at <https://manuals.omamix.org/2/the-omarchy-manual>.
 | `scrolling` layout option | Guarded with `hyprlang noerror` | Needs Hyprland 0.54+, Ubuntu has 0.53.3 |
 | Default apps set globally | Set only for the Hyprland session (`~/.config/Hyprland-mimeapps.list`) | Keeps XFCE defaults intact |
 | Hooks, menu extensions, remote theme install | Disabled | Security: they execute arbitrary user-supplied code |
+| Install menu (editors, browsers, AI, gaming, services) | Vendor apt repositories, checksum-verified downloads, snaps, or "not available" | No AUR; no `curl \| sh` |
 | Browser title-bar buttons | Chromium-family browsers and Firefox switched to system decorations, so no minimize/maximize/close buttons | Hyprland draws no decorations; `ombuntu-browser-decorations on` restores them |
 
 Signal Desktop is installed from Signal's own apt repository, as on Arch.
@@ -142,7 +143,8 @@ booting, changing theme or updating. Ombuntu turns these off; see
 [Security notes](#security-notes) for the full list.
 
 Skipped entirely: 1Password, Spotify, Obsidian, Typora, LocalSend, Pinta,
-Docker, snapper/limine, and the Arch hardware fix-ups. Their keybindings stay in
+Docker, snapper/limine, the Arch hardware fix-ups, and the HEY, Basecamp and
+Fizzy web apps and bindings. Their keybindings stay in
 `~/.config/hypr/bindings.conf` so you can point them at snaps or debs if you
 install them.
 
@@ -285,6 +287,13 @@ branding/             Ombuntu ASCII art for the About screen and screensaver
 docs/                 beginner keyboard cheatsheet (HTML)
 backgrounds/          Ombuntu wallpapers, linked into every theme
 ```
+
+## For AI agents
+
+`agent-guide.md` (served at https://ombuntu.org/agent-guide.md) teaches a
+coding agent to install, explain and troubleshoot Ombuntu for a human: the
+concept model, what differs from Omarchy on Arch, the security posture, and
+diagnosis recipes. Point your agent at it.
 
 ## Hosting install.sh at ombuntu.org
 

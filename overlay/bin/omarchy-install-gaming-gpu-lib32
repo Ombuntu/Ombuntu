@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# omarchy:summary=Install 32-bit Vulkan/GL drivers for Steam and Wine (Ubuntu multiarch)
+# omarchy:requires-sudo=true
+
+set -e
+if ! dpkg --print-foreign-architectures | grep -q i386; then
+  sudo dpkg --add-architecture i386
+  sudo apt-get update -qq
+fi
+if lspci | grep -iE 'VGA|Display|3D' | grep -qiE 'AMD|ATI|Intel'; then
+  sudo apt-get install -y mesa-vulkan-drivers:i386 libgl1-mesa-dri:i386
+fi
+if lspci | grep -iE 'VGA|Display|3D' | grep -qi nvidia; then
+  echo "NVIDIA: install the matching 32-bit driver, e.g. sudo apt install libnvidia-gl-<version>:i386"
+fi

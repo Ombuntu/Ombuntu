@@ -1,0 +1,5 @@
+#!/bin/bash
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
+set -e
+apt_repo_add microsoft-edge https://packages.microsoft.com/keys/microsoft.asc "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main"
+sudo apt-get install -y microsoft-edge-stable

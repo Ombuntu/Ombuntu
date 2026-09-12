@@ -1,0 +1,7 @@
+#!/bin/bash
+# Google Chrome's own .deb (it registers Google's apt repository for updates)
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
+set -e
+command -v google-chrome >/dev/null && exit 0
+[[ $(ombuntu_arch) == amd64 ]] || { echo "Google Chrome is amd64 only" >&2; exit 1; }
+deb_install https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb

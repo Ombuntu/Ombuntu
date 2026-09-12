@@ -1,0 +1,9 @@
+#!/bin/bash
+# Tailscale's official apt repository for this Ubuntu release
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
+set -e
+. /etc/os-release
+codename="${VERSION_CODENAME:-noble}"
+curl -fsSL --max-time 15 -o /dev/null "https://pkgs.tailscale.com/stable/ubuntu/$codename.noarmor.gpg" || codename=noble
+apt_repo_add tailscale "https://pkgs.tailscale.com/stable/ubuntu/$codename.noarmor.gpg" "deb https://pkgs.tailscale.com/stable/ubuntu $codename main"
+sudo apt-get install -y tailscale

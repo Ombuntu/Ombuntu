@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# omarchy:summary=Install Dropbox (Ubuntu's nautilus-dropbox package)
+# omarchy:requires-sudo=true
+
+echo "Installing Dropbox..."
+omarchy-pkg-add dropbox || exit 1
+echo "Starting Dropbox setup (it downloads the daemon on first run)..."
+setsid uwsm-app -- dropbox start -i >/dev/null 2>&1 &
+echo "See the Dropbox icon behind the tray expander in the top right and right-click for setup."

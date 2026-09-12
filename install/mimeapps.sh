@@ -23,7 +23,6 @@ fi
   for t in image/png image/jpeg image/gif image/webp image/bmp image/tiff; do echo "$t=imv.desktop"; done
   echo "application/pdf=org.gnome.Evince.desktop"
   for t in video/mp4 video/x-msvideo video/x-matroska video/x-flv video/x-ms-wmv video/mpeg video/ogg video/webm video/quicktime video/3gpp video/3gpp2 video/x-ms-asf video/x-ogm+ogg video/x-theora+ogg application/ogg; do echo "$t=mpv.desktop"; done
-  echo "x-scheme-handler/mailto=HEY.desktop"
   for t in text/plain text/english text/x-makefile text/x-c++hdr text/x-c++src text/x-chdr text/x-csrc text/x-java text/x-moc text/x-pascal text/x-tcl text/x-tex application/x-shellscript text/x-c text/x-c++ application/xml text/xml; do echo "$t=nvim.desktop"; done
 } >~/.config/Hyprland-mimeapps.list
 ln -sfn Hyprland-mimeapps.list ~/.config/hyprland-mimeapps.list

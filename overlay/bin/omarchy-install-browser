@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# omarchy:summary=Install a browser from its vendor's Ubuntu repository and prepare it for Ombuntu
+# omarchy:args=<chrome|edge|brave|brave-origin|firefox|zen>
+# omarchy:requires-sudo=true
+
+case $1 in
+chrome) echo "Installing Chrome..."; omarchy-pkg-add google-chrome || exit 1; name=Chrome ;;
+edge) echo "Installing Edge..."; omarchy-pkg-add microsoft-edge-stable-bin || exit 1; name=Edge ;;
+brave) echo "Installing Brave..."; omarchy-pkg-add brave-bin || exit 1; name=Brave ;;
+brave-origin) omarchy-pkg-add brave-origin-beta-bin; exit 1 ;;
+firefox) echo "Installing Firefox..."; omarchy-pkg-add firefox || exit 1; name=Firefox ;;
+zen) omarchy-pkg-add zen-browser-bin; exit 1 ;;
+*) echo "Usage: omarchy-install-browser <chrome|edge|brave|firefox|zen>"; exit 1 ;;
+esac
+
+# Keyring backend + no title-bar buttons, same as the browsers installed by default
+bash "$(cat "$OMARCHY_PATH/ombuntu-repo.path" 2>/dev/null)/install/40-config.sh" >/dev/null 2>&1 || true
+ombuntu-browser-decorations off >/dev/null 2>&1 || true
+omarchy-theme-set-browser >/dev/null 2>&1 || true
+echo
+echo "$name browser installed. Make it the default via Setup > Defaults > Browser."

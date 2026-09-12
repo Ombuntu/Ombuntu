@@ -1,8 +1,86 @@
 #!/bin/bash
 
-# omarchy:summary=Omarchy's dev-environment installers are Arch-specific and not available on Ombuntu
-# omarchy:args=<language>
+# omarchy:summary=Install a development environment with mise and Ubuntu packages
+# omarchy:args=<ruby|node|bun|deno|go|laravel|symfony|php|python|elixir|phoenix|rust|java|zig|ocaml|dotnet|clojure|scala>
+# omarchy:requires-sudo=true
 
-echo "Omarchy's '$1' installer targets Arch (pacman/yay plus remote install scripts)." >&2
-echo "On Ubuntu use apt, or mise (already installed): mise use -g ${1:-node}@latest" >&2
-exit 1
+if [[ -z $1 ]]; then
+  echo "Usage: omarchy-install-dev-env <ruby|node|bun|deno|go|laravel|symfony|php|python|elixir|phoenix|rust|java|zig|ocaml|dotnet|clojure|scala>" >&2
+  exit 1
+fi
+
+command -v mise >/dev/null || { echo "mise is missing; re-run the Ombuntu installer" >&2; exit 1; }
+
+install_php() {
+  omarchy-pkg-add php-cli composer php-sqlite3 php-mysql php-xdebug php-mbstring php-xml php-curl php-intl php-bcmath php-zip
+  if [[ :$PATH: != *:$HOME/.config/composer/vendor/bin:* ]]; then
+    echo 'export PATH="$HOME/.config/composer/vendor/bin:$PATH"' >>"$HOME/.bashrc"
+    echo "Added Composer global bin directory to PATH (new shells)."
+  fi
+}
+install_node() { echo -e "Installing Node.js...\n"; mise use --global node@latest; }
+
+case "$1" in
+ruby)
+  echo -e "Installing Ruby on Rails...\n"
+  omarchy-pkg-add build-essential libyaml-dev libssl-dev zlib1g-dev libffi-dev libreadline-dev libgmp-dev
+  mise settings add idiomatic_version_file_enable_tools ruby
+  mise use --global ruby@latest
+  echo "gem: --no-document" >~/.gemrc
+  mise x ruby -- gem install rails --no-document
+  echo -e "\nYou can now run: rails new myproject"
+  ;;
+node) install_node ;;
+bun) echo -e "Installing Bun...\n"; mise use -g bun@latest ;;
+deno) echo -e "Installing Deno...\n"; mise use -g deno@latest ;;
+go) echo -e "Installing Go...\n"; mise use --global go@latest ;;
+php) echo -e "Installing PHP...\n"; install_php ;;
+laravel)
+  echo -e "Installing PHP and Laravel...\n"
+  install_php; install_node
+  composer global require laravel/installer
+  echo -e "\nYou can now run: laravel new myproject"
+  ;;
+symfony)
+  echo -e "Installing PHP and Symfony...\n"
+  install_php
+  mise use -g symfony@latest 2>/dev/null || echo "Symfony CLI: see https://symfony.com/download"
+  ;;
+python)
+  echo -e "Installing Python and uv...\n"
+  omarchy-pkg-add build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libffi-dev liblzma-dev
+  mise use --global python@latest
+  mise use --global uv@latest
+  ;;
+elixir)
+  echo -e "Installing Elixir...\n"
+  omarchy-pkg-add build-essential libncurses-dev libssl-dev
+  mise use --global erlang@latest
+  mise use --global elixir@latest
+  mise x elixir -- mix local.hex --force
+  ;;
+phoenix)
+  echo -e "Installing Phoenix Framework...\n"
+  omarchy-pkg-add build-essential libncurses-dev libssl-dev
+  mise use --global erlang@latest
+  mise use --global elixir@latest
+  mise x elixir -- mix local.hex --force
+  mise x elixir -- mix local.rebar --force
+  mise x elixir -- mix archive.install hex phx_new --force
+  echo -e "\nYou can now run: mix phx.new my_app"
+  ;;
+rust) echo -e "Installing Rust...\n"; omarchy-pkg-add build-essential; mise use --global rust@latest ;;
+java) echo -e "Installing Java...\n"; mise use --global java@latest ;;
+zig) echo -e "Installing Zig...\n"; mise use --global zig@latest; mise use -g zls@latest ;;
+ocaml)
+  echo -e "Installing OCaml...\n"
+  omarchy-pkg-add opam build-essential
+  opam init --yes --disable-sandboxing
+  eval "$(opam env)"
+  opam install ocaml-lsp-server odoc ocamlformat utop --yes
+  ;;
+dotnet) echo -e "Installing .NET...\n"; mise use --global dotnet@latest ;;
+clojure) echo -e "Installing Clojure...\n"; omarchy-pkg-add rlwrap; mise use --global java@latest; mise use --global clojure@latest ;;
+scala) echo -e "Installing Scala...\n"; mise use --global java@latest; mise use --global scala@latest; mise use --global scala-cli@latest ;;
+*) echo "Unknown environment: $1" >&2; exit 1 ;;
+esac

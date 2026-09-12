@@ -1,0 +1,6 @@
+#!/bin/bash
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
+set -e
+command -v minecraft-launcher >/dev/null && exit 0
+[[ $(ombuntu_arch) == amd64 ]] || { echo "Minecraft Launcher is amd64 only" >&2; exit 1; }
+deb_install https://launcher.mojang.com/download/Minecraft.deb

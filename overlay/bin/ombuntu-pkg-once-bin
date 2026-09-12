@@ -1,0 +1,3 @@
+#!/bin/bash
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
+not_available "ONCE" "See https://once.com for the current Linux install method."

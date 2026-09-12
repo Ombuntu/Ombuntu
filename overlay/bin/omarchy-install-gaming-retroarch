@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# omarchy:summary=Install RetroArch with the emulator cores Ubuntu packages
+# omarchy:requires-sudo=true
+
+set -e
+echo "Installing RetroArch..."
+cores=$(apt-cache search --names-only '^libretro-' | awk '{print $1}' | grep -vE 'dev$|dbg$')
+omarchy-pkg-add retroarch retroarch-assets libretro-core-info $cores
+
+mkdir -p "$HOME/Games/bios" "$HOME/Games/roms"
+CFG="$HOME/.config/retroarch/retroarch.cfg"
+mkdir -p "$(dirname "$CFG")"; touch "$CFG"
+set_cfg() {
+  if grep -q "^$1 = " "$CFG"; then sed -i "s|^$1 = .*|$1 = \"$2\"|" "$CFG"; else echo "$1 = \"$2\"" >>"$CFG"; fi
+}
+set_cfg rgui_browser_directory "$HOME/Games/roms"
+set_cfg system_directory "$HOME/Games/bios"
+set_cfg libretro_directory "/usr/lib/$(uname -m)-linux-gnu/libretro"
+set_cfg libretro_info_path "/usr/share/libretro/info"
+echo "RetroArch installed. Put ROMs in ~/Games/roms and BIOS files in ~/Games/bios."

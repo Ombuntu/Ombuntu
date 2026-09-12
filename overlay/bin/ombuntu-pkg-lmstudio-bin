@@ -1,0 +1,3 @@
+#!/bin/bash
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
+not_available "LM Studio" "Download the Linux AppImage from https://lmstudio.ai/download, make it executable and run it."

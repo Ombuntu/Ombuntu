@@ -60,7 +60,11 @@ mkdir -p ~/.config/omarchy/branding ~/.config/omarchy/themes
 cp -f "$OMBUNTU_REPO/branding/about.txt" ~/.config/omarchy/branding/about.txt
 cp -f "$OMBUNTU_REPO/branding/screensaver.txt" ~/.config/omarchy/branding/screensaver.txt
 
-# 7. Desktop entries, icons, web apps and TUIs (Omarchy's own refresher)
+# 7. Desktop entries, icons, web apps and TUIs (Omarchy's own refresher). The overlay's
+#    web app list leaves out Omarchy's own-company apps (HEY, Basecamp, Fizzy); drop any an
+#    earlier run created, and the HEY bindings.
+rm -f ~/.local/share/applications/{HEY,Basecamp,Fizzy}.desktop ~/.local/share/applications/icons/{HEY,Basecamp,Fizzy}.png
+sed -i '/omarchy-launch-webapp "https:\/\/app\.hey\.com/d' ~/.config/hypr/bindings.conf 2>/dev/null || true
 omarchy-refresh-applications >/dev/null 2>&1 || warn "omarchy-refresh-applications reported errors (non-fatal)"
 
 # 8. Walker + Elephant wiring (mirrors install/config/walker-elephant.sh upstream)

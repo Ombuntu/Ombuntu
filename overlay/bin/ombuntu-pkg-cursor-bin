@@ -1,0 +1,3 @@
+#!/bin/bash
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
+not_available "Cursor" "Download the Linux AppImage from https://cursor.com/downloads, make it executable and run it."

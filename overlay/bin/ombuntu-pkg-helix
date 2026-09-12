@@ -1,0 +1,14 @@
+#!/bin/bash
+# Helix from its GitHub release tarball into ~/.local/helix
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
+set -e
+command -v hx >/dev/null && { echo "Helix already installed"; exit 0; }
+HELIX_VERSION="${HELIX_VERSION:-$(curl -fsSL https://api.github.com/repos/helix-editor/helix/releases/latest | jq -r .tag_name)}"
+case "$(ombuntu_arch)" in amd64) a=x86_64 ;; arm64) a=aarch64 ;; *) exit 1 ;; esac
+tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
+curl -fL --retry 3 --progress-bar -o "$tmp/helix.tar.xz" "$(gh_asset_url helix-editor/helix "$HELIX_VERSION" "helix-$HELIX_VERSION-$a-linux.tar.xz")"
+rm -rf ~/.local/helix && mkdir -p ~/.local/helix ~/.local/bin
+tar -xJf "$tmp/helix.tar.xz" -C ~/.local/helix --strip-components=1
+ln -sf ~/.local/helix/hx ~/.local/bin/hx
+ln -sf ~/.local/helix/hx ~/.local/bin/helix
+mkdir -p ~/.config/helix && ln -sfn ~/.local/helix/runtime ~/.config/helix/runtime

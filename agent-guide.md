@@ -1,0 +1,82 @@
+# Ombuntu agent guide
+
+Use this guide to help a human understand, install, or troubleshoot Ombuntu. Canonical documentation is the README at https://github.com/Ombuntu/Ombuntu. Verify any command you are unsure about against that page and the scripts in the repository instead of guessing.
+
+## What Ombuntu is
+
+Ombuntu is the [Omarchy](https://omarchy.org) Hyprland desktop running on Ubuntu / Xubuntu 26.04 instead of Arch Linux. It installs upstream Omarchy unchanged (pinned to a tag, currently `v3.8.4`) into `~/.local/share/omarchy`, then lays an Ubuntu overlay on top: apt instead of pacman, Ubuntu-packaged or vendor-repository replacements for AUR software, and fixes for Ubuntu packaging quirks. The existing XFCE session is untouched; the human picks **Ombuntu** or **Xubuntu Session** at the login screen.
+
+Everything Omarchy documents applies unless this guide says otherwise: the `omarchy` CLI and menu, all 19 themes, Waybar, Walker, Mako, Hyprlock, Hypridle, SwayOSD, the keybindings, web apps, and the bash/starship/eza/zoxide shell. The Omarchy manual is at https://manuals.omamix.org/2/the-omarchy-manual.
+
+## Concept model
+
+Teach these in this order:
+
+- **Session** — Hyprland, started by uwsm from the "Ombuntu" entry in LightDM. Logging out returns to the greeter; the XFCE session is still there.
+- **Upstream Omarchy** — `~/.local/share/omarchy`, a git checkout at a fixed tag. Never edited by hand; the installer re-applies the overlay over it.
+- **Overlay** — the `overlay/` directory of the Ombuntu repository, copied over the checkout. Its `bin/` holds Ubuntu replacements for `omarchy-*` commands and `ombuntu-*` helpers.
+- **Repository** — cloned to `~/.local/share/ombuntu/repo` by the one-line installer (or wherever the human cloned it). `~/.local/share/omarchy/ombuntu-repo.path` records where.
+- **User config** — `~/.config/hypr/*.conf` (bindings, input, monitors, look and feel, autostart), plus Waybar, Walker, Mako and the rest under `~/.config`. `~/.config/omarchy/current/` holds the active theme and background.
+- **Naming** — everything Ombuntu adds is called Ombuntu (session, branding, `ombuntu` command). The upstream engine keeps its `omarchy-*` command names because its 280+ scripts call each other by them. `ombuntu` and `omarchy` run the same dispatcher.
+
+## Install
+
+Requirements: Ubuntu or Xubuntu 26.04, amd64 or arm64, a user with sudo, internet. Not tested on 24.04, which lacks Hyprland in the archive.
+
+```bash
+curl -fsSL https://ombuntu.org/install.sh | bash
+```
+
+Or from a checkout: `git clone https://github.com/Ombuntu/Ombuntu.git ~/ombuntu && cd ~/ombuntu && ./install.sh`.
+
+The installer is idempotent. Flags: `--user-only` (skip apt and the session file), `--skip-bashrc`, `--force-config` (overwrite `~/.config` files, backups kept as `*.pre-omarchy`). It asks for the sudo password once. When it finishes, the human logs out and chooses **Ombuntu** in the greeter.
+
+On arm64 Walker and Elephant are compiled from source, which adds 10 to 30 minutes.
+
+## First-run walkthrough
+
+1. Super is the Windows key. **Super + Space** opens the app launcher; start typing an app's name.
+2. **Super + Return** terminal, **Super + Shift + B** browser, **Super + Shift + F** file manager, **Super + W** close window.
+3. **Super + Alt + Space** opens the Ombuntu menu: Style (themes, backgrounds), Setup, Install, Update, System.
+4. **Super + Shift + K** opens a one-page beginner cheatsheet; **Super + K** lists every binding, searchable.
+5. Themes: Super + Ctrl + Shift + Space. Backgrounds: Super + Ctrl + Space. Five Ombuntu wallpapers are offered in every theme.
+
+## What is different from Omarchy on Arch
+
+Tell the human these before they follow Omarchy documentation literally:
+
+- `omarchy pkg add <name>` uses apt. Arch package names Omarchy uses internally are mapped, and names that only exist in the AUR are handled by `ombuntu-pkg-<name>` scripts (vendor apt repositories, verified .deb downloads, snaps) or reported as not available. `omarchy pkg aur ...` always refuses.
+- `omarchy update` runs `apt full-upgrade`, pulls the Ombuntu repo, and re-applies the overlay. The Waybar update indicator shows apt pending upgrades.
+- Replacements: Walker, Elephant, Satty and mise are pinned GitHub releases in `~/.local/bin`; wlsunset replaces hyprsunset; wf-recorder replaces gpu-screen-recorder; nmtui, Blueman and pulsemixer replace impala, bluetui and wiremix; hyprpolkitagent replaces polkit-gnome.
+- Browsers and Signal are launched with `--password-store=gnome-libsecret`, and browsers are set to system decorations, so they show no title-bar buttons. `ombuntu-browser-decorations on` restores them.
+- Default applications are set only for the Hyprland session, in `~/.config/Hyprland-mimeapps.list`.
+- The `scrolling` layout needs Hyprland 0.54; Ubuntu ships 0.53, so that block is guarded.
+- Not installed: 1Password, Spotify, Obsidian, Typora, LocalSend, Pinta, Docker, snapper, limine, fcitx5, Plymouth, SDDM.
+
+## Security posture
+
+Say this plainly when asked:
+
+- Root is used only for apt, Signal's apt repository, and the session file.
+- Every download has its SHA256 pinned in `install/checksums.sha256`; a mismatch aborts.
+- **Omarchy plugins are disabled for security reasons**: user hooks (`~/.config/omarchy/hooks/*.d/`), menu extensions (`~/.config/omarchy/extensions/menu.sh`) and remote theme installs all execute arbitrary code and are turned off. `omarchy-hook` is a no-op. Do not tell the human to add hooks; suggest editing `~/.config/hypr/*.conf` instead.
+- Passwordless sudo, autologin and Omarchy's Arch dev-environment installers that pipe remote scripts into a shell are disabled.
+- Install-menu entries that fetch software use vendor apt repositories or checksum-verified downloads, not `curl | sh`.
+
+## Diagnosis recipes
+
+- **Two bars or duplicate daemons at login:** Ubuntu's waybar/hypridle/foot/hyprpolkitagent packages enable user services globally. Re-run `install.sh`; it masks them. Check with `systemctl --user is-enabled waybar.service` (should say masked).
+- **Config error banner from Hyprland:** `hyprctl configerrors` shows the cause; `hyprctl reload` clears a stale banner. The installer reloads at the end.
+- **App says it is already running after switching from XFCE:** the XFCE session left it running. `pkill -f <name>`, then open it again.
+- **Signal: "file is not a database"; browser lost passwords:** the app was launched without the keyring flag. Use the launcher entry or the Super key bindings, which pass `--password-store=gnome-libsecret`.
+- **Walker does not open:** `omarchy-restart-walker`; check `systemctl --user status elephant.service`. Providers live in `~/.config/elephant/providers`.
+- **A menu Install entry fails:** the floating terminal shows the script output. Handlers are `~/.local/share/omarchy/bin/ombuntu-pkg-*`; a message starting "is not packaged for Ubuntu by Ombuntu" is a deliberate stop, not a bug.
+- **General:** `journalctl --user -b -p err` and `/run/user/$UID/hypr/*/hyprland.log`.
+
+## Rules for you
+
+- Do not invent keybindings, config keys, or commands. The ones here are accurate as of writing; for anything else read the README, the Omarchy manual, or the script source first.
+- Do not give pacman, yay or AUR instructions; this is Ubuntu.
+- Do not suggest Omarchy hooks, extensions or remote themes; they are disabled on purpose.
+- Prefer `omarchy pkg add`, apt, snap, or mise for software. Do not suggest `curl | sh` installers.
+- Ombuntu is independent: not affiliated with Canonical, Ubuntu, Xubuntu, or Omarchy.

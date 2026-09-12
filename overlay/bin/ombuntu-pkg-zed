@@ -1,0 +1,18 @@
+#!/bin/bash
+# Zed from its official tarball into ~/.local (what zed.dev/install.sh does, minus the pipe)
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
+set -e
+[[ -x ~/.local/zed.app/bin/zed ]] && { echo "Zed already installed"; exit 0; }
+case "$(ombuntu_arch)" in amd64) a=x86_64 ;; arm64) a=aarch64 ;; *) exit 1 ;; esac
+tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
+echo "Downloading Zed..."
+curl -fL --retry 3 --progress-bar -o "$tmp/zed.tar.gz" "https://zed.dev/api/releases/stable/latest/zed-linux-$a.tar.gz"
+mkdir -p ~/.local/bin ~/.local/share/applications
+rm -rf ~/.local/zed.app
+tar -xzf "$tmp/zed.tar.gz" -C "$tmp"
+mv "$tmp"/zed*.app ~/.local/zed.app
+ln -sf ~/.local/zed.app/bin/zed ~/.local/bin/zed
+ln -sf ~/.local/zed.app/bin/zed ~/.local/bin/zeditor
+cp -f ~/.local/zed.app/share/applications/dev.zed.Zed.desktop ~/.local/share/applications/dev.zed.Zed.desktop
+sed -i "s|^Icon=.*|Icon=$HOME/.local/zed.app/share/icons/hicolor/512x512/apps/zed.png|; s|^Exec=zed|Exec=$HOME/.local/zed.app/bin/zed|" ~/.local/share/applications/dev.zed.Zed.desktop
+update-desktop-database ~/.local/share/applications 2>/dev/null || true

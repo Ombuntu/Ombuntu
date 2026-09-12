@@ -1,0 +1,6 @@
+#!/bin/bash
+# VS Code from Microsoft's apt repository
+source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
+set -e
+apt_repo_add packages.microsoft https://packages.microsoft.com/keys/microsoft.asc "deb [arch=amd64,arm64,armhf] https://packages.microsoft.com/repos/code stable main"
+sudo apt-get install -y code
