@@ -280,3 +280,10 @@ backgrounds/          Ombuntu wallpapers, linked into every theme
 
 Omarchy is by DHH and contributors, MIT licensed. Ombuntu is MIT as well; the
 scripts under `overlay/bin` are adapted from Omarchy's.
+
+## Disclaimer
+
+Ombuntu is an independent community project. It is not affiliated with,
+endorsed by, or associated with Canonical Ltd., Ubuntu, Xubuntu, or the Omarchy
+project. Ubuntu and Xubuntu are trademarks of Canonical Ltd. Omarchy is a
+project of DHH and contributors. Use at your own risk.
