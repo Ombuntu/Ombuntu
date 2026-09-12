@@ -8,7 +8,7 @@ export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
 # Duplicated from .config/uwsm/env so SSH works too
 export OMARCHY_PATH=$HOME/.local/share/omarchy
-export PATH=$OMARCHY_PATH/bin:$PATH:$HOME/.local/bin
+export PATH=$PATH:$OMARCHY_PATH/bin:$HOME/.local/bin
 
 # Opt out of telemetry in developer tools that honour these (consoledonottrack.com and friends)
 export DO_NOT_TRACK=1

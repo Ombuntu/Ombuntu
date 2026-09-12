@@ -40,6 +40,7 @@ apt_repo_add() {
 deb_install() {
   local url="$1" sum="${2:-}" tmp
   tmp=$(mktemp -d) || return 1
+  chmod 755 "$tmp"   # apt's _apt user must be able to read the .deb
   echo "Downloading $(basename "$url")..."
   curl -fsSL --proto '=https' --proto-redir '=https' --retry 3 -o "$tmp/pkg.deb" "$url" || { rm -rf "$tmp"; return 1; }
   if [[ -n $sum ]] && [[ $(sha256sum "$tmp/pkg.deb" | cut -d' ' -f1) != "$sum" ]]; then
@@ -69,7 +70,7 @@ desktop_entry() {
 [Desktop Entry]
 Type=Application
 Name=$2
-Exec=$3
+Exec="$3"
 Icon=$4
 Terminal=false
 Categories=${5:-Utility;}

@@ -112,16 +112,15 @@ s2 = s.replace('  *Firefox*) present_terminal "omarchy-install-browser firefox" 
 assert s2 != s; s = s2
 
 # Install > Apps: the applications behind Omarchy's default shortcuts (Spotify, Obsidian, Typora,
-# 1Password, LocalSend, Pinta), which Omarchy preinstalls on Arch and Ombuntu offers on demand.
+# LocalSend, Pinta), which Omarchy preinstalls on Arch and Ombuntu offers on demand.
 s2 = re.sub(r'(?<=")(\S  Package\\n)(?=\S  Web App)', lambda m: m.group(1) + '\uf40e  Apps\\n', s, count=1); assert s2 != s; s = s2
 s2 = s.replace('  *Package*) terminal omarchy-pkg-install ;;', '  *Package*) terminal omarchy-pkg-install ;;\n  *Apps*) show_install_apps_menu ;;', 1)
 assert s2 != s; s = s2
 apps_menu = """show_install_apps_menu() {
-  case $(menu "Install" "\uf1bc  Spotify\\n\U000f0d5c  Obsidian\\n\uf15c  Typora\\n\U000f07f5  1Password\\n\uf1e0  LocalSend\\n\uf1fc  Pinta") in
+  case $(menu "Install" "\uf1bc  Spotify\\n\U000f0d5c  Obsidian\\n\uf15c  Typora\\n\uf1e0  LocalSend\\n\uf1fc  Pinta") in
   *Spotify*) install_and_launch "Spotify" "spotify" "spotify_spotify" ;;
   *Obsidian*) install_and_launch "Obsidian" "obsidian" "obsidian_obsidian" ;;
   *Typora*) install_and_launch "Typora" "typora" "typora" ;;
-  *1Password*) install_and_launch "1Password" "1password" "1password" ;;
   *LocalSend*) install_and_launch "LocalSend" "localsend" "localsend_app" ;;
   *Pinta*) install "Pinta" "pinta" ;;
   *) show_install_menu ;;

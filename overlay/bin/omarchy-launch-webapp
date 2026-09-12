@@ -3,6 +3,22 @@
 # omarchy:summary=Launch a URL as a web app in the default supported browser
 # omarchy:args=<url>
 
+# First real program of a .desktop Exec= line: skips a leading "env" and VAR=value words
+# (snap entries look like "Exec=env BAMF_DESKTOP_FILE_HINT=... /snap/bin/firefox %u").
+desktop_exec() {
+  local f line word
+  for f in ~/.local/share/applications/"$1" ~/.nix-profile/share/applications/"$1" /var/lib/snapd/desktop/applications/"$1" /usr/share/applications/"$1"; do
+    [[ -f $f ]] || continue
+    line=$(sed -n 's/^Exec=//p' "$f" | head -1)
+    # shellcheck disable=SC2086
+    for word in $line; do
+      [[ $word == env || $word == *=* ]] && continue
+      echo "$word"; return 0
+    done
+  done
+  return 1
+}
+
 browser=$(xdg-settings get default-web-browser)
 
 case $browser in
@@ -12,4 +28,4 @@ esac
 
 # Keep saved logins readable under Hyprland (see omarchy-launch-browser)
 # shellcheck disable=SC2046  # the Exec= first word is a single token
-exec setsid uwsm-app -- $(sed -n 's/^Exec=\([^ ]*\).*/\1/p' {~/.local,~/.nix-profile,/usr}/share/applications/$browser 2>/dev/null | head -1) --password-store=gnome-libsecret --app="$1" "${@:2}"
+exec setsid uwsm-app -- "$(desktop_exec "$browser")" --password-store=gnome-libsecret --app="$1" "${@:2}"

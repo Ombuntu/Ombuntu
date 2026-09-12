@@ -11,6 +11,9 @@ SWAP_FILE=/swapfile
 if [[ ! -f /sys/power/image_size ]] || ! grep -qw disk /sys/power/state; then
   echo "Hibernation is not supported by this kernel/firmware." >&2; exit 1
 fi
+if [[ -r /sys/kernel/security/lockdown ]] && grep -q '\[integrity\]\|\[confidentiality\]' /sys/kernel/security/lockdown; then
+  echo "The kernel is in Secure Boot lockdown mode, which refuses hibernation. Disable Secure Boot to use it." >&2; exit 1
+fi
 fstype=$(findmnt -no FSTYPE /)
 if [[ $fstype != ext4 ]]; then
   echo "Ombuntu sets up hibernation on ext4 root filesystems only (this one is $fstype)." >&2; exit 1

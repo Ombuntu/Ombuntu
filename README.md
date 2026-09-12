@@ -141,7 +141,7 @@ The full manual is at <https://manuals.omamix.org/2/the-omarchy-manual>.
 | Install menu (editors, browsers, AI, gaming, services) | Vendor apt repositories, checksum-verified downloads, snaps, or "not available" | No AUR; no `curl \| sh` |
 | Menu entries with no Ubuntu path (AUR, Windows VM, ONCE, Brave Origin, Zen, Cursor, LM Studio, release channels, Plymouth) | Removed from the menu | See `install/patch-menu.py` |
 | Fingerprint / FIDO2 login, hibernation | Ubuntu versions: fprintd and libpam-u2f via PAM; ext4 swapfile with GRUB and initramfs resume | Omarchy's use Arch PAM layout, limine and mkinitcpio |
-| Preinstalled Spotify, Obsidian, Typora, 1Password, LocalSend, Pinta | Install menu, Apps: official snaps, vendor apt repositories, or Flathub | Not in the Ubuntu archive |
+| Preinstalled Spotify, Obsidian, Typora, LocalSend, Pinta | Install menu, Apps: official snaps, vendor apt repositories, or Flathub | Not in the Ubuntu archive |
 | Browser title-bar buttons | Chromium-family browsers and Firefox switched to system decorations, so no minimize/maximize/close buttons | Hyprland draws no decorations; `ombuntu-browser-decorations on` restores them |
 
 Signal Desktop is installed from Signal's own apt repository, as on Arch.
@@ -155,7 +155,7 @@ booting, changing theme or updating. Ombuntu turns these off; see
 
 Skipped entirely: Docker, snapper/limine, the Arch hardware fix-ups, and the
 HEY, Basecamp and Fizzy web apps and bindings. Spotify, Obsidian, Typora,
-1Password, LocalSend and Pinta are one click away under Install, Apps. Their keybindings stay in
+LocalSend and Pinta are one click away under Install, Apps; 1Password is not offered (Bitwarden is). Their keybindings stay in
 `~/.config/hypr/bindings.conf` so you can point them at snaps or debs if you
 install them.
 
@@ -245,7 +245,7 @@ What the installer does with privilege, and what it deliberately leaves out.
   *and* the commit that tag must resolve to is pinned, so a moved tag is
   refused. The same applies to the Walker and Elephant source builds on arm64.
 - **Vendor apt keys are verified by fingerprint.** Signal's key, and every
-  repository the Install menu can add (Microsoft, Brave, Mozilla, 1Password,
+  repository the Install menu can add (Microsoft, Brave, Mozilla, Google,
   Tailscale, Sublime, Typora, Charm), is fetched over TLS and then compared
   with the fingerprint pinned in the script; a mismatch is refused.
 - **Root never sees user-writable paths.** Root steps run with a fixed system
@@ -285,10 +285,12 @@ manager keeps a history of what you copy (Super + Ctrl + V; clear it from the
 same menu); the launcher's web search sends what you type to the configured
 search engine when you use the `@` prefix; screen sharing remembers your
 choice of screen (`allow_token_by_default` in `~/.config/hypr/xdph.conf`) so
-that apps do not prompt every time (set it to `false` if you prefer a prompt);
-`focus_on_activate` lets an app that asks for focus take it; and Omarchy's
-own `bin` directory sits first in your interactive shell's `PATH`, which is
-Omarchy's trust model for its commands. The Docker databases from the menu
+that apps do not prompt every time; Ombuntu sets it to `false`, so the picker
+appears on every share (set it back to `true` in `~/.config/hypr/xdph.conf`
+if you prefer); `focus_on_activate` lets an app that asks for focus take it.
+Unlike Omarchy, Ombuntu puts Omarchy's `bin` at the end of `PATH`, and
+opening the Wi-Fi or Bluetooth panel does not silently unblock a radio you
+soft-blocked. The Docker databases from the menu
 run with empty or default passwords on localhost only, and the `docker` group
 is root-equivalent.
 

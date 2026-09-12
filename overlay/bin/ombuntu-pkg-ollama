@@ -3,6 +3,7 @@
 # (the same files ollama.com/install.sh fetches, without piping a script into a shell).
 source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
 set -e
+variant=$(basename "$0"); variant=${variant#ombuntu-pkg-ollama}; variant=${variant#-}   # "" or rocm/cuda
 command -v ollama >/dev/null && { echo "Ollama already installed ($(ollama --version 2>/dev/null))"; exit 0; }
 
 OLLAMA_VERSION="${OLLAMA_VERSION:-$(curl -fsSL https://api.github.com/repos/ollama/ollama/releases/latest | jq -r .tag_name)}"
@@ -16,6 +17,14 @@ verify_sha256_from_list "$tmp/$asset" "$tmp/sha256sum.txt"
 omarchy-pkg-add zstd
 echo "Installing to /usr/local..."
 sudo tar --zstd --no-same-owner --no-same-permissions --owner=root --group=root -C /usr/local -xf "$tmp/$asset"
+# AMD GPUs: Ollama ships the ROCm runtime as a second bundle on top of the base one (CUDA is in the base)
+if [[ $variant == rocm && $(ombuntu_arch) == amd64 ]]; then
+  rocm=ollama-linux-amd64-rocm.tar.zst
+  echo "Downloading the ROCm bundle..."
+  curl -fL --retry 3 --progress-bar -o "$tmp/$rocm" "$(gh_asset_url ollama/ollama "$OLLAMA_VERSION" "$rocm")"
+  verify_sha256_from_list "$tmp/$rocm" "$tmp/sha256sum.txt"
+  sudo tar --zstd --no-same-owner --no-same-permissions --owner=root --group=root -C /usr/local -xf "$tmp/$rocm"
+fi
 
 # systemd service, as ollama.com/install.sh creates it
 if ! id ollama >/dev/null 2>&1; then

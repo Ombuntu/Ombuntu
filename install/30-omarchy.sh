@@ -37,7 +37,8 @@ cp -f "$OMBUNTU_REPO/VERSION" "$OMARCHY_PATH/ombuntu-version"
 
 # Walker autostart entry needs an absolute path (systemd's xdg-autostart
 # generator does not see ~/.local/bin) and must not start under XFCE.
-sed -i "s|^Exec=.*|Exec=$HOME/.local/bin/walker --gapplication-service|" "$OMARCHY_PATH/default/walker/walker.desktop"
+home_esc=$(printf '%s' "$HOME" | sed 's/[&|\\]/\\&/g')
+sed -i "s|^Exec=.*|Exec=\"$home_esc/.local/bin/walker\" --gapplication-service|" "$OMARCHY_PATH/default/walker/walker.desktop"
 grep -q "^OnlyShowIn=" "$OMARCHY_PATH/default/walker/walker.desktop" || echo "OnlyShowIn=Hyprland;" >>"$OMARCHY_PATH/default/walker/walker.desktop"
 
 # Link the Omarchy shims into ~/.local/bin so they're on PATH everywhere,

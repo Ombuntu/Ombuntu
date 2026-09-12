@@ -40,6 +40,9 @@
 </ul>
 <h2>Security choices</h2>
 <ul>
+<li>Screen sharing asks which screen or window to share every time; Omarchy remembers the choice (a restore token) by default.</li>
+<li>Opening the Wi-Fi or Bluetooth panel does not unblock a radio you switched off.</li>
+<li>Omarchy's own command directory sits at the end of <code>PATH</code>, so nothing in it can shadow a system command.</li>
 <li>Root is used for three things: apt, Signal's apt repository, and the login session file.</li>
 <li>Every download is pinned and checksummed; a mismatch aborts the install.</li>
 <li>Omarchy's plugins are disabled: hooks, menu extensions and remote theme installs all run arbitrary code with your user rights.</li>

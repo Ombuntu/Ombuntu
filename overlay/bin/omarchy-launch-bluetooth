@@ -2,7 +2,6 @@
 
 # omarchy:summary=Launch the Bluetooth controls (Blueman on Ubuntu instead of bluetui).
 
-rfkill unblock bluetooth 2>/dev/null
 
 if omarchy-cmd-present blueman-manager; then
   exec omarchy-launch-or-focus "blueman-manager" "uwsm-app -- blueman-manager"

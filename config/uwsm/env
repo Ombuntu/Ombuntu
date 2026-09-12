@@ -3,7 +3,7 @@
 
 # Ensure Omarchy bins are in the path
 export OMARCHY_PATH=$HOME/.local/share/omarchy
-export PATH=$OMARCHY_PATH/bin:$PATH:$HOME/.local/bin
+export PATH=$PATH:$OMARCHY_PATH/bin:$HOME/.local/bin
 
 # Set default terminal and editor
 . "$HOME/.config/uwsm/default"

@@ -1,5 +1,5 @@
 #!/bin/bash
 source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
 set -e
-apt_repo_add brave-browser https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg "deb [arch=amd64,arm64] https://brave-browser-apt-release.s3.brave.com/ stable main" DBF1A116C220B8C7164F98230686B78420038257
+apt_repo_add brave-browser-release https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg "deb [arch=amd64,arm64] https://brave-browser-apt-release.s3.brave.com/ stable main" DBF1A116C220B8C7164F98230686B78420038257
 sudo apt-get install -y brave-browser

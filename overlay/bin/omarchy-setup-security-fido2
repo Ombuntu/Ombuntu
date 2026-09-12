@@ -15,9 +15,9 @@ fi
 
 if [[ ! -f $AUTHFILE ]]; then
   sudo mkdir -p /etc/fido2
-  echo -e "\e[32m\nTouch your key when it lights up...\e[0m\n"
+  echo -e "\e[32m\nEnter the key's PIN, then touch it when it lights up...\e[0m\n"
   tmp=$(mktemp)
-  if pamu2fcfg >"$tmp"; then
+  if pamu2fcfg --pin-verification >"$tmp"; then
     sudo install -m 0644 "$tmp" "$AUTHFILE"; rm -f "$tmp"
     echo -e "\e[32mKey registered.\e[0m"
   else
@@ -32,12 +32,12 @@ fi
 [[ -f /etc/pam.d/polkit-1 ]] || printf '@include common-auth\n@include common-account\n@include common-password\n@include common-session\n' | sudo tee /etc/pam.d/polkit-1 >/dev/null
 for f in /etc/pam.d/sudo /etc/pam.d/polkit-1 /etc/pam.d/hyprlock; do
   [[ -f $f ]] || continue
-  grep -q pam_u2f.so "$f" || sudo sed -i "1i auth    sufficient pam_u2f.so cue authfile=$AUTHFILE" "$f"
+  grep -q pam_u2f.so "$f" || sudo sed -i "1i auth    sufficient pam_u2f.so cue pinverify=1 authfile=$AUTHFILE" "$f"
 done
 
 echo -e "\nTesting with sudo: touch your key when prompted.\n"
 sudo -k
 if sudo true; then
   echo -e "\e[32m\nFIDO2 authentication is configured for sudo, polkit and the lock screen.\e[0m"
-  echo "A touch of the key is sufficient (no PIN); the password still works as a fallback."
+  echo "The key asks for its PIN and a touch; the password still works as a fallback."
 fi

@@ -57,7 +57,7 @@ Tell the human these before they follow Omarchy documentation literally:
 - Browsers and Signal are launched with `--password-store=gnome-libsecret`, and browsers are set to system decorations, so they show no title-bar buttons. `ombuntu-browser-decorations on` restores them.
 - Default applications are set only for the Hyprland session, in `~/.config/Hyprland-mimeapps.list`.
 - The `scrolling` layout needs Hyprland 0.54; Ubuntu ships 0.53, so that block is guarded.
-- Not installed by default: Docker, snapper, limine, fcitx5, Plymouth, SDDM. Spotify, Obsidian, Typora, 1Password, LocalSend and Pinta are under the menu's Install, Apps (snaps, vendor apt repositories, Flathub). Fingerprint/FIDO2 login and hibernation have Ubuntu implementations under Setup.
+- Not installed by default: Docker, snapper, limine, fcitx5, Plymouth, SDDM. Spotify, Obsidian, Typora, LocalSend and Pinta are under the menu's Install, Apps (snaps, vendor apt repositories, Flathub). Fingerprint/FIDO2 login and hibernation have Ubuntu implementations under Setup.
 - Install flags: `--keep-telemetry`, `--keep-browser-buttons`, `--no-firefox-policy`. Uninstall: `uninstall.sh` in the repository (`--purge-packages`, `--restore-telemetry`).
 - `ombuntu-upstream-check` reports whether a newer Omarchy tag would still fit the overlay; bumping means editing `OMARCHY_REF` and re-running `install.sh`.
 

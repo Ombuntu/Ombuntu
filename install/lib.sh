@@ -1,6 +1,7 @@
 # shellcheck shell=bash
 # Shared helpers for the installer steps
 
+: "${HOME:?HOME must be set}"
 # Defaults so each step can also be run on its own (install.sh exports these)
 export OMBUNTU_REPO="${OMBUNTU_REPO:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 export OMARCHY_PATH="${OMARCHY_PATH:-$HOME/.local/share/omarchy}"

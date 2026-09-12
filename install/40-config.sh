@@ -160,6 +160,10 @@ open(p, "a").write("\n")
 PY
 ln -sfn "$OMARCHY_PATH/bin/omarchy" ~/.local/bin/ombuntu
 
+# 15b. Existing installs: screen-share tokens off, no 1Password binding (both were Omarchy defaults)
+[[ -f ~/.config/hypr/xdph.conf ]] && sed -i 's/allow_token_by_default = true/allow_token_by_default = false/' ~/.config/hypr/xdph.conf
+sed -i '/uwsm-app -- 1password$/d' ~/.config/hypr/bindings.conf 2>/dev/null || true
+
 # 16. Electron/Chromium apps only use the GNOME keyring when they recognise the desktop;
 #     under Hyprland they silently fall back to plain-text storage, which makes Signal
 #     unable to open a database created under XFCE ("file is not a database").

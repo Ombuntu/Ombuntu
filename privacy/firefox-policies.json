@@ -48,10 +48,6 @@
         "Value": true,
         "Status": "default"
       },
-      "media.hardware-video-decoding.force-enabled": {
-        "Value": true,
-        "Status": "default"
-      },
       "widget.disable-swipe-tracker": {
         "Value": false,
         "Status": "default"

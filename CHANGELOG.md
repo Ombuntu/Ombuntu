@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Security review fixes: root steps run with a fixed PATH; upstream Omarchy, Walker and Elephant pinned to commits; a checkout is only trusted when it is your own git repository; vendor apt keys verified by fingerprint; Chrome and NordVPN from signed repositories; apt source lines fixed; manifest-based uninstall with `--dry-run`, removing only recorded packages; Ollama extracted root-owned; hibernation never unlinks live swap; Docker databases get random passwords.
+- Screen-share restore tokens off; opening the Wi-Fi/Bluetooth panel no longer unblocks radios; Omarchy's bin last in PATH; FIDO2 requires the key's PIN; Firefox no longer forces video decoding past Mozilla's blocklist.
+- 1Password removed (Bitwarden stays). Vendor-matching apt source file names; snap browsers detected correctly; hibernation refuses Secure Boot lockdown.
+
 ## 0.1.0
 
 First release. Omarchy v3.8.4 on Ubuntu / Xubuntu 26.04.
@@ -11,6 +17,6 @@ First release. Omarchy v3.8.4 on Ubuntu / Xubuntu 26.04.
 - Display scaling and keyboard layout detected at install.
 - Privacy step: Canonical telemetry and connectivity probe, Firefox and Chromium-family data collection off; developer-tool opt-outs.
 - Security: pinned checksums for every download; Omarchy hooks, menu extensions, remote themes, passwordless sudo and autologin disabled.
-- Install menu trimmed to entries that work on Ubuntu; Apps submenu (Spotify, Obsidian, Typora, 1Password, LocalSend, Pinta); Firefox from Mozilla's apt repository; fingerprint and FIDO2 login; hibernation on ext4.
+- Install menu trimmed to entries that work on Ubuntu; Apps submenu (Spotify, Obsidian, Typora, LocalSend, Pinta); Firefox from Mozilla's apt repository; fingerprint and FIDO2 login; hibernation on ext4.
 - `ombuntu doctor`, `ombuntu-version`, `ombuntu-upstream-check`, `uninstall.sh`.
 - Ombuntu branding, wallpapers, beginner cheatsheet, docs site, agent guide.

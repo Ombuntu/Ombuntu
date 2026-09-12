@@ -20,7 +20,8 @@
 #
 # Piped form takes the same flags:  curl -fsSL https://ombuntu.org/install.sh | bash -s -- --skip-bashrc
 #
-set -eEo pipefail
+set -eEuo pipefail
+: "${HOME:?HOME must be set}"
 
 # ---------------------------------------------------------------------------
 # Bootstrap: when this file is run on its own (curl | bash, or a lone copy),
