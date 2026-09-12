@@ -2,7 +2,7 @@
 
 # Ombuntu
 
-**A per-configured Hyprland desktop installer on Xubuntu / Ubuntu 26.04.**
+**A pre-configured Hyprland desktop installer on Xubuntu / Ubuntu 26.04.**
 
 Documentation: **https://docs.ombuntu.org/** (getting started, privacy, FAQ,
 uninstall, cheatsheet). Site and installer: https://ombuntu.org/.
