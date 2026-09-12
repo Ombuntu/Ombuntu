@@ -16,12 +16,17 @@ fi
 # 2. Hardware-derived defaults for a first install: display scaling from the panel's
 #    EDID, keyboard layout from the system/XFCE keyboard settings. Only written when the
 #    user has no monitors.conf / no active kb_layout yet; never overwritten afterwards.
-eval "$(python3 "$OMBUNTU_REPO/install/detect-hardware.py" | sed 's/^/hw_/')"
+hw=$(python3 "$OMBUNTU_REPO/install/detect-hardware.py") || die "Hardware detection failed (install/detect-hardware.py)"
+eval "$(sed 's/^/hw_/' <<<"$hw")"
+: "${hw_scale:=1}" "${hw_gdk_scale:=1}" "${hw_panel:=none}" "${hw_kb_layout:=}" "${hw_kb_variant:=}"
+[[ $hw_kb_layout =~ ^[A-Za-z0-9,_-]*$ && $hw_kb_variant =~ ^[A-Za-z0-9,_-]*$ ]] || { warn "Ignoring unusual keyboard layout value"; hw_kb_layout=""; hw_kb_variant=""; }
+[[ $hw_scale =~ ^[0-9.]+$ && $hw_gdk_scale =~ ^[0-9.]+$ ]] || { hw_scale=1; hw_gdk_scale=1; }
 if [[ ! -f ~/.config/hypr/monitors.conf ]]; then
   mkdir -p ~/.config/hypr
   sed -e "s/^env = GDK_SCALE,1$/env = GDK_SCALE,$hw_gdk_scale/" -e "s/^monitor=,preferred,auto,1$/monitor=,preferred,auto,$hw_scale/" \
     "$OMBUNTU_REPO/overlay/config/hypr/monitors.conf" >~/.config/hypr/monitors.conf
   sed -i "1i # Detected at install: $hw_panel -> scale $hw_scale (edit freely; see the examples below)" ~/.config/hypr/monitors.conf
+  record ~/.config/hypr/monitors.conf
   log "Display scaling: $hw_scale ($hw_panel)"
 fi
 

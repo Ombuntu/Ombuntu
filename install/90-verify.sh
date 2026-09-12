@@ -6,9 +6,9 @@ source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 if command -v Hyprland >/dev/null; then
   # Hyprland needs XDG_RUNTIME_DIR even for --verify-config (absent in containers and some sudo contexts)
   if [[ -z ${XDG_RUNTIME_DIR:-} || ! -d ${XDG_RUNTIME_DIR:-/nonexistent} ]]; then
-    XDG_RUNTIME_DIR="/tmp/ombuntu-runtime-$(id -u)"
+    XDG_RUNTIME_DIR=$(mktemp -d -t ombuntu-runtime.XXXXXX)
     export XDG_RUNTIME_DIR
-    mkdir -p "$XDG_RUNTIME_DIR" && chmod 700 "$XDG_RUNTIME_DIR"
+    trap 'rm -rf "$XDG_RUNTIME_DIR"' EXIT
   fi
   if out=$(Hyprland --verify-config 2>&1); then
     log "Hyprland config OK"

@@ -74,8 +74,8 @@ java) echo -e "Installing Java...\n"; mise use --global java@latest ;;
 zig) echo -e "Installing Zig...\n"; mise use --global zig@latest; mise use -g zls@latest ;;
 ocaml)
   echo -e "Installing OCaml...\n"
-  omarchy-pkg-add opam build-essential
-  opam init --yes --disable-sandboxing
+  omarchy-pkg-add opam build-essential bubblewrap
+  opam init --yes
   eval "$(opam env)"
   opam install ocaml-lsp-server odoc ocamlformat utop --yes
   ;;

@@ -2,5 +2,5 @@
 # Typora from its official apt repository
 source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
 set -e
-apt_repo_add typora https://typora.io/linux/public-key.asc "deb https://typora.io/linux ./"
+apt_repo_add typora https://typora.io/linux/public-key.asc "deb https://typora.io/linux ./" 4AC441BE68B4ADAB7439FBF9BA300B7755AFCFAE
 sudo apt-get install -y typora

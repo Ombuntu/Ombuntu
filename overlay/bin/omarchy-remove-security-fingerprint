@@ -6,8 +6,8 @@
 set -e
 echo -e "\e[32mRemoving fingerprint authentication.\n\e[0m"
 sudo pam-auth-update --remove fprintd --package 2>/dev/null || true
-fprintd-delete "$USER" 2>/dev/null || true
-sed -i 's/placeholder_text = .*/placeholder_text = Enter Password/' ~/.config/hypr/hyprlock.conf
-sed -i 's/fingerprint:enabled = .*/fingerprint:enabled = false/' ~/.config/hypr/hyprlock.conf
+fprintd-delete "$(id -un)" 2>/dev/null || true
+[[ -f ~/.config/hypr/hyprlock.conf ]] && sed -i 's/placeholder_text = .*/placeholder_text = Enter Password/' ~/.config/hypr/hyprlock.conf
+[[ -f ~/.config/hypr/hyprlock.conf ]] && sed -i 's/fingerprint:enabled = .*/fingerprint:enabled = false/' ~/.config/hypr/hyprlock.conf
 omarchy-pkg-drop libpam-fprintd fprintd
 echo -e "\e[32mFingerprint authentication removed.\e[0m"

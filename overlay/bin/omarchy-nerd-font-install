@@ -19,6 +19,7 @@ ttf-*-nerd) echo "Unknown nerd font package: $1" >&2; exit 1 ;;
 "") echo "Usage: omarchy-nerd-font-install <ttf-name-nerd|ArchiveName>" >&2; exit 1 ;;
 *) archive="$1" ;;
 esac
+[[ $archive =~ ^[A-Za-z0-9]+$ ]] || { echo "Invalid font archive name: $archive" >&2; exit 1; }
 
 dest=~/.local/share/fonts/${archive}NerdFont
 if [[ -d $dest ]] && ls "$dest"/*.ttf >/dev/null 2>&1; then
@@ -31,6 +32,9 @@ trap 'rm -rf "$tmp"' EXIT
 echo "Downloading $archive Nerd Font $NERD_FONTS_VERSION..."
 curl -fsSL --retry 3 -o "$tmp/font.tar.xz" \
   "https://github.com/ryanoasis/nerd-fonts/releases/download/$NERD_FONTS_VERSION/$archive.tar.xz" || exit 1
+curl -fsSL --retry 3 -o "$tmp/SHA-256.txt" "https://github.com/ryanoasis/nerd-fonts/releases/download/$NERD_FONTS_VERSION/SHA-256.txt" || exit 1
+expected=$(awk -v n="$archive.tar.xz" '$2 == n {print $1}' "$tmp/SHA-256.txt" | head -1)
+[[ -n $expected && $(sha256sum "$tmp/font.tar.xz" | cut -d' ' -f1) == "$expected" ]] || { echo "Checksum mismatch for $archive.tar.xz" >&2; exit 1; }
 mkdir -p "$dest"
 tar xJf "$tmp/font.tar.xz" -C "$dest"
 fc-cache -f >/dev/null

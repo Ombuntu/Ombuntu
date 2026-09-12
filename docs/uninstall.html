@@ -19,9 +19,10 @@
 
 <p>From the Xubuntu session (log out of Ombuntu first), run the uninstaller that came with the install:</p>
 <div class="cmd"><pre id="un1">~/.local/share/ombuntu/repo/uninstall.sh</pre><button class="copy" data-for="un1" type="button" title="Copy" aria-label="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>
-<p>It removes the login entry, upstream Omarchy, the Ombuntu data and every configuration file the installer wrote, unmasks the user services it masked, and restores your backed-up <code>~/.bashrc</code>, git config and XCompose file.</p>
+<p>It removes the login entry, upstream Omarchy, the Ombuntu data and the configuration files the installer wrote (it keeps a list), unmasks the user services it masked, and restores every <code>.pre-omarchy</code> backup in place. Configuration you had before Ombuntu is left alone.</p>
 <table>
-<tr><td><code>--purge-packages</code></td><td>Also apt-remove the packages the installer added (Hyprland, Waybar, Alacritty and so on)</td></tr>
+<tr><td><code>--dry-run</code></td><td>Print what would be removed and change nothing</td></tr>
+<tr><td><code>--purge-packages</code></td><td>Also apt-remove the packages the installer added, and only those (recorded in <code>/etc/ombuntu/installed-packages</code>)</td></tr>
 <tr><td><code>--restore-telemetry</code></td><td>Put Canonical and browser telemetry back to Ubuntu defaults</td></tr>
 <tr><td><code>--yes</code></td><td>Skip the confirmation</td></tr>
 </table>

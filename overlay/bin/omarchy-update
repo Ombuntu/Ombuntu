@@ -19,8 +19,18 @@ sudo apt-get autoremove -y
 
 repo=$(cat "$OMARCHY_PATH/ombuntu-repo.path" 2>/dev/null)
 if [[ -n $repo && -d $repo/.git ]]; then
-  echo "Refreshing Omarchy overlay from $repo"
-  git -C "$repo" pull --ff-only 2>/dev/null || echo "(no upstream to pull from, using local copy)"
+  git -C "$repo" fetch -q --tags origin 2>/dev/null || echo "(could not reach the Ombuntu repository; using the local copy)"
+  if git -C "$repo" symbolic-ref -q HEAD >/dev/null; then
+    echo "Ombuntu checkout is on a branch (developer clone): pulling"
+    git -C "$repo" pull -q --ff-only --no-rebase 2>/dev/null || true
+  else
+    latest=$(git -C "$repo" tag -l 'v[0-9]*' | sort -V | tail -1)
+    current=$(git -C "$repo" describe --tags --exact-match 2>/dev/null)
+    if [[ -n $latest && $latest != "$current" ]]; then
+      echo "Ombuntu $current -> $latest"
+      git -C "$repo" checkout -q --force "$latest"
+    fi
+  fi
   bash "$repo/install.sh" --user-only
 fi
 

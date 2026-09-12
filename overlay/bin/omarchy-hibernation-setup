@@ -28,10 +28,12 @@ fi
 if [[ ! -f $SWAP_FILE ]]; then
   $FORCE || gum confirm "Create a $mem_human swapfile on the root drive for hibernation?" || exit 0
   echo "Creating $SWAP_FILE ($mem_human)"
-  sudo fallocate -l "${mem_kb}K" "$SWAP_FILE"
-  sudo chmod 600 "$SWAP_FILE"
-  sudo mkswap "$SWAP_FILE" >/dev/null
+  sudo fallocate -l "${mem_kb}K" "$SWAP_FILE.tmp"
+  sudo chmod 600 "$SWAP_FILE.tmp"
+  sudo mkswap "$SWAP_FILE.tmp" >/dev/null
+  sudo mv -f "$SWAP_FILE.tmp" "$SWAP_FILE"   # only a formatted swapfile ever lands at the final name
 fi
+grep -q '^GRUB_CMDLINE_LINUX_DEFAULT="' /etc/default/grub || { echo "GRUB_CMDLINE_LINUX_DEFAULT not found in /etc/default/grub; add the resume parameters by hand" >&2; exit 1; }
 grep -Fq "$SWAP_FILE" /etc/fstab || { sudo cp -a /etc/fstab "/etc/fstab.$(date +%Y%m%d%H%M%S).back"; printf '%s none swap sw 0 0\n' "$SWAP_FILE" | sudo tee -a /etc/fstab >/dev/null; }
 swapon --show=NAME --noheadings | grep -qx "$SWAP_FILE" || sudo swapon "$SWAP_FILE"
 
@@ -40,8 +42,10 @@ offset=$(sudo filefrag -v "$SWAP_FILE" | awk '$1=="0:" {gsub(/\.\./,"",$4); prin
 [[ -n $uuid && -n $offset ]] || { echo "Could not determine resume UUID/offset" >&2; exit 1; }
 
 echo "Configuring resume=UUID=$uuid resume_offset=$offset"
-echo "RESUME=UUID=$uuid" | sudo tee /etc/initramfs-tools/conf.d/ombuntu-resume >/dev/null
-sudo sed -i -E 's/ ?resume=UUID=[^ "]*//; s/ ?resume_offset=[0-9]*//' /etc/default/grub
+created_marker=""
+[[ $SWAP_FILE == /swapfile ]] && created_marker="# swapfile created by ombuntu: /swapfile"
+printf 'RESUME=UUID=%s\n%s\n' "$uuid" "$created_marker" | sudo tee /etc/initramfs-tools/conf.d/ombuntu-resume >/dev/null
+sudo sed -i -E '/^GRUB_CMDLINE_LINUX_DEFAULT=/ { s/ ?resume=UUID=[^ "]*//; s/ ?resume_offset=[0-9]*// }' /etc/default/grub
 sudo sed -i -E "s|^GRUB_CMDLINE_LINUX_DEFAULT=\"([^\"]*)\"|GRUB_CMDLINE_LINUX_DEFAULT=\"\1 resume=UUID=$uuid resume_offset=$offset\"|" /etc/default/grub
 sudo update-initramfs -u
 sudo update-grub

@@ -7,9 +7,11 @@ set -e
 if [[ ! -f /etc/initramfs-tools/conf.d/ombuntu-resume ]]; then echo "Hibernation is not set up."; exit 0; fi
 gum confirm "Remove hibernation setup?" || exit 0
 sudo rm -f /etc/initramfs-tools/conf.d/ombuntu-resume /etc/systemd/sleep.conf.d/ombuntu-hibernate.conf
-sudo sed -i -E 's/ ?resume=UUID=[^ "]*//; s/ ?resume_offset=[0-9]*//' /etc/default/grub
-if [[ -f /swapfile ]] && grep -q '^/swapfile ' /etc/fstab; then
-  sudo swapoff /swapfile 2>/dev/null || true
+sudo sed -i -E '/^GRUB_CMDLINE_LINUX_DEFAULT=/ { s/ ?resume=UUID=[^ "]*//; s/ ?resume_offset=[0-9]*// }' /etc/default/grub
+if grep -q '^# swapfile created by ombuntu: /swapfile$' /etc/initramfs-tools/conf.d/ombuntu-resume && [[ -f /swapfile ]]; then
+  if swapon --show=NAME --noheadings | grep -qx /swapfile; then
+    sudo swapoff /swapfile || { echo "swapoff /swapfile failed (not enough free memory?); nothing was removed. Free memory and retry." >&2; exit 1; }
+  fi
   sudo sed -i '\|^/swapfile |d' /etc/fstab
   sudo rm -f /swapfile
 fi

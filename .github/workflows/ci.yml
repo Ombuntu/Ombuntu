@@ -1,5 +1,8 @@
 name: CI
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [main]
@@ -99,6 +102,10 @@ jobs:
       - name: Verify - user config written
         run: |
           sudo -u tester -H bash -c 'test -f ~/.config/hypr/hyprland.conf && test -f ~/.config/hypr/monitors.conf && test -f ~/.config/waybar/config.jsonc && test -f ~/.config/omarchy/current/theme.name && test -f ~/.config/Hyprland-mimeapps.list && test -f ~/.local/share/ombuntu/cheatsheet.html && grep -q "password-store=gnome-libsecret" ~/.config/hypr/bindings.conf'
+      - name: Verify - installed-package record and uninstall dry run
+        run: |
+          test -s /etc/ombuntu/installed-packages && wc -l /etc/ombuntu/installed-packages
+          sudo -u tester -H bash -c "cd '$GITHUB_WORKSPACE' && ./uninstall.sh --dry-run --purge-packages --restore-telemetry | tail -20"
       - name: Verify - doctor runs
         run: |
           sudo -u tester -H bash -c 'export PATH=$HOME/.local/share/omarchy/bin:$HOME/.local/bin:$PATH OMARCHY_PATH=$HOME/.local/share/omarchy; ombuntu-doctor | tail -3'

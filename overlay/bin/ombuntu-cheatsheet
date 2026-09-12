@@ -6,4 +6,10 @@
 sheet="$HOME/.local/share/ombuntu/cheatsheet.html"
 [[ -f $sheet ]] || { notify-send -u critical "Cheatsheet not installed" "Re-run the Ombuntu installer"; exit 1; }
 
-exec omarchy-launch-or-focus "Ombuntu Cheatsheet" "omarchy-launch-webapp file://$sheet"
+# Focus by the browser app-window class (derived from the file URL, which a web page cannot
+# set); a page-controlled title is never used to pick the window.
+addr=$(hyprctl clients -j 2>/dev/null | jq -r '.[] | select(.class|test("ombuntu_cheatsheet\\.html")) | .address' | head -1)
+if [[ -n $addr ]]; then
+  exec hyprctl dispatch focuswindow "address:$addr"
+fi
+exec omarchy-launch-webapp "file://$sheet"

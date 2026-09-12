@@ -34,6 +34,7 @@ for pkg in "$@"; do
     # Ubuntu handler: third-party apt repo, vendor .deb, snap, or a clear "not available"
     "ombuntu-pkg-$pkg" || exit 1
   else
+    [[ $pkg =~ ^[a-z0-9][a-z0-9+.-]*$ ]] || { echo "Not a valid package name: $pkg" >&2; exit 1; }
     packages+=("$(map_pkg "$pkg")")
   fi
 done
@@ -41,7 +42,7 @@ done
 (( ${#packages[@]} )) || exit 0
 
 if omarchy-pkg-missing "${packages[@]}"; then
-  sudo apt-get install -y "${packages[@]}" || exit 1
+  sudo apt-get install -y -- "${packages[@]}" || exit 1
 fi
 
 for pkg in "${packages[@]}"; do

@@ -6,6 +6,17 @@ export DEBIAN_FRONTEND=noninteractive
 
 mapfile -t packages < <(grep -vE '^\s*(#|$)' "$OMBUNTU_REPO/install/packages.list")
 
+# Remember which packages this run adds, so uninstall.sh removes only those (never
+# packages that were already part of the system).
+before=$(mktemp); dpkg-query -W -f='${binary:Package}\n' 2>/dev/null | sort >"$before"
+mkdir -p /etc/ombuntu
+record_new_packages() {
+  dpkg-query -W -f='${binary:Package}\n' 2>/dev/null | sort | comm -13 "$before" - >>/etc/ombuntu/installed-packages
+  sort -u -o /etc/ombuntu/installed-packages /etc/ombuntu/installed-packages
+  rm -f "$before"
+}
+trap record_new_packages EXIT
+
 apt-get update
 apt-get install -y --no-install-recommends "${packages[@]}"
 # Recommends matter for a few desktop-facing packages (portals, blueman tray, qt styles)

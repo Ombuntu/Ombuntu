@@ -241,7 +241,23 @@ What the installer does with privilege, and what it deliberately leaves out.
   `/usr/share/wayland-sessions`. Everything else lives in your home directory.
 - **Every download is pinned and checksummed.** `install/checksums.sha256`
   holds the SHA256 of each Walker, Elephant, Satty, mise and Nerd Font archive;
-  a mismatch aborts the install. Upstream Omarchy is cloned at a fixed tag.
+  a mismatch aborts the install. Upstream Omarchy is cloned at a fixed tag
+  *and* the commit that tag must resolve to is pinned, so a moved tag is
+  refused. The same applies to the Walker and Elephant source builds on arm64.
+- **Vendor apt keys are verified by fingerprint.** Signal's key, and every
+  repository the Install menu can add (Microsoft, Brave, Mozilla, 1Password,
+  Tailscale, Sublime, Typora, Charm), is fetched over TLS and then compared
+  with the fingerprint pinned in the script; a mismatch is refused.
+- **Root never sees user-writable paths.** Root steps run with a fixed system
+  `PATH`; during the user steps Omarchy's own `bin` sits at the end of `PATH`,
+  so a compromised checkout cannot shadow `sha256sum`, `curl` or `apt`.
+- **The one-line installer fetches the newest release tag**, not the
+  development branch (`OMBUNTU_REF=main` opts in), and only trusts a checkout
+  next to `install.sh` when it is a git repository owned by you and not
+  writable by others.
+- **Uninstall removes only what the installer wrote.** Files are tracked in
+  `~/.local/state/ombuntu/manifest`, apt packages the installer *added* in
+  `/etc/ombuntu/installed-packages`; `--dry-run` shows the plan first.
 - **No plugin or hook execution.** Omarchy runs user scripts from
   `~/.config/omarchy/hooks/*.d/` on boot, theme change and update, and sources
   `~/.config/omarchy/extensions/menu.sh` into its menu. Ombuntu disables both:
@@ -266,10 +282,15 @@ What the installer does with privilege, and what it deliberately leaves out.
 
 Things to be aware of that are inherited from Omarchy's design: the clipboard
 manager keeps a history of what you copy (Super + Ctrl + V; clear it from the
-same menu), the launcher's web search sends what you type to the configured
-search engine when you use the `@` prefix, and screen sharing remembers your
+same menu); the launcher's web search sends what you type to the configured
+search engine when you use the `@` prefix; screen sharing remembers your
 choice of screen (`allow_token_by_default` in `~/.config/hypr/xdph.conf`) so
-that apps do not prompt every time. Set that to `false` if you prefer a prompt.
+that apps do not prompt every time (set it to `false` if you prefer a prompt);
+`focus_on_activate` lets an app that asks for focus take it; and Omarchy's
+own `bin` directory sits first in your interactive shell's `PATH`, which is
+Omarchy's trust model for its commands. The Docker databases from the menu
+run with empty or default passwords on localhost only, and the `docker` group
+is root-equivalent.
 
 ## Privacy
 
@@ -313,10 +334,13 @@ XFCE is untouched. From the Xubuntu session:
 ~/.local/share/ombuntu/repo/uninstall.sh
 ```
 
-Flags: `--purge-packages` also removes the apt packages the installer added,
+Flags: `--dry-run` prints the plan and changes nothing, `--purge-packages`
+also removes the apt packages the installer added (and only those),
 `--restore-telemetry` puts Canonical and browser telemetry back to Ubuntu
-defaults, `--yes` skips the confirmation. Backed-up files (`~/.bashrc`,
-`~/.config/git/config`, `~/.XCompose`) are restored.
+defaults, `--yes` skips the confirmation. Only files the installer wrote are
+removed; `*.pre-omarchy` backups (`~/.bashrc`, `~/.config/git/config`,
+`~/.XCompose`, anything overwritten with `--force-config`) are restored in
+place, and your own pre-existing configs are kept.
 
 ## Files this touches
 

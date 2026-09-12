@@ -21,6 +21,12 @@ else
   git clone -q --depth 1 --branch "$OMARCHY_REF" "$OMARCHY_UPSTREAM" "$OMARCHY_PATH"
 fi
 
+# Tags are mutable; the commit they must point at is pinned in install.sh / lib.sh.
+actual=$(git -C "$OMARCHY_PATH" rev-parse HEAD)
+if [[ -n $OMARCHY_COMMIT && $actual != "$OMARCHY_COMMIT" ]]; then
+  die "Upstream tag $OMARCHY_REF resolves to $actual, expected $OMARCHY_COMMIT. Refusing to continue; if upstream re-tagged legitimately, update OMARCHY_COMMIT."
+fi
+
 log "Applying Ubuntu overlay"
 cp -R "$OMBUNTU_REPO/overlay/." "$OMARCHY_PATH/"
 chmod +x "$OMARCHY_PATH"/bin/* "$OMARCHY_PATH"/default/waybar/indicators/*.sh 2>/dev/null || true

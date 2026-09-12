@@ -7,8 +7,10 @@ HELIX_VERSION="${HELIX_VERSION:-$(curl -fsSL https://api.github.com/repos/helix-
 case "$(ombuntu_arch)" in amd64) a=x86_64 ;; arm64) a=aarch64 ;; *) exit 1 ;; esac
 tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
 curl -fL --retry 3 --progress-bar -o "$tmp/helix.tar.xz" "$(gh_asset_url helix-editor/helix "$HELIX_VERSION" "helix-$HELIX_VERSION-$a-linux.tar.xz")"
-rm -rf ~/.local/helix && mkdir -p ~/.local/helix ~/.local/bin
-tar -xJf "$tmp/helix.tar.xz" -C ~/.local/helix --strip-components=1
+mkdir -p "$tmp/helix" ~/.local/bin
+tar -xJf "$tmp/helix.tar.xz" -C "$tmp/helix" --strip-components=1
+[[ -x $tmp/helix/hx ]] || { echo "Helix archive did not contain hx" >&2; exit 1; }
+rm -rf ~/.local/helix && mv "$tmp/helix" ~/.local/helix
 ln -sf ~/.local/helix/hx ~/.local/bin/hx
 ln -sf ~/.local/helix/hx ~/.local/bin/helix
 mkdir -p ~/.config/helix && ln -sfn ~/.local/helix/runtime ~/.config/helix/runtime

@@ -44,7 +44,8 @@ def panels():
         except OSError:
             continue
         if not modes: continue
-        w, h = map(int, modes[0].split("x")[:2]) if "x" in modes[0] else (0, 0)
+        m = re.match(r"^(\d+)x(\d+)", modes[0])
+        w, h = (int(m.group(1)), int(m.group(2))) if m else (0, 0)
         wcm = edid[21] if len(edid) >= 128 else 0
         dpi = w / (wcm / 2.54) if wcm else 0
         found.append((os.path.basename(d), modes[0], dpi))

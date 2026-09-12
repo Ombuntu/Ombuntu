@@ -1,7 +1,6 @@
 #!/bin/bash
-# NordVPN's official apt repository (added by their nordvpn-release package)
+# NordVPN from its signed apt repository
 source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
 set -e
-deb_install https://repo.nordvpn.com/deb/nordvpn/debian/pool/main/n/nordvpn-release/nordvpn-release_1.0.0_all.deb
-sudo apt-get update -qq
+apt_repo_add nordvpn https://repo.nordvpn.com/gpg/nordvpn_public.asc "deb https://repo.nordvpn.com/deb/nordvpn/debian stable main" BC5480EFEC5C081CE5BCFBE26B219E535C964CA1
 sudo apt-get install -y nordvpn

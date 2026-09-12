@@ -9,7 +9,7 @@ if ! command -v docker >/dev/null; then
   omarchy-pkg-add docker.io || exit 1
   sudo systemctl enable --now docker
   sudo usermod -aG docker "$USER"
-  echo "You were added to the docker group; it applies after your next login."
+  echo "You were added to the docker group (which is root-equivalent); it applies after your next login."
 fi
 
 options=("MySQL" "PostgreSQL" "Redis" "MongoDB" "MariaDB" "MSSQL")
@@ -19,14 +19,22 @@ else
   choices="$*"
 fi
 
+# Random per-database passwords, recorded in ~/.config/ombuntu/databases (mode 600).
+# Omarchy uses empty/known passwords; on a multi-user machine every local account could log in.
+mkdir -p ~/.config/ombuntu && touch ~/.config/ombuntu/databases && chmod 600 ~/.config/ombuntu/databases
+newpw() { openssl rand -hex 16; }
 for db in $choices; do
   echo "Installing $db..."
+  pw=$(newpw)
   case $db in
-  MySQL) sudo docker run -d --restart unless-stopped -p "127.0.0.1:3306:3306" --name=mysql8 -e MYSQL_ROOT_PASSWORD= -e MYSQL_ALLOW_EMPTY_PASSWORD=true mysql:8.4 ;;
-  PostgreSQL) sudo docker run -d --restart unless-stopped -p "127.0.0.1:5432:5432" --name=postgres18 -e POSTGRES_HOST_AUTH_METHOD=trust postgres:18 ;;
-  MariaDB) sudo docker run -d --restart unless-stopped -p "127.0.0.1:3306:3306" --name=mariadb11 -e MARIADB_ROOT_PASSWORD= -e MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true mariadb:11.8 ;;
-  Redis) sudo docker run -d --restart unless-stopped -p "127.0.0.1:6379:6379" --name=redis redis:7 ;;
-  MongoDB) sudo docker run -d --restart unless-stopped -p "127.0.0.1:27017:27017" --name mongodb -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=admin123 mongo:noble ;;
-  MSSQL) sudo docker run -d --restart unless-stopped -p "127.0.0.1:1433:1433" --name mssql -e MSSQL_PID=Developer -e ACCEPT_EULA=Y -e "MSSQL_SA_PASSWORD=@dmin123" mcr.microsoft.com/mssql/server:2022-CU12-ubuntu-22.04 ;;
+  MySQL) sudo docker run -d --restart unless-stopped -p "127.0.0.1:3306:3306" --name=mysql8 -e "MYSQL_ROOT_PASSWORD=$pw" mysql:8.4 ;;
+  PostgreSQL) sudo docker run -d --restart unless-stopped -p "127.0.0.1:5432:5432" --name=postgres18 -e "POSTGRES_PASSWORD=$pw" postgres:18 ;;
+  MariaDB) sudo docker run -d --restart unless-stopped -p "127.0.0.1:3306:3306" --name=mariadb11 -e "MARIADB_ROOT_PASSWORD=$pw" mariadb:11.8 ;;
+  Redis) sudo docker run -d --restart unless-stopped -p "127.0.0.1:6379:6379" --name=redis redis:7 redis-server --requirepass "$pw" ;;
+  MongoDB) sudo docker run -d --restart unless-stopped -p "127.0.0.1:27017:27017" --name mongodb -e MONGO_INITDB_ROOT_USERNAME=admin -e "MONGO_INITDB_ROOT_PASSWORD=$pw" mongo:noble ;;
+  MSSQL) pw="Aa1!$pw"; sudo docker run -d --restart unless-stopped -p "127.0.0.1:1433:1433" --name mssql -e MSSQL_PID=Developer -e ACCEPT_EULA=Y -e "MSSQL_SA_PASSWORD=$pw" mcr.microsoft.com/mssql/server:2022-CU12-ubuntu-22.04 ;;
+  *) continue ;;
   esac
+  printf '%s user=%s password=%s\n' "$db" "$([[ $db == MongoDB ]] && echo admin || [[ $db == MSSQL ]] && echo sa || [[ $db == PostgreSQL ]] && echo postgres || echo root)" "$pw" >>~/.config/ombuntu/databases
+  echo "  $db password saved to ~/.config/ombuntu/databases"
 done

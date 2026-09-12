@@ -37,12 +37,16 @@ fi
 WALKER_STAMP="${WALKER_STAMP:-$WALKER_VERSION}"
 ELEPHANT_STAMP="${ELEPHANT_STAMP:-$ELEPHANT_VERSION}"
 
-clone_tag() { # clone_tag <repo-url> <tag> <dir>
-  if [[ -d $3/.git ]] && [[ $(git -C "$3" describe --tags --exact-match 2>/dev/null) == "$2" ]]; then
-    return 0
+WALKER_COMMIT="${WALKER_COMMIT:-42b3ed88abf50bc52638fb2835b7f17e3ea3ac4c}"
+ELEPHANT_COMMIT="${ELEPHANT_COMMIT:-8e77c59ca5b7fd28c0a168535f1a1c000e6b5389}"
+
+clone_tag() { # clone_tag <repo-url> <tag> <dir> <expected-commit>
+  if [[ ! -d $3/.git ]] || [[ $(git -C "$3" describe --tags --exact-match 2>/dev/null) != "$2" ]]; then
+    rm -rf "$3"
+    git clone -q --depth 1 --branch "$2" "$1" "$3"
   fi
-  rm -rf "$3"
-  git clone -q --depth 1 --branch "$2" "$1" "$3"
+  local actual; actual=$(git -C "$3" rev-parse HEAD)
+  [[ $actual == "$4" ]] || die "$1 tag $2 resolves to $actual, expected $4 (tags are mutable; refusing to build it)"
 }
 
 # Walker
@@ -50,7 +54,7 @@ if [[ ! -x $BIN/walker || $(stamp walker) != "$WALKER_STAMP" ]]; then
   if [[ $SOURCE_BUILD == true ]]; then
     log "Walker $WALKER_VERSION (building from source with cargo, this takes a while)"
     command -v cargo >/dev/null || die "cargo is required to build Walker (sudo apt install cargo rustc, or run install.sh without --user-only)"
-    clone_tag https://github.com/abenz1267/walker.git "$WALKER_VERSION" "$CACHE/src/walker"
+    clone_tag https://github.com/abenz1267/walker.git "$WALKER_VERSION" "$CACHE/src/walker" "$WALKER_COMMIT"
     (cd "$CACHE/src/walker" && CARGO_TARGET_DIR="$CACHE/build/walker" cargo build --release --locked)
     install -m 755 "$CACHE/build/walker/release/walker" "$BIN/walker"
   else
@@ -68,7 +72,7 @@ if [[ ! -x $BIN/elephant || $(stamp elephant) != "$ELEPHANT_STAMP" ]]; then
   if [[ $SOURCE_BUILD == true ]]; then
     log "Elephant $ELEPHANT_VERSION (building from source with go)"
     command -v go >/dev/null || die "go is required to build Elephant (sudo apt install golang-go, or run install.sh without --user-only)"
-    clone_tag https://github.com/abenz1267/elephant.git "$ELEPHANT_VERSION" "$CACHE/src/elephant"
+    clone_tag https://github.com/abenz1267/elephant.git "$ELEPHANT_VERSION" "$CACHE/src/elephant" "$ELEPHANT_COMMIT"
     (
       cd "$CACHE/src/elephant"
       export CGO_ENABLED=1 GOFLAGS=-buildvcs=false

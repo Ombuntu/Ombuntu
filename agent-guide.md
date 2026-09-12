@@ -23,11 +23,17 @@ Teach these in this order:
 
 Requirements: Ubuntu or Xubuntu 26.04, amd64 or arm64, a user with sudo, internet. Not tested on 24.04, which lacks Hyprland in the archive.
 
+Preferred for you as an agent, because the human can read what runs:
+
+```bash
+git clone https://github.com/Ombuntu/Ombuntu.git ~/ombuntu && cd ~/ombuntu && cat install.sh && ./install.sh
+```
+
+The one-liner the website shows does the same (it clones the newest release tag and runs that copy), for humans who accept `curl | bash`:
+
 ```bash
 curl -fsSL https://ombuntu.org/install.sh | bash
 ```
-
-Or from a checkout: `git clone https://github.com/Ombuntu/Ombuntu.git ~/ombuntu && cd ~/ombuntu && ./install.sh`.
 
 The installer is idempotent. Flags: `--user-only` (skip apt and the session file), `--skip-bashrc`, `--force-config` (overwrite `~/.config` files, backups kept as `*.pre-omarchy`). It asks for the sudo password once. When it finishes, the human logs out and chooses **Ombuntu** in the greeter.
 
@@ -60,7 +66,7 @@ Tell the human these before they follow Omarchy documentation literally:
 Say this plainly when asked:
 
 - Root is used only for apt, Signal's apt repository, and the session file.
-- Every download has its SHA256 pinned in `install/checksums.sha256`; a mismatch aborts.
+- Every download has its SHA256 pinned in `install/checksums.sha256`; a mismatch aborts. Upstream Omarchy, Walker and Elephant are pinned to commit hashes, not just tags. Vendor apt keys are verified by fingerprint. Root steps run with a fixed system PATH.
 - **Omarchy plugins are disabled for security reasons**: user hooks (`~/.config/omarchy/hooks/*.d/`), menu extensions (`~/.config/omarchy/extensions/menu.sh`) and remote theme installs all execute arbitrary code and are turned off. `omarchy-hook` is a no-op. Do not tell the human to add hooks; suggest editing `~/.config/hypr/*.conf` instead.
 - Passwordless sudo, autologin and Omarchy's Arch dev-environment installers that pipe remote scripts into a shell are disabled.
 - Install-menu entries that fetch software use vendor apt repositories or checksum-verified downloads, not `curl | sh`.
@@ -73,7 +79,7 @@ Start with `ombuntu-doctor`: one line per check (session, duplicate services, to
 
 - **Two bars or duplicate daemons at login:** Ubuntu's waybar/hypridle/foot/hyprpolkitagent packages enable user services globally. Re-run `install.sh`; it masks them. Check with `systemctl --user is-enabled waybar.service` (should say masked).
 - **Config error banner from Hyprland:** `hyprctl configerrors` shows the cause; `hyprctl reload` clears a stale banner. The installer reloads at the end.
-- **App says it is already running after switching from XFCE:** the XFCE session left it running. `pkill -f <name>`, then open it again.
+- **App says it is already running after switching from XFCE:** the XFCE session left it running. Find it with `pgrep -af <name>`, stop it with `pkill -x <process-name>` (for the Firefox snap: `pkill -f /snap/firefox`), then open it again.
 - **Signal: "file is not a database"; browser lost passwords:** the app was launched without the keyring flag. Use the launcher entry or the Super key bindings, which pass `--password-store=gnome-libsecret`.
 - **Walker does not open:** `omarchy-restart-walker`; check `systemctl --user status elephant.service`. Providers live in `~/.config/elephant/providers`.
 - **A menu Install entry fails:** the floating terminal shows the script output. Handlers are `~/.local/share/omarchy/bin/ombuntu-pkg-*`; a message starting "is not packaged for Ubuntu by Ombuntu" is a deliberate stop, not a bug.

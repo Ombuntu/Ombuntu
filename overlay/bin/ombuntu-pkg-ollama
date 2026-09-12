@@ -15,13 +15,13 @@ verify_sha256_from_list "$tmp/$asset" "$tmp/sha256sum.txt"
 
 omarchy-pkg-add zstd
 echo "Installing to /usr/local..."
-sudo tar --zstd -C /usr/local -xf "$tmp/$asset"
+sudo tar --zstd --no-same-owner --no-same-permissions --owner=root --group=root -C /usr/local -xf "$tmp/$asset"
 
 # systemd service, as ollama.com/install.sh creates it
 if ! id ollama >/dev/null 2>&1; then
   sudo useradd -r -s /bin/false -U -m -d /usr/share/ollama ollama
 fi
-sudo usermod -a -G ollama "$USER"
+sudo usermod -a -G ollama "$(id -un)"
 sudo tee /etc/systemd/system/ollama.service >/dev/null <<'UNIT'
 [Unit]
 Description=Ollama Service

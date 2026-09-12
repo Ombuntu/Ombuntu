@@ -20,4 +20,12 @@ else
   fi
 fi
 
-exec setsid uwsm-app -- "$browser_exec" "${extra_flags[@]}" "${@/--private/$private_flag}"
+args=()
+for a in "$@"; do
+  case $a in
+  --private) args+=("$private_flag") ;;
+  -*) echo "omarchy-launch-browser: refusing to pass browser flag $a" >&2; exit 2 ;;
+  *) args+=("$a") ;;
+  esac
+done
+exec setsid uwsm-app -- "$browser_exec" "${extra_flags[@]}" "${args[@]}"

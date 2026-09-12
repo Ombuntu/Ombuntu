@@ -26,10 +26,23 @@ set -eEo pipefail
 # Bootstrap: when this file is run on its own (curl | bash, or a lone copy),
 # fetch the repository and hand over to the copy inside it.
 # ---------------------------------------------------------------------------
-if [[ -z ${BASH_SOURCE[0]} || ! -d "$(dirname "${BASH_SOURCE[0]}")/install" ]]; then
+# A checkout is only trusted when it is a git repository owned by this user and not
+# writable by others; a lone copy of this file next to a planted install/ directory
+# (in /tmp, say) must not be used.
+is_own_checkout() {
+  local d="$1" mode uid gid
+  [[ -f $d/install/lib.sh && -f $d/VERSION && -d $d/.git ]] || return 1
+  read -r uid gid mode < <(stat -c '%u %g %a' "$d") || return 1
+  [[ $uid == "$(id -u)" ]] || return 1
+  [[ ${mode: -1} =~ [0-5] ]] || return 1                       # not world-writable
+  # group-writable is fine only for the user's own primary group (Ubuntu user-private groups)
+  [[ ${mode: -2:1} =~ [0-5] || $gid == "$(id -g)" ]]
+}
+if [[ -z ${BASH_SOURCE[0]} ]] || ! is_own_checkout "$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd)"; then
   OMBUNTU_HOME="${OMBUNTU_HOME:-$HOME/.local/share/ombuntu/repo}"
   OMBUNTU_REPO_URL="${OMBUNTU_REPO_URL:-https://github.com/Ombuntu/Ombuntu.git}"
-  OMBUNTU_BRANCH="${OMBUNTU_BRANCH:-main}"
+  # Default: the newest release tag. OMBUNTU_REF=main opts into the development branch.
+  OMBUNTU_REF="${OMBUNTU_REF:-${OMBUNTU_BRANCH:-}}"
 
   printf '\033[32m==>\033[0m %s\n' "Ombuntu: Omarchy on Xubuntu"
 
@@ -47,13 +60,23 @@ if [[ -z ${BASH_SOURCE[0]} || ! -d "$(dirname "${BASH_SOURCE[0]}")/install" ]]; 
     sudo apt-get install -y -qq git curl
   fi
 
+  if [[ -z $OMBUNTU_REF ]]; then
+    OMBUNTU_REF=$(git ls-remote --tags "$OMBUNTU_REPO_URL" 2>/dev/null | grep -v '\^{}' | sed 's|.*refs/tags/||' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1)
+    [[ -n $OMBUNTU_REF ]] || { printf '\033[31m==> ERROR:\033[0m %s\n' "Could not determine the latest Ombuntu release; set OMBUNTU_REF=main to use the development branch." >&2; exit 1; }
+  fi
+
   if [[ -d $OMBUNTU_HOME/.git ]]; then
-    printf '\033[32m==>\033[0m %s\n' "Updating $OMBUNTU_HOME"
-    git -C "$OMBUNTU_HOME" pull -q --ff-only --no-rebase
+    printf '\033[32m==>\033[0m %s\n' "Updating $OMBUNTU_HOME to $OMBUNTU_REF"
+    git -C "$OMBUNTU_HOME" fetch -q --tags origin
+    if [[ $OMBUNTU_REF == main ]]; then
+      git -C "$OMBUNTU_HOME" checkout -q main && git -C "$OMBUNTU_HOME" pull -q --ff-only --no-rebase
+    else
+      git -C "$OMBUNTU_HOME" checkout -q --force "$OMBUNTU_REF"
+    fi
   else
-    printf '\033[32m==>\033[0m %s\n' "Fetching Ombuntu into $OMBUNTU_HOME"
+    printf '\033[32m==>\033[0m %s\n' "Fetching Ombuntu $OMBUNTU_REF into $OMBUNTU_HOME"
     mkdir -p "$(dirname "$OMBUNTU_HOME")"
-    git clone -q --depth 1 --branch "$OMBUNTU_BRANCH" "$OMBUNTU_REPO_URL" "$OMBUNTU_HOME"
+    git clone -q --branch "$OMBUNTU_REF" "$OMBUNTU_REPO_URL" "$OMBUNTU_HOME"
   fi
 
   # Hand the terminal back to the real installer so sudo and prompts work when piped from curl
@@ -68,6 +91,7 @@ OMBUNTU_REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export OMBUNTU_REPO
 export OMARCHY_PATH="$HOME/.local/share/omarchy"
 export OMARCHY_REF="${OMARCHY_REF:-v3.8.4}"
+export OMARCHY_COMMIT="${OMARCHY_COMMIT:-8fcc9d6048af4cb0e3af8512c78049857a3b53dd}"  # commit the tag must resolve to
 export OMARCHY_UPSTREAM="${OMARCHY_UPSTREAM:-https://github.com/basecamp/omarchy.git}"
 export PATH="$OMARCHY_PATH/bin:$HOME/.local/bin:$PATH"
 

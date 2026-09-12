@@ -10,6 +10,6 @@ for pkg in "$@"; do
 done
 
 if (( ${#installed[@]} > 0 )); then
-  sudo apt-get remove --purge -y "${installed[@]}"
+  sudo apt-get remove --purge -y -- "${installed[@]}"
   sudo apt-get autoremove -y
 fi

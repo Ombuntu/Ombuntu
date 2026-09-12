@@ -2,5 +2,5 @@
 # Crush from Charm's official apt repository
 source "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/ombuntu-lib.sh"
 set -e
-apt_repo_add charm https://repo.charm.sh/apt/gpg.key "deb https://repo.charm.sh/apt/ * *"
+apt_repo_add charm https://repo.charm.sh/apt/gpg.key "deb https://repo.charm.sh/apt/ * *" ED927B38BE981E53CA09153D03BBF595D4DFD35C
 sudo apt-get install -y crush

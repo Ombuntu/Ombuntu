@@ -39,7 +39,14 @@ systemctl reload NetworkManager >/dev/null 2>&1 || true
 # --- Firefox (deb or snap: both read /etc/firefox/policies) -----------------
 if [[ $OMBUNTU_NO_FIREFOX_POLICY != true ]]; then
   install -d -m 0755 /etc/firefox/policies
-  install -m 0644 "$OMBUNTU_REPO/privacy/firefox-policies.json" /etc/firefox/policies/policies.json
+  pol=/etc/firefox/policies/policies.json
+  if [[ -s $pol ]] && ! grep -q '"_ombuntu"' "$pol"; then
+    # A policy file we did not write (managed machine?) is kept, backed up, and not replaced
+    warn "Existing $pol is not Ombuntu's; leaving it in place (saved copy: $pol.pre-ombuntu). Use --no-firefox-policy to silence this."
+    cp -a "$pol" "$pol.pre-ombuntu"
+  else
+    install -m 0644 "$OMBUNTU_REPO/privacy/firefox-policies.json" "$pol"
+  fi
 fi
 
 # --- Chromium family: Chrome, Chromium, Brave, Edge, Vivaldi ------------------
