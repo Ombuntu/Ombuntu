@@ -243,6 +243,38 @@ search engine when you use the `@` prefix, and screen sharing remembers your
 choice of screen (`allow_token_by_default` in `~/.config/hypr/xdph.conf`) so
 that apps do not prompt every time. Set that to `false` if you prefer a prompt.
 
+## Privacy
+
+Ubuntu and the browsers phone home by default. The installer's privacy step
+turns that off; each item is a config file or service state you can reverse.
+
+- **Canonical:** apport crash collection disabled and the whoopsie uploader
+  removed; ubuntu-report, popularity-contest and kerneloops removed if present;
+  Ubuntu Pro adverts off in the login message (`/etc/default/motd-news`) and in
+  apt (`pro config set apt_news=false`), and the Pro timer disabled. The desktop
+  privacy settings for usage statistics and problem reports are off.
+- **Firefox:** telemetry, studies, Pocket, sponsored tiles and suggestions off
+  via `/etc/firefox/policies/policies.json` (the snap reads it too). Tracking
+  protection is set to strict.
+- **Chrome, Chromium, Brave, Edge, Vivaldi:** metrics reporting, URL-keyed data
+  collection, extended Safe Browsing reporting, the Google spell-check service,
+  search suggestions, alternate error pages, link prefetching, promotions,
+  surveys and the Privacy Sandbox ad APIs off via a policy file in each
+  browser's `/etc/.../policies/managed` directory. Vivaldi additionally sends
+  its own anonymous usage-count ping, which has no policy switch.
+- **Developer tools:** `DO_NOT_TRACK=1` and the opt-out variables for .NET,
+  Next.js, Nuxt, Astro, Gatsby, Homebrew, PowerShell, Azure CLI, AWS SAM,
+  Stripe CLI and Hugging Face are set in the session and shell. VS Code and Zed
+  installed from the menu get telemetry off in their settings.
+
+Left alone, and why: snapd talks to the Snap Store to keep Firefox updated
+(inherent to snaps); NetworkManager's captive-portal check contacts
+`connectivity-check.ubuntu.com` when a network comes up, which is what makes
+hotel Wi-Fi login pages appear (disable with a `[connectivity] enabled=false`
+NetworkManager config if you prefer); apt itself downloads package lists from
+Ubuntu mirrors. Signal, Walker, Elephant, Mako, Waybar and the rest of the
+desktop have no telemetry.
+
 ## Uninstall
 
 XFCE is untouched, so removal is:

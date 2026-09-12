@@ -100,6 +100,7 @@ step "Theme" "$OMBUNTU_REPO/install/50-theme.sh"
 
 if [[ $OMARCHY_USER_ONLY == false ]]; then
   step "Login session" "$OMBUNTU_REPO/install/60-session.sh" root
+  step "Privacy (telemetry off)" "$OMBUNTU_REPO/install/70-privacy.sh" root
 fi
 
 step "Verify Hyprland config" "$OMBUNTU_REPO/install/90-verify.sh"

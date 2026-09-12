@@ -16,3 +16,5 @@ ln -sf ~/.local/zed.app/bin/zed ~/.local/bin/zeditor
 cp -f ~/.local/zed.app/share/applications/dev.zed.Zed.desktop ~/.local/share/applications/dev.zed.Zed.desktop
 sed -i "s|^Icon=.*|Icon=$HOME/.local/zed.app/share/icons/hicolor/512x512/apps/zed.png|; s|^Exec=zed|Exec=$HOME/.local/zed.app/bin/zed|" ~/.local/share/applications/dev.zed.Zed.desktop
 update-desktop-database ~/.local/share/applications 2>/dev/null || true
+mkdir -p ~/.config/zed
+[[ -s ~/.config/zed/settings.json ]] || printf '{\n  "telemetry": { "diagnostics": false, "metrics": false }\n}\n' >~/.config/zed/settings.json

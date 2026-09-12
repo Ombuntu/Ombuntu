@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# omarchy:summary=Install VS Code from Microsoft's apt repository with keyring storage and telemetry off
+# omarchy:requires-sudo=true
+
+echo "Installing VSCode..."
+omarchy-pkg-add visual-studio-code-bin || exit 1
+mkdir -p ~/.vscode ~/.config/Code/User
+cat >~/.vscode/argv.json <<'EOF2'
+// Permanent command line arguments for VS Code. Changing this file requires a restart.
+{
+  "password-store":"gnome-libsecret",
+  "enable-crash-reporter": false
+}
+EOF2
+[[ -s ~/.config/Code/User/settings.json ]] || printf '{\n  "update.mode": "none",\n  "telemetry.telemetryLevel": "off",\n  "workbench.enableExperiments": false\n}\n' >~/.config/Code/User/settings.json
+omarchy-theme-set-vscode
+setsid gtk-launch code >/dev/null 2>&1 &

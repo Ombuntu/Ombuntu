@@ -1,17 +1,14 @@
-# Changes require a restart to take effect.
-# Note: uwsm evaluates this file with /bin/sh (dash on Ubuntu), so keep it POSIX.
+# Editor used by CLI
+export SUDO_EDITOR="$EDITOR"
+export BAT_THEME=ansi
 
-# Ensure Omarchy bins are in the path
+# Color man pages with bat
+export MANROFFOPT="-c"
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
+# Duplicated from .config/uwsm/env so SSH works too
 export OMARCHY_PATH=$HOME/.local/share/omarchy
 export PATH=$OMARCHY_PATH/bin:$PATH:$HOME/.local/bin
-
-# Set default terminal and editor
-. "$HOME/.config/uwsm/default"
-
-# Activate mise if present on the system
-if command -v mise >/dev/null 2>&1; then
-  eval "$(mise activate bash --shims)"
-fi
 
 # Opt out of telemetry in developer tools that honour these (consoledonottrack.com and friends)
 export DO_NOT_TRACK=1

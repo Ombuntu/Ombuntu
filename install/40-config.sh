@@ -161,5 +161,9 @@ ombuntu-browser-decorations off || true
 # 19. Default terminal for xdg-terminal-exec (Alacritty, like Omarchy)
 [[ -f ~/.config/xdg-terminals.list ]] || cp "$OMARCHY_PATH/config/xdg-terminals.list" ~/.config/
 
-# 20. GTK primary-paste like Omarchy's first-run
+# 20. No usage statistics or problem reports from the desktop
+gsettings set org.gnome.desktop.privacy send-software-usage-stats false 2>/dev/null || true
+gsettings set org.gnome.desktop.privacy report-technical-problems false 2>/dev/null || true
+
+# 21. GTK primary-paste like Omarchy's first-run
 gsettings set org.gnome.desktop.interface gtk-enable-primary-paste true 2>/dev/null || true
