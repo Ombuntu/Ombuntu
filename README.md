@@ -120,9 +120,17 @@ The full manual is at <https://manuals.omamix.org/2/the-omarchy-manual>.
 | Mako only | Mako, with XFCE's `xfce4-notifyd` kept out of the Hyprland session | Both claim the notifications bus name |
 | `scrolling` layout option | Guarded with `hyprlang noerror` | Needs Hyprland 0.54+, Ubuntu has 0.53.3 |
 | Default apps set globally | Set only for the Hyprland session (`~/.config/Hyprland-mimeapps.list`) | Keeps XFCE defaults intact |
+| Hooks, menu extensions, remote theme install | Disabled | Security: they execute arbitrary user-supplied code |
 | Browser title-bar buttons | Chromium-family browsers and Firefox switched to system decorations, so no minimize/maximize/close buttons | Hyprland draws no decorations; `ombuntu-browser-decorations on` restores them |
 
 Signal Desktop is installed from Signal's own apt repository, as on Arch.
+
+**Omarchy plugins are disabled for security reasons.** Omarchy's hooks
+(`~/.config/omarchy/hooks/*.d/`), menu extensions
+(`~/.config/omarchy/extensions/menu.sh`) and remote theme installs all run
+arbitrary code with your user rights, triggered by everyday actions such as
+booting, changing theme or updating. Ombuntu turns these off; see
+[Security notes](#security-notes) for the full list.
 
 Skipped entirely: 1Password, Spotify, Obsidian, Typora, LocalSend, Pinta,
 Docker, snapper/limine, and the Arch hardware fix-ups. Their keybindings stay in
