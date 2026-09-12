@@ -169,5 +169,11 @@ ombuntu-browser-decorations off || true
 gsettings set org.gnome.desktop.privacy send-software-usage-stats false 2>/dev/null || true
 gsettings set org.gnome.desktop.privacy report-technical-problems false 2>/dev/null || true
 
-# 21. GTK primary-paste like Omarchy's first-run
+# 21. With apport disabled and whoopsie removed, Ubuntu's crash-notification helper
+#     exits 1 (its script does `which whoopsie` under set -e), and uwsm's failed-unit
+#     monitor would report that as an error. Nothing to notify about, so mask it.
+systemctl --user mask update-notifier-crash.path update-notifier-crash.service >/dev/null 2>&1 || true
+systemctl --user reset-failed update-notifier-crash.service >/dev/null 2>&1 || true
+
+# 22. GTK primary-paste like Omarchy's first-run
 gsettings set org.gnome.desktop.interface gtk-enable-primary-paste true 2>/dev/null || true
