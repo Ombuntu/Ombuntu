@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.2
+
+- The installer refuses Ubuntu releases older than 26.04, in preflight and in the one-line bootstrap, instead of reaching apt and failing with a wall of `Unable to locate package`; the package step also reports apt failures in its own words.
+- The package step no longer fails on a non-C locale: `comm` compares byte-wise while `sort` followed the caller's collation, so the step reported failure after installing everything correctly and the install stopped with no error of its own. Package bookkeeping can no longer abort an install.
+- `plocate` dropped: nothing in Ombuntu or Omarchy calls `locate`, and its first-run `updatedb` looks exactly like a hung installer on a machine with large or slow mounts.
+- The background chooser offers only Ombuntu wallpapers, and the theme step no longer looks in the removed theme background folder on a fresh install.
+- Wording throughout: Ombuntu's adaptations, not an Omarchy overlay. The landing page opens the cheatsheet in a new tab.
+
 ## 0.1.1
 
 First signed release.
