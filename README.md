@@ -174,7 +174,10 @@ Everything this repo adds is called Ombuntu: the login session, the About
 screen and screensaver, the `ombuntu` command. The upstream engine keeps its
 `omarchy-*` command names and `~/.local/share/omarchy` path, because its 280+
 scripts call each other by those names. `ombuntu` is the same dispatcher, so
-`ombuntu theme set nord` and `omarchy theme set nord` are equivalent.
+`ombuntu theme set nord` and `omarchy theme set nord` are equivalent, and every
+tool carries an `ombuntu-*` alias beside its upstream name: `ombuntu-menu` and
+`omarchy-menu` are one script. Ombuntu's own scripts win where the names meet
+(`ombuntu-version` reports the Ombuntu version, not Omarchy's).
 
 ## Commands Ombuntu adds
 
