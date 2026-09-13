@@ -77,7 +77,7 @@ if [[ -z ${BASH_SOURCE[0]} ]] || ! is_own_checkout "$(cd "$(dirname "${BASH_SOUR
   # Release tags must be signed by the Ombuntu release key (SSH signature). The key is embedded
   # here on purpose: this file is served from ombuntu.org, so a compromised GitHub repository
   # cannot ship a tag signed by some other key together with a matching signer list.
-  OMBUNTU_RELEASE_KEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO1w+Rwt4vkTc7Yf5SfAzw+OerDxNg5Grh05aLee1ajE"
+  OMBUNTU_RELEASE_KEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPM3a2X/L2JZ5fcl//oGA7F97c5ZvrZG29WTSoRIzics"
   verify_release_tag() { # verify_release_tag <repo-dir> <tag>
     local signers; signers=$(mktemp)
     echo "ombuntu-release $OMBUNTU_RELEASE_KEY" >"$signers"
