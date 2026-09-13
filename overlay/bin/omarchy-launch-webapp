@@ -23,9 +23,15 @@ browser=$(xdg-settings get default-web-browser)
 
 case $browser in
 google-chrome* | brave* | microsoft-edge* | opera* | vivaldi* | helium*) ;;
-*) browser="chromium.desktop" ;;
+# Ubuntu never ships a plain chromium.desktop: the snap is chromium_chromium.desktop and the
+# deb is chromium-browser.desktop. Try each, then Chrome, before giving up.
+*) browser="chromium.desktop chromium_chromium.desktop chromium-browser.desktop google-chrome.desktop" ;;
 esac
 
+for candidate in $browser; do
+  exe=$(desktop_exec "$candidate") && break
+done
+[[ -n ${exe:-} ]] || { echo "No Chromium-family browser found; web apps need one (install Chromium or Chrome)." >&2; exit 1; }
+
 # Keep saved logins readable under Hyprland (see omarchy-launch-browser)
-# shellcheck disable=SC2046  # the Exec= first word is a single token
-exec setsid uwsm-app -- "$(desktop_exec "$browser")" --password-store=gnome-libsecret --app="$1" "${@:2}"
+exec setsid uwsm-app -- "$exe" --password-store=gnome-libsecret --app="$1" "${@:2}"
