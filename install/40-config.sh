@@ -122,8 +122,11 @@ cp -f "$OMBUNTU_REPO/config/uwsm/env" ~/.config/uwsm/env
 # 12. Ubuntu's waybar/hypridle/foot/hyprpolkitagent packages ship user services that
 #     systemd enables by default. Omarchy starts these itself from Hyprland's autostart,
 #     so the services only produce duplicates (two bars, two idle daemons).
+#     mako and swaync are the same story with a twist: Ubuntu's hyprland package depends on
+#     sway-notification-center | dunst, so swaync always comes along, and its unit claims the
+#     same BusName as mako's, which makes systemd refuse to load either one.
 # (they are enabled globally by the packages in /etc/systemd/user, so a per-user mask is required)
-systemctl --user mask --now waybar.service hypridle.service foot-server.socket foot-server.service hyprpolkitagent.service >/dev/null 2>&1 || true
+systemctl --user mask --now waybar.service hypridle.service foot-server.socket foot-server.service hyprpolkitagent.service mako.service swaync.service >/dev/null 2>&1 || true
 
 # 13. XFCE's notification daemon is D-Bus activated and collides with Mako under Hyprland
 mkdir -p ~/.config/systemd/user/xfce4-notifyd.service.d
