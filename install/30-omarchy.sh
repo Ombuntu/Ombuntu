@@ -51,5 +51,22 @@ grep -q "^OnlyShowIn=" "$OMARCHY_PATH/default/walker/walker.desktop" || echo "On
 mkdir -p ~/.local/bin
 ln -sfn "$OMARCHY_PATH/bin/omarchy" ~/.local/bin/omarchy
 
+# Ombuntu's own name for every tool: omarchy-foo is also callable as ombuntu-foo.
+# Aliases rather than renames, so upstream's own calls and the `omarchy` dispatcher
+# (which globs omarchy-*) keep working and the checkout stays at its pinned commit.
+# An Ombuntu script of the same name always wins: ombuntu-version is ours, not an alias.
+for tool in "$OMARCHY_PATH"/bin/omarchy-*; do
+  alias_path="$OMARCHY_PATH/bin/ombuntu-${tool##*/omarchy-}"
+  [[ -f $tool ]] || continue
+  [[ ! -e $alias_path || -L $alias_path ]] || continue
+  ln -sfn "$tool" "$alias_path"
+done
+
+# The dispatcher is reached as both `omarchy` and `ombuntu`; name the desktop it drives.
+sed -i 's/\bOmarchy\b/Ombuntu/g' "$OMARCHY_PATH/bin/omarchy"
+# Help text quotes these examples verbatim, so spell them with the Ombuntu command name.
+# Only the value is touched: the "omarchy:" metadata key is what the dispatcher parses.
+sed -i 's/^\(# omarchy:[a-z]*=\)omarchy /\1ombuntu /' "$OMARCHY_PATH"/bin/omarchy-*
+
 # Trim the menu to entries that work on Ubuntu (see install/patch-menu.py)
 python3 "$OMBUNTU_REPO/install/patch-menu.py" "$OMARCHY_PATH/bin/omarchy-menu"
