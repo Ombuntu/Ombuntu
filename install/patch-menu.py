@@ -53,6 +53,12 @@ s2 = re.sub(r'\S  Arch\\n', '\uf31b  Ubuntu\\n', s); assert s2 != s; s = s2
 drop_line(r'\*Arch\*\) omarchy-launch-webapp "https://wiki\.archlinux\.org')
 s = s.replace('  *Omarchy*) omarchy-launch-webapp', '  *Ubuntu*) omarchy-launch-webapp "https://help.ubuntu.com/" ;;\n  *Omarchy*) omarchy-launch-webapp', 1)
 
+# Learn: Ombuntu's own docs in place of the Omarchy manual, which documents the Arch original
+s2 = re.sub(r'\S  Omarchy\\n', '\uf31b  Ombuntu\\n', s); assert s2 != s; s = s2
+s2 = s.replace('*Omarchy*) omarchy-launch-webapp "https://learn.omacom.io/2/the-omarchy-manual"',
+               '*Ombuntu*) omarchy-launch-webapp "https://ombuntu.org/docs/"', 1)
+assert s2 != s, "menu patch: Omarchy manual entry not found"; s = s2
+
 # Toggle: direct boot and passwordless sudo are disabled on Ombuntu
 drop_option("Direct Boot"); drop_line(r'\*"Direct Boot"\*\)')
 drop_option("Passwordless Sudo"); drop_line(r'\*"Passwordless Sudo"\*\)')
