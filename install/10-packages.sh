@@ -3,6 +3,8 @@
 set -eEo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 export DEBIAN_FRONTEND=noninteractive
+# comm compares byte-wise, so every sort feeding it must use the same collation.
+export LC_ALL=C
 
 mapfile -t packages < <(grep -vE '^\s*(#|$)' "$OMBUNTU_REPO/install/packages.list")
 
@@ -11,7 +13,7 @@ mapfile -t packages < <(grep -vE '^\s*(#|$)' "$OMBUNTU_REPO/install/packages.lis
 before=$(mktemp); dpkg-query -W -f='${binary:Package}\n' 2>/dev/null | sort >"$before"
 mkdir -p /etc/ombuntu
 record_new_packages() {
-  dpkg-query -W -f='${binary:Package}\n' 2>/dev/null | sort | comm -13 "$before" - >>/etc/ombuntu/installed-packages
+  dpkg-query -W -f='${binary:Package}\n' 2>/dev/null | sort | comm -13 "$before" - >>/etc/ombuntu/installed-packages || true
   sort -u -o /etc/ombuntu/installed-packages /etc/ombuntu/installed-packages
   rm -f "$before"
 }
