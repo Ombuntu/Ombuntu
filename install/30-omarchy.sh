@@ -68,5 +68,11 @@ sed -i 's/\bOmarchy\b/Ombuntu/g' "$OMARCHY_PATH/bin/omarchy"
 # Only the value is touched: the "omarchy:" metadata key is what the dispatcher parses.
 sed -i 's/^\(# omarchy:[a-z]*=\)omarchy /\1ombuntu /' "$OMARCHY_PATH"/bin/omarchy-*
 
+# Upstream registers subcommand completion for the name "omarchy" only; the dispatcher
+# answers to "ombuntu" as well, so give that name the same completion function.
+comp="$OMARCHY_PATH/default/bash/completions"
+grep -q '_omarchy_complete ombuntu$' "$comp" ||
+  sed -i 's/^complete -o default -F _omarchy_complete omarchy$/&\ncomplete -o default -F _omarchy_complete ombuntu/' "$comp"
+
 # Trim the menu to entries that work on Ubuntu (see install/patch-menu.py)
 python3 "$OMBUNTU_REPO/install/patch-menu.py" "$OMARCHY_PATH/bin/omarchy-menu"

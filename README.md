@@ -178,6 +178,8 @@ scripts call each other by those names. `ombuntu` is the same dispatcher, so
 tool carries an `ombuntu-*` alias beside its upstream name: `ombuntu-menu` and
 `omarchy-menu` are one script. Ombuntu's own scripts win where the names meet
 (`ombuntu-version` reports the Ombuntu version, not Omarchy's).
+Tab completion covers both: `ombuntu-<Tab>` lists the tools, and `ombuntu <Tab>`
+completes dispatcher subcommands the same way `omarchy <Tab>` does.
 
 ## Commands Ombuntu adds
 
