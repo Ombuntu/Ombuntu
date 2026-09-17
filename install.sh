@@ -167,6 +167,7 @@ if [[ $OMARCHY_USER_ONLY == false ]]; then
   if [[ $OMBUNTU_KEEP_TELEMETRY != true ]]; then
     step "Privacy (telemetry off)" "$OMBUNTU_REPO/install/70-privacy.sh" root
   fi
+  step "Browser defaults (extensions, search)" "$OMBUNTU_REPO/install/75-browser-defaults.sh" root
 fi
 
 step "Verify Hyprland config" "$OMBUNTU_REPO/install/90-verify.sh"

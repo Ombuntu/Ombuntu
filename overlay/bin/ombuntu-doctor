@@ -69,6 +69,7 @@ check "apport disabled" bash -c "grep -q '^enabled=0' /etc/default/apport"
 check "whoopsie absent" bash -c "! dpkg-query -W -f='\${Status}' whoopsie 2>/dev/null | grep -q 'install ok installed'"
 check "Firefox policy installed" test -f /etc/firefox/policies/policies.json
 check "Chromium-family policy installed" test -f /etc/chromium/policies/managed/ombuntu-privacy.json
+check "Chromium-family defaults installed" test -f /etc/chromium/policies/managed/ombuntu-defaults.json
 check "Connectivity check to Canonical disabled" test -f /etc/NetworkManager/conf.d/99-ombuntu-no-connectivity-check.conf
 check "DO_NOT_TRACK set in the session" test "${DO_NOT_TRACK:-}" = 1
 echo
