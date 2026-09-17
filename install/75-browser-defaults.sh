@@ -13,7 +13,11 @@
 set -eEo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/lib.sh"
 
-for dir in /etc/opt/chrome/policies/managed /etc/chromium/policies/managed /etc/brave/policies/managed /etc/opt/edge/policies/managed /etc/vivaldi/policies/managed; do
+# /etc/chromium-browser is where Ubuntu's chromium snap reads policy: its AppArmor profile
+# allows /etc/chromium-browser/policies, not /etc/chromium/policies. Since chromium-browser
+# is a transitional package to that snap, the snap is the Chromium most machines have.
+for dir in /etc/opt/chrome/policies/managed /etc/chromium/policies/managed /etc/chromium-browser/policies/managed \
+  /etc/brave/policies/managed /etc/opt/edge/policies/managed /etc/vivaldi/policies/managed; do
   install -d -m 0755 "$dir"
   install -m 0644 "$OMBUNTU_REPO/config-system/chromium-defaults.json" "$dir/ombuntu-defaults.json"
 done

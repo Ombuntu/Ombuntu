@@ -50,7 +50,11 @@ if [[ $OMBUNTU_NO_FIREFOX_POLICY != true ]]; then
 fi
 
 # --- Chromium family: Chrome, Chromium, Brave, Edge, Vivaldi ------------------
-for dir in /etc/opt/chrome/policies/managed /etc/chromium/policies/managed /etc/brave/policies/managed /etc/opt/edge/policies/managed /etc/vivaldi/policies/managed; do
+# /etc/chromium-browser is where Ubuntu's chromium snap reads policy: its AppArmor profile
+# allows /etc/chromium-browser/policies, not /etc/chromium/policies. Since chromium-browser
+# is a transitional package to that snap, the snap is the Chromium most machines have.
+for dir in /etc/opt/chrome/policies/managed /etc/chromium/policies/managed /etc/chromium-browser/policies/managed \
+  /etc/brave/policies/managed /etc/opt/edge/policies/managed /etc/vivaldi/policies/managed; do
   install -d -m 0755 "$dir"
   install -m 0644 "$OMBUNTU_REPO/privacy/chromium-policies.json" "$dir/ombuntu-privacy.json"
 done

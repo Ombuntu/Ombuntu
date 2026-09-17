@@ -90,7 +90,9 @@ if [[ $RESTORE == true ]]; then
     /etc/opt/edge/policies/managed/ombuntu-privacy-edge.json /etc/vivaldi/policies/managed/ombuntu-privacy.json
   run sudo rm -f /etc/opt/chrome/policies/managed/ombuntu-defaults.json /etc/chromium/policies/managed/ombuntu-defaults.json \
     /etc/brave/policies/managed/ombuntu-defaults.json /etc/opt/edge/policies/managed/ombuntu-defaults.json \
-    /etc/vivaldi/policies/managed/ombuntu-defaults.json
+    /etc/vivaldi/policies/managed/ombuntu-defaults.json \
+    /etc/chromium-browser/policies/managed/ombuntu-privacy.json \
+    /etc/chromium-browser/policies/managed/ombuntu-defaults.json
 fi
 
 log "User services"
