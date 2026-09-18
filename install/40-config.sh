@@ -137,12 +137,15 @@ ConditionEnvironment=!XDG_CURRENT_DESKTOP=Hyprland
 UNIT
 systemctl --user daemon-reload || true
 
-# 14. Xubuntu's MATE polkit agent autostart entry fails under Hyprland (hyprpolkitagent already
-#     holds the agent registration); hide it for this session only
-if [[ -f /etc/xdg/autostart/polkit-mate-authentication-agent-1.desktop ]]; then
-  sed 's/^NotShowIn=.*/&Hyprland;/' /etc/xdg/autostart/polkit-mate-authentication-agent-1.desktop >~/.config/autostart/polkit-mate-authentication-agent-1.desktop
-  grep -q '^NotShowIn=' ~/.config/autostart/polkit-mate-authentication-agent-1.desktop || echo 'NotShowIn=Hyprland;' >>~/.config/autostart/polkit-mate-authentication-agent-1.desktop
-fi
+# 14. Xubuntu session services that collide under Hyprland, hidden for this session only:
+#     - the MATE polkit agent: hyprpolkitagent already holds the agent registration
+#     - Ayatana's indicator service: it takes org.kde.StatusNotifierWatcher, and then every
+#       tray item registers with it instead of waybar, whose tray stays empty
+for entry in polkit-mate-authentication-agent-1 ayatana-indicator-application; do
+  [[ -f /etc/xdg/autostart/$entry.desktop ]] || continue
+  sed 's/^NotShowIn=.*/&Hyprland;/' "/etc/xdg/autostart/$entry.desktop" >~/.config/autostart/"$entry".desktop
+  grep -q '^NotShowIn=' ~/.config/autostart/"$entry".desktop || echo 'NotShowIn=Hyprland;' >>~/.config/autostart/"$entry".desktop
+done
 
 # 15. Ombuntu naming in the places the user sees it
 sed -i 's/"Omarchy Menu\\n/"Ombuntu Menu\\n/; s/Omarchy update available/Ubuntu updates available/' ~/.config/waybar/config.jsonc
