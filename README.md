@@ -143,6 +143,7 @@ The full manual is at <https://manuals.omamix.org/2/the-omarchy-manual>.
 | Fingerprint / FIDO2 login, hibernation | Ubuntu versions: fprintd and libpam-u2f via PAM; ext4 swapfile with GRUB and initramfs resume | Omarchy's use Arch PAM layout, limine and mkinitcpio |
 | Preinstalled Spotify, Obsidian, Typora, LocalSend, Pinta | Install menu, Apps: official snaps, vendor apt repositories, or Flathub | Not in the Ubuntu archive |
 | Browser title-bar buttons | Chromium-family browsers and Firefox switched to system decorations, so no minimize/maximize/close buttons | Hyprland draws no decorations; `ombuntu-browser-decorations on` restores them |
+| Runaway apps | `systemd-oomd` installed and enabled | Xubuntu ships no userspace OOM handler, so one app filling RAM thrashes the machine into swap and freezes the desktop; Ubuntu Desktop uses oomd for this |
 | Chromium-family extensions and search | Privacy Badger, Dark Reader, 1Password and Awesome Screen Recorder installed by policy; DuckDuckGo as the search engine | `config-system/chromium-defaults.json`; extensions are disableable but not removable, edit that file to change the set |
 
 Signal Desktop is installed from Signal's own apt repository, as on Arch.

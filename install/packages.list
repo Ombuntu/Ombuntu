@@ -82,6 +82,7 @@ tesseract-ocr
 tesseract-ocr-eng
 du-dust
 unzip
+systemd-oomd
 whois
 less
 bash-completion
