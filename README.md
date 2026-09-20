@@ -191,6 +191,8 @@ completes dispatcher subcommands the same way `omarchy <Tab>` does.
 | `ombuntu` | Same dispatcher as `omarchy` (`ombuntu theme set nord`, `ombuntu update`) |
 | `ombuntu-doctor` | One line per check: session, duplicate services, tools, keyring flags, privacy files. Paste its output when asking for help. |
 | `ombuntu-version` | Ombuntu version and the upstream Omarchy tag |
+| `ombuntu-webapp-install "Name" <url> [icon]` | Add a site to the app launcher as its own window (menu: Install, Web App). No arguments prompts and fetches the favicon |
+| `ombuntu-webapp-remove "Name"` | Remove a web app launcher. Omarchy's own web apps return on the next `ombuntu update`; yours do not |
 | `ombuntu-upstream-check [tag]` | Tries a newer Omarchy tag in a temp directory and reports whether Ombuntu's adaptations and menu patch still fit |
 | `ombuntu-browser-decorations on\|off` | Show or hide browsers' title-bar buttons |
 | `ombuntu-cheatsheet` | The beginner cheatsheet window |

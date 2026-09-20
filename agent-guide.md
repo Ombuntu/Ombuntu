@@ -61,6 +61,17 @@ Tell the human these before they follow Omarchy documentation literally:
 - Install flags: `--keep-telemetry`, `--keep-browser-buttons`, `--no-firefox-policy`. Uninstall: `uninstall.sh` in the repository (`--purge-packages`, `--restore-telemetry`).
 - `ombuntu-upstream-check` reports whether a newer Omarchy tag would still fit Ombuntu's adaptations; bumping means editing `OMARCHY_REF` and re-running `install.sh`.
 
+## Adding and removing launcher entries
+
+When the human asks for an app or a site in the app launcher (Super + Space):
+
+- **Web app**: `ombuntu-webapp-install "Name" https://example.com Icon.png` writes `~/.local/share/applications/Name.desktop` and puts the icon in `~/.local/share/applications/icons/`. The third argument is an icon URL or the name of a PNG already in that folder; run the command with no arguments and it prompts for name and URL and fetches the site's favicon itself. Menu path: Super + Alt + Space, Install, Web App. Remove one with `ombuntu-webapp-remove "Name"`.
+- **An installed app that does not appear** has no `.desktop` file in `/usr/share/applications` or `~/.local/share/applications`. Some ship their own registration and you should prefer it, because it writes absolute paths: Tor Browser is `./start-tor-browser.desktop --register-app`, run from the directory the browser lives in. Otherwise write the entry to `~/.local/share/applications/` yourself.
+- After either, run `update-desktop-database ~/.local/share/applications` and `ombuntu-restart-walker` so the launcher picks it up without a re-login.
+- **Keybinding**, if they want one: add a line to `~/.config/hypr/bindings.conf`, e.g. `bindd = SUPER SHIFT, A, ChatGPT, exec, ombuntu-launch-or-focus ^Chatgpt$ "uwsm-app -- chatgpt"`. Prefer `ombuntu-launch-or-focus <class-regex> <command>` over a bare `exec`: it focuses an existing window instead of starting a second copy. Get the class from `hyprctl clients -j` while the app is running.
+
+Warn the human about one thing: `omarchy-refresh-applications` runs during every install and every `ombuntu update`, and it recreates upstream's web apps (WhatsApp, ChatGPT, YouTube, X, GitHub, Figma, Discord, Zoom and the Google set) unconditionally. Removing one of those holds until the next update run, then it comes back. Web apps the human created themselves are not in that list and are left alone.
+
 ## Security posture
 
 Say this plainly when asked:
