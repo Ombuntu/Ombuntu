@@ -75,6 +75,7 @@ changed.
 | `--keep-telemetry` | Leave Canonical and browser telemetry at Ubuntu defaults |
 | `--keep-browser-buttons` | Keep browsers' own minimize/maximize/close buttons |
 | `--no-firefox-policy` | Do not install the Firefox policy file (managed machines) |
+| `--no-oomd` | Do not install `systemd-oomd`, the userspace OOM handler |
 
 The piped form takes the same flags: `curl -fsSL https://ombuntu.org/install.sh | bash -s -- --skip-bashrc`.
 
