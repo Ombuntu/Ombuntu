@@ -17,6 +17,7 @@
 #   ./install.sh --keep-telemetry        leave Canonical/browser telemetry at Ubuntu defaults
 #   ./install.sh --keep-browser-buttons  keep browsers' own minimize/maximize/close buttons
 #   ./install.sh --no-firefox-policy     do not install the Firefox policy file (managed machines)
+#   ./install.sh --no-oomd               do not install systemd-oomd (the userspace OOM handler)
 #
 # Piped form takes the same flags:  curl -fsSL https://ombuntu.org/install.sh | bash -s -- --skip-bashrc
 #
@@ -128,6 +129,7 @@ export OMARCHY_FORCE_CONFIG=false
 export OMBUNTU_KEEP_TELEMETRY=false
 export OMBUNTU_KEEP_BROWSER_BUTTONS=false
 export OMBUNTU_NO_FIREFOX_POLICY=false
+export OMBUNTU_NO_OOMD=false
 
 for arg in "$@"; do
   case "$arg" in
@@ -137,7 +139,8 @@ for arg in "$@"; do
   --keep-telemetry) OMBUNTU_KEEP_TELEMETRY=true ;;
   --keep-browser-buttons) OMBUNTU_KEEP_BROWSER_BUTTONS=true ;;
   --no-firefox-policy) OMBUNTU_NO_FIREFOX_POLICY=true ;;
-  -h | --help) sed -n '2,/^set -eEo/p' "$0" | head -n -1; exit 0 ;;
+  --no-oomd) OMBUNTU_NO_OOMD=true ;;
+  -h | --help) sed -n '2,/^set -/p' "$0" | head -n -1; exit 0 ;;
   *) echo "Unknown option: $arg" >&2; exit 1 ;;
   esac
 done

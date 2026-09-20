@@ -14,6 +14,7 @@ export OMARCHY_FORCE_CONFIG="${OMARCHY_FORCE_CONFIG:-false}"
 export OMBUNTU_KEEP_TELEMETRY="${OMBUNTU_KEEP_TELEMETRY:-false}"
 export OMBUNTU_KEEP_BROWSER_BUTTONS="${OMBUNTU_KEEP_BROWSER_BUTTONS:-false}"
 export OMBUNTU_NO_FIREFOX_POLICY="${OMBUNTU_NO_FIREFOX_POLICY:-false}"
+export OMBUNTU_NO_OOMD="${OMBUNTU_NO_OOMD:-false}"
 # During the install, Omarchy's user-writable bin and ~/.local/bin go at the END of PATH:
 # system tools (sha256sum, tar, curl, apt) must never be shadowed by a checkout we are
 # about to fetch. Root steps get a fixed PATH in step() and never see these at all.
@@ -42,7 +43,7 @@ step() {
   log "$label"
   if [[ $mode == root ]]; then
     # Root steps: explicit, system-only PATH; only installer flags are passed through.
-    sudo --preserve-env=OMBUNTU_REPO,OMBUNTU_ARCH,OMBUNTU_BUILD_FROM_SOURCE,OMARCHY_REF,OMARCHY_COMMIT,OMARCHY_USER_ONLY,OMARCHY_SKIP_BASHRC,OMARCHY_FORCE_CONFIG,OMBUNTU_KEEP_TELEMETRY,OMBUNTU_KEEP_BROWSER_BUTTONS,OMBUNTU_NO_FIREFOX_POLICY \
+    sudo --preserve-env=OMBUNTU_REPO,OMBUNTU_ARCH,OMBUNTU_BUILD_FROM_SOURCE,OMARCHY_REF,OMARCHY_COMMIT,OMARCHY_USER_ONLY,OMARCHY_SKIP_BASHRC,OMARCHY_FORCE_CONFIG,OMBUNTU_KEEP_TELEMETRY,OMBUNTU_KEEP_BROWSER_BUTTONS,OMBUNTU_NO_FIREFOX_POLICY,OMBUNTU_NO_OOMD \
       env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash "$script"
   else
     bash "$script"

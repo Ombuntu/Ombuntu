@@ -52,4 +52,8 @@ systemctl enable --now power-profiles-daemon.service >/dev/null 2>&1 || true
 # Xubuntu ships no userspace OOM handler, so a runaway app thrashes the machine into swap
 # and locks the desktop long before the kernel OOM killer steps in. systemd-oomd is what
 # Ubuntu Desktop uses for this; its own defaults for the user slices come with the package.
-systemctl enable --now systemd-oomd.service >/dev/null 2>&1 || true
+# --no-oomd skips it, for anyone who would rather manage memory pressure themselves.
+if [[ $OMBUNTU_NO_OOMD != true ]]; then
+  apt-get install -y --no-install-recommends systemd-oomd
+  systemctl enable --now systemd-oomd.service >/dev/null 2>&1 || true
+fi
