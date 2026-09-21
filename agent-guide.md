@@ -70,7 +70,7 @@ When the human asks for an app or a site in the app launcher (Super + Space):
 - After either, run `update-desktop-database ~/.local/share/applications` and `ombuntu-restart-walker` so the launcher picks it up without a re-login.
 - **Keybinding**, if they want one: add a line to `~/.config/hypr/bindings.conf`, e.g. `bindd = SUPER SHIFT, A, ChatGPT, exec, ombuntu-launch-or-focus ^Chatgpt$ "uwsm-app -- chatgpt"`. Prefer `ombuntu-launch-or-focus <class-regex> <command>` over a bare `exec`: it focuses an existing window instead of starting a second copy. Get the class from `hyprctl clients -j` while the app is running.
 
-Warn the human about one thing: `omarchy-refresh-applications` runs during every install and every `ombuntu update`, and it recreates upstream's web apps (WhatsApp, ChatGPT, YouTube, X, GitHub, Figma, Discord, Zoom and the Google set) unconditionally. Removing one of those holds until the next update run, then it comes back. Web apps the human created themselves are not in that list and are left alone.
+Warn the human about one thing: `omarchy-refresh-applications` runs during every install and every `ombuntu update`, and it recreates upstream's web apps (WhatsApp, ChatGPT, YouTube, X, GitHub, Figma, Discord, Zoom and the Google set) unconditionally. Removing one of those holds until the next update run, then it comes back. Two exceptions: web apps the human created themselves are not in that list and are left alone, and `install/40-config.sh` drops any upstream web app whose name matches a *visible* native `.desktop` (so installing the real ChatGPT or Discord retires the web app instead of duplicating it).
 
 ## Security posture
 

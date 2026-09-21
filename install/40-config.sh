@@ -92,6 +92,31 @@ rm -f ~/.local/share/applications/{HEY,Basecamp,Fizzy}.desktop ~/.local/share/ap
 sed -i '/omarchy-launch-webapp "https:\/\/app\.hey\.com/d' ~/.config/hypr/bindings.conf 2>/dev/null || true
 omarchy-refresh-applications >/dev/null 2>&1 || warn "omarchy-refresh-applications reported errors (non-fatal)"
 
+#    The refresh recreates upstream's web apps every run. Where the human also has the real
+#    application installed, the launcher then lists the same name twice; the native entry wins.
+#    Only names from upstream's own list are considered, so web apps the human made are safe.
+while IFS= read -r webapp; do
+  entry=~/.local/share/applications/"$webapp".desktop
+  [[ -f $entry ]] || continue
+  grep -q "omarchy-launch-webapp\|omarchy-webapp-handler" "$entry" || continue
+  native=""
+  for dir in /usr/share/applications /var/lib/snapd/desktop/applications /var/lib/flatpak/exports/share/applications; do
+    [[ -d $dir ]] || continue
+    while IFS= read -r candidate; do
+      # NoDisplay entries are URL handlers and the like: invisible in the launcher, so they
+      # replace nothing. /usr/share/applications/google-maps-geo-handler.desktop is one.
+      grep -qiE '^(NoDisplay|Hidden)=true' "$candidate" && continue
+      native=$candidate
+      break
+    done < <(grep -rlx "Name=$webapp" "$dir" 2>/dev/null)
+    [[ -n $native ]] && break
+  done
+  [[ -n $native ]] || continue
+  rm -f "$entry" ~/.local/share/applications/icons/"$webapp".png
+  log "Web app $webapp dropped: $(basename "$native") provides it natively"
+done < <(sed -n 's/^omarchy-webapp-install "\([^"]*\)".*/\1/p' "$OMARCHY_PATH/install/packaging/webapps.sh" 2>/dev/null)
+update-desktop-database ~/.local/share/applications 2>/dev/null || true
+
 # 8. Walker + Elephant wiring (mirrors install/config/walker-elephant.sh upstream)
 mkdir -p ~/.config/autostart ~/.config/systemd/user/app-walker@autostart.service.d ~/.config/elephant/menus
 cp -f "$OMARCHY_PATH/default/walker/walker.desktop" ~/.config/autostart/
