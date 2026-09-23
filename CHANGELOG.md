@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.3
+
+- Screen sharing works: `xdph.conf` named Omarchy's `hyprland-preview-share-picker`, which exists only in Arch's hyprland-qtutils, so the portal launched a missing binary and every request came back to the application as "cancelled by user" - in OBS, Zoom, Teams and Discord alike. Unset, xdph uses the `hyprland-share-picker` Ubuntu packages.
+- The Waybar tray is no longer empty: Xubuntu's Ayatana indicator service starts in any session and takes `org.kde.StatusNotifierWatcher`, so after an XFCE login every tray item registered with it instead of Waybar. It is now hidden under Hyprland, like the MATE polkit agent.
+- Web apps: `omarchy-launch-webapp` fell back to `chromium.desktop`, a name Ubuntu has never shipped (the snap is `chromium_chromium.desktop`, the deb `chromium-browser.desktop`), so with snap Chromium as the default browser every web app binding died with "Command not found". Upstream web apps whose real application is installed are now retired instead of listed twice.
+- Every Omarchy tool is also an `ombuntu-*` command, `ombuntu <Tab>` completes subcommands, and the dispatcher names the desktop it drives. Upstream keeps its own names, so the checkout stays byte-identical to its pinned commit.
+- Chromium-family defaults, in their own step so `--keep-telemetry` no longer costs you them: Privacy Badger, Dark Reader, 1Password and Awesome Screen Recorder, with DuckDuckGo as the search engine. The privacy policy is also written to `/etc/chromium-browser/policies`, the path Ubuntu's Chromium snap actually reads - it never applied there before.
+- `systemd-oomd` is installed and enabled, `--no-oomd` skips it. Xubuntu ships no userspace OOM handler, so a runaway application thrashes the machine into swap and freezes the desktop long before the kernel steps in.
+- The Learn menu opens Ombuntu's documentation rather than the Omarchy manual, and `--help` prints the help instead of the whole script.
+- The agent guide, the FAQ and the command table document how to add and remove launcher entries and web apps.
+
 ## 0.1.2
 
 - The installer refuses Ubuntu releases older than 26.04, in preflight and in the one-line bootstrap, instead of reaching apt and failing with a wall of `Unable to locate package`; the package step also reports apt failures in its own words.
