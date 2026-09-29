@@ -3,8 +3,15 @@
 # using whichever Chromium-based browser is present (needed for web apps).
 set -eEo pipefail
 
-browser=""
+# A browser the human already chose here wins: this file is rewritten on every install,
+# and silently putting their default back to Chromium each time is not ours to do.
+browser=$(sed -n 's|^x-scheme-handler/https=||p' ~/.config/Hyprland-mimeapps.list 2>/dev/null | head -1)
+if [[ -n $browser ]] && ! [[ -f /usr/share/applications/$browser || -f ~/.local/share/applications/$browser || -f /var/lib/snapd/desktop/applications/$browser ]]; then
+  browser=""   # they chose one, but it is gone now; fall through and pick again
+fi
+
 for candidate in chromium.desktop chromium_chromium.desktop google-chrome.desktop brave-browser.desktop vivaldi-stable.desktop microsoft-edge.desktop; do
+  [[ -z $browser ]] || break
   if [[ -f /usr/share/applications/$candidate || -f ~/.local/share/applications/$candidate || -f /var/lib/snapd/desktop/applications/$candidate ]]; then
     browser=$candidate
     break
