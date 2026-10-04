@@ -18,7 +18,7 @@ fi
 #    user has no monitors.conf / no active kb_layout yet; never overwritten afterwards.
 hw=$(python3 "$OMBUNTU_REPO/install/detect-hardware.py") || die "Hardware detection failed (install/detect-hardware.py)"
 eval "$(sed 's/^/hw_/' <<<"$hw")"
-: "${hw_scale:=1}" "${hw_gdk_scale:=1}" "${hw_panel:=none}" "${hw_kb_layout:=}" "${hw_kb_variant:=}"
+: "${hw_render_card:=}" "${hw_scale:=1}" "${hw_gdk_scale:=1}" "${hw_panel:=none}" "${hw_kb_layout:=}" "${hw_kb_variant:=}"
 [[ $hw_kb_layout =~ ^[A-Za-z0-9,_-]*$ && $hw_kb_variant =~ ^[A-Za-z0-9,_-]*$ ]] || { warn "Ignoring unusual keyboard layout value"; hw_kb_layout=""; hw_kb_variant=""; }
 [[ $hw_scale =~ ^[0-9.]+$ && $hw_gdk_scale =~ ^[0-9.]+$ ]] || { hw_scale=1; hw_gdk_scale=1; }
 if [[ ! -f ~/.config/hypr/monitors.conf ]]; then
@@ -143,6 +143,21 @@ bash "$OMBUNTU_REPO/install/mimeapps.sh"
 
 # 11. uwsm reads ~/.config/uwsm/env with /bin/sh (dash), so always install the POSIX version
 cp -f "$OMBUNTU_REPO/config/uwsm/env" ~/.config/uwsm/env
+
+#     On a multi-GPU machine, name the card the monitors are plugged into. Aquamarine
+#     may otherwise render on the GPU that drives nothing -- an iGPU with only a
+#     Writeback connector, say -- and every frame then crosses to the other card for
+#     scanout on the CPU, which costs most of a core at any real resolution. Rewritten
+#     each run: it is derived from the hardware, and hardware changes.
+if [[ $hw_render_card =~ ^/dev/dri/by-path/[A-Za-z0-9:._-]+-card$ && -e $hw_render_card ]]; then
+  cat >~/.config/uwsm/env-hardware <<HW
+# Written by Ombuntu's installer from install/detect-hardware.py. Edits are overwritten.
+export AQ_DRM_DEVICES=$hw_render_card
+HW
+  log "Rendering on $hw_render_card, the GPU your display is connected to"
+else
+  rm -f ~/.config/uwsm/env-hardware
+fi
 
 # 12. Ubuntu's waybar/hypridle/foot/hyprpolkitagent packages ship user services that
 #     systemd enables by default. Omarchy starts these itself from Hyprland's autostart,

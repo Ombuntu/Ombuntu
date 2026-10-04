@@ -5,6 +5,9 @@ Output (one per line):  key=value
   kb_layout, kb_variant   from the system console/X keyboard config (empty if unset)
   scale, gdk_scale        1 / 1.6+1.75 / 2+2, from the internal panel's EDID size and mode
   panel                   connector and mode used for the decision, or "none"
+  render_card             on a multi-GPU machine, the stable /dev/dri/by-path path of the
+                          GPU that owns the connected display; empty when there is one GPU,
+                          no display, or displays spread across several GPUs
 """
 import glob, os, re, shlex, subprocess
 
@@ -53,6 +56,38 @@ def panels():
     found.sort(key=lambda p: (0 if "eDP" in p[0] or "LVDS" in p[0] else 1))
     return found
 
+def render_card():
+    """The GPU the monitors are plugged into.
+
+    With two GPUs, aquamarine may pick the one driving nothing -- an iGPU with only a
+    Writeback connector, say -- and then every frame is copied to the other card for
+    scanout, on the CPU. Naming the right card up front avoids that. Only decided when
+    every connected display hangs off one card: with outputs on several GPUs, pinning
+    one would blank the others, so leave the choice to aquamarine.
+    """
+    cards = {os.path.basename(c) for c in glob.glob("/sys/class/drm/card[0-9]*")
+             if "-" not in os.path.basename(c)}
+    if len(cards) < 2:
+        return ""
+    owners = set()
+    for st in glob.glob("/sys/class/drm/card*-*/status"):
+        try:
+            if open(st).read().strip() != "connected":
+                continue
+        except OSError:
+            continue
+        owners.add(os.path.basename(os.path.dirname(st)).split("-", 1)[0])
+    if len(owners) != 1:
+        return ""
+    card = owners.pop()
+    for link in sorted(glob.glob("/dev/dri/by-path/*-card")):
+        try:
+            if os.path.basename(os.path.realpath(link)) == card:
+                return link
+        except OSError:
+            pass
+    return ""
+
 def emit(k, v): print(f"{k}={shlex.quote(str(v))}")   # safe to eval in bash
 
 layout, variant = keyboard()
@@ -66,3 +101,4 @@ if ps:
     emit("scale", scale); emit("gdk_scale", gdk); emit("panel", f"{name} {mode} {dpi:.0f}dpi")
 else:
     emit("scale", "1"); emit("gdk_scale", "1"); emit("panel", "none")
+emit("render_card", render_card())
