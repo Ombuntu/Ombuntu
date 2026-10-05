@@ -215,7 +215,8 @@ sed -i '/uwsm-app -- 1password$/d' ~/.config/hypr/bindings.conf 2>/dev/null || t
 #     under Hyprland they silently fall back to plain-text storage, which makes Signal
 #     unable to open a database created under XFCE ("file is not a database").
 #     Force the libsecret backend in Signal's launcher and Omarchy's Super+Shift+G binding.
-if [[ -f /usr/share/applications/signal-desktop.desktop ]]; then
+if [[ -f /usr/share/applications/signal-desktop.desktop ]] &&
+   ! grep -q "password-store=gnome-libsecret" ~/.local/share/applications/signal-desktop.desktop 2>/dev/null; then
   sed 's|^Exec=\(\S*\)|Exec=\1 --password-store=gnome-libsecret|' /usr/share/applications/signal-desktop.desktop >~/.local/share/applications/signal-desktop.desktop
 fi
 sed -i 's|"uwsm-app -- signal-desktop"|"uwsm-app -- signal-desktop --password-store=gnome-libsecret"|' ~/.config/hypr/bindings.conf
@@ -224,7 +225,12 @@ sed -i 's|"uwsm-app -- signal-desktop"|"uwsm-app -- signal-desktop --password-st
 for entry in vivaldi-stable google-chrome brave-browser microsoft-edge chromium; do
   src=/usr/share/applications/$entry.desktop
   [[ -f $src ]] || continue
-  sed 's|^Exec=\(\S*\)|Exec=\1 --password-store=gnome-libsecret|' "$src" >~/.local/share/applications/$entry.desktop
+  dst=~/.local/share/applications/$entry.desktop
+  # An entry that already carries the flag is doing its job. Rewriting it from the
+  # system copy every run would throw away whatever else the human put there: a
+  # wrapper path, extra flags. Only write the override when it is missing.
+  grep -q "password-store=gnome-libsecret" "$dst" 2>/dev/null && continue
+  sed 's|^Exec=\(\S*\)|Exec=\1 --password-store=gnome-libsecret|' "$src" >"$dst"
 done
 update-desktop-database ~/.local/share/applications 2>/dev/null || true
 
