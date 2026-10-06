@@ -152,7 +152,23 @@ cp -f "$OMBUNTU_REPO/config/uwsm/env" ~/.config/uwsm/env
 if [[ $hw_render_card =~ ^/dev/dri/by-path/[A-Za-z0-9:._-]+-card$ && -e $hw_render_card ]]; then
   cat >~/.config/uwsm/env-hardware <<HW
 # Written by Ombuntu's installer from install/detect-hardware.py. Edits are overwritten.
-export AQ_DRM_DEVICES=$hw_render_card
+# Render on the GPU the display is plugged into, but only once nothing else holds it.
+# The greeter's X server owns that card until a moment after you log in, and a compositor
+# that asks for it first dies with "CBackend::create() failed" and drops you back to the
+# login screen. Wait briefly for the greeter to go; if an X server is still there (a
+# parallel XFCE session, say), skip the pin and let aquamarine choose -- slower, but it
+# logs in.
+_i=0
+while [ \$_i -lt 15 ] && pgrep -x Xorg >/dev/null 2>&1; do
+  sleep 0.2
+  _i=\$((_i + 1))
+done
+if pgrep -x Xorg >/dev/null 2>&1; then
+  echo "ombuntu: an X server still holds the GPU, letting the compositor pick" >&2
+else
+  export AQ_DRM_DEVICES=$hw_render_card
+fi
+unset _i
 HW
   log "Rendering on $hw_render_card, the GPU your display is connected to"
 else
