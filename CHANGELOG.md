@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.4
+
+- Your session survives a runaway app. Ombuntu installs `systemd-oomd`, and oomd picked the compositor as its kill candidate under memory pressure - taking the whole desktop down, every unsaved window with it, while the browser actually holding 13 GB carried on. Killing the compositor frees nothing, because the memory belongs to apps inside the session. The unit now carries `ManagedOOMPreference=omit` and is never a candidate.
+- A lost race with the greeter no longer costs you the login. LightDM starts the session while its greeter's X server still holds the GPU, so the compositor could fail with `CBackend::create() failed` and drop you straight back to the login screen. The session unit now retries twice, two seconds apart, by which time the greeter is gone; a genuinely broken config still gives up rather than looping.
+- On a multi-GPU machine, the compositor renders on the card your display is plugged into (`AQ_DRM_DEVICES` in `~/.config/uwsm/env-hardware`). Aquamarine may otherwise choose a GPU that drives nothing - an iGPU whose only connector is Writeback - and every frame is then copied across for scanout on the CPU, which cost 85% of a core at 3440x1440. The choice is recorded in `~/.local/state/ombuntu/gpu-pin.log`, and it is skipped where an X server still holds the card.
+- The installer stops overwriting your choices. Setting Firefox as the default browser survived until the next install, which rewrote `Hyprland-mimeapps.list` and put Chromium back; pointing a browser's launcher at a wrapper script lasted until the same run regenerated the desktop entry. Both now keep what is already there.
+
 ## 0.1.3
 
 - Screen sharing works: `xdph.conf` named Omarchy's `hyprland-preview-share-picker`, which exists only in Arch's hyprland-qtutils, so the portal launched a missing binary and every request came back to the application as "cancelled by user" - in OBS, Zoom, Teams and Discord alike. Unset, xdph uses the `hyprland-share-picker` Ubuntu packages.
