@@ -5,7 +5,13 @@ set -eEo pipefail
 
 # A browser the human already chose here wins: this file is rewritten on every install,
 # and silently putting their default back to Chromium each time is not ours to do.
-browser=$(sed -n 's|^x-scheme-handler/https=||p' ~/.config/Hyprland-mimeapps.list 2>/dev/null | head -1)
+browser=""
+if [[ -r ~/.config/Hyprland-mimeapps.list ]]; then
+  # Not 2>/dev/null on a bare substitution: with pipefail a missing file makes sed exit 2,
+  # the assignment inherits it, and set -e kills the install. That broke every fresh
+  # install for two weeks, since this file does not exist yet on a first run.
+  browser=$(sed -n 's|^x-scheme-handler/https=||p' ~/.config/Hyprland-mimeapps.list | head -1)
+fi
 if [[ -n $browser ]] && ! [[ -f /usr/share/applications/$browser || -f ~/.local/share/applications/$browser || -f /var/lib/snapd/desktop/applications/$browser ]]; then
   browser=""   # they chose one, but it is gone now; fall through and pick again
 fi
