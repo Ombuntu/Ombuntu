@@ -144,39 +144,15 @@ bash "$OMBUNTU_REPO/install/mimeapps.sh"
 # 11. uwsm reads ~/.config/uwsm/env with /bin/sh (dash), so always install the POSIX version
 cp -f "$OMBUNTU_REPO/config/uwsm/env" ~/.config/uwsm/env
 
-#     On a multi-GPU machine, name the card the monitors are plugged into. Aquamarine
-#     may otherwise render on the GPU that drives nothing -- an iGPU with only a
-#     Writeback connector, say -- and every frame then crosses to the other card for
-#     scanout on the CPU, which costs most of a core at any real resolution. Rewritten
-#     each run: it is derived from the hardware, and hardware changes.
-if [[ $hw_render_card =~ ^/dev/dri/by-path/[A-Za-z0-9:._-]+-card$ && -e $hw_render_card ]]; then
-  cat >~/.config/uwsm/env-hardware <<HW
-# Written by Ombuntu's installer from install/detect-hardware.py. Edits are overwritten.
-# Render on the GPU the display is plugged into, but only once nothing else holds it.
-# The greeter's X server owns that card until a moment after you log in, and a compositor
-# that asks for it first dies with "CBackend::create() failed" and drops you back to the
-# login screen. Wait briefly for the greeter to go; if an X server is still there (a
-# parallel XFCE session, say), skip the pin and let aquamarine choose -- slower, but it
-# logs in.
-_i=0
-while [ \$_i -lt 15 ] && pgrep -x Xorg >/dev/null 2>&1; do
-  sleep 0.2
-  _i=\$((_i + 1))
-done
-_log=\${XDG_STATE_HOME:-\$HOME/.local/state}/ombuntu
-mkdir -p "\$_log"
-if pgrep -x Xorg >/dev/null 2>&1; then
-  echo "\$(date -Is) skipped: an X server still holds the GPU" >>"\$_log/gpu-pin.log"
-else
-  export AQ_DRM_DEVICES=$hw_render_card
-  echo "\$(date -Is) pinned: $hw_render_card" >>"\$_log/gpu-pin.log"
-fi
-unset _i _log
-HW
-  log "Rendering on $hw_render_card, the GPU your display is connected to"
-else
-  rm -f ~/.config/uwsm/env-hardware
-fi
+#     No AQ_DRM_DEVICES here. Pinning the compositor to the card the display is on looks
+#     right -- aquamarine can otherwise render on a GPU that drives nothing and every frame
+#     crosses to the other card on the CPU -- but in practice it cost six failed logins in
+#     five days on a two-GPU machine: the compositor dies with "CBackend::create() failed"
+#     and the display manager drops the user back to the greeter. Waiting for the greeter's
+#     X server to go, and retrying the unit, both failed to help. Left to itself aquamarine
+#     picked the right card anyway. Anyone who wants to pin can run install/detect-hardware.py
+#     for the path and set it by hand; not being able to log in is the worse failure.
+rm -f ~/.config/uwsm/env-hardware
 
 # 12. Ubuntu's waybar/hypridle/foot/hyprpolkitagent packages ship user services that
 #     systemd enables by default. Omarchy starts these itself from Hyprland's autostart,

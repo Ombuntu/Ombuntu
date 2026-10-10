@@ -8,10 +8,6 @@ export PATH=$PATH:$OMARCHY_PATH/bin:$HOME/.local/bin
 # Set default terminal and editor
 . "$HOME/.config/uwsm/default"
 
-# Hardware-specific bits written by the installer (which GPU to render on, when the
-# machine has more than one). Absent on single-GPU machines.
-[ -r "$HOME/.config/uwsm/env-hardware" ] && . "$HOME/.config/uwsm/env-hardware"
-
 # Activate mise if present on the system
 if command -v mise >/dev/null 2>&1; then
   eval "$(mise activate bash --shims)"
