@@ -163,12 +163,15 @@ while [ \$_i -lt 15 ] && pgrep -x Xorg >/dev/null 2>&1; do
   sleep 0.2
   _i=\$((_i + 1))
 done
+_log=\${XDG_STATE_HOME:-\$HOME/.local/state}/ombuntu
+mkdir -p "\$_log"
 if pgrep -x Xorg >/dev/null 2>&1; then
-  echo "ombuntu: an X server still holds the GPU, letting the compositor pick" >&2
+  echo "\$(date -Is) skipped: an X server still holds the GPU" >>"\$_log/gpu-pin.log"
 else
   export AQ_DRM_DEVICES=$hw_render_card
+  echo "\$(date -Is) pinned: $hw_render_card" >>"\$_log/gpu-pin.log"
 fi
-unset _i
+unset _i _log
 HW
   log "Rendering on $hw_render_card, the GPU your display is connected to"
 else
@@ -194,6 +197,21 @@ mkdir -p ~/.config/systemd/user/wayland-wm@.service.d
 cat >~/.config/systemd/user/wayland-wm@.service.d/oomd-protect.conf <<'UNIT'
 [Service]
 ManagedOOMPreference=omit
+UNIT
+
+#      And retry a lost race with the greeter rather than dropping back to the login
+#      screen. LightDM starts the session while the greeter's X server still holds the
+#      GPU, so the compositor can fail with "CBackend::create() failed" through no fault
+#      of the config; a second later the greeter is gone and the same start succeeds.
+#      Three attempts in 30s, so a genuinely broken config still gives up.
+cat >~/.config/systemd/user/wayland-wm@.service.d/retry.conf <<'UNIT'
+[Unit]
+StartLimitIntervalSec=30
+StartLimitBurst=3
+
+[Service]
+Restart=on-failure
+RestartSec=2
 UNIT
 systemctl --user daemon-reload 2>/dev/null || true
 
