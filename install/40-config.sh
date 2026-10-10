@@ -185,6 +185,18 @@ fi
 # (they are enabled globally by the packages in /etc/systemd/user, so a per-user mask is required)
 systemctl --user mask --now waybar.service hypridle.service foot-server.socket foot-server.service hyprpolkitagent.service swaync.service >/dev/null 2>&1 || true
 
+# 12b. systemd-oomd must never pick the compositor. Killing it takes the whole session
+#      down -- every unsaved window with it -- and frees nothing, because the memory is
+#      held by some app inside the session, not by the compositor. Seen in the wild: oomd
+#      named wayland-wm@hyprland its top candidate at 70% pressure while a browser sat on
+#      13 GB and survived. omit takes the unit out of oomd's candidate list for good.
+mkdir -p ~/.config/systemd/user/wayland-wm@.service.d
+cat >~/.config/systemd/user/wayland-wm@.service.d/oomd-protect.conf <<'UNIT'
+[Service]
+ManagedOOMPreference=omit
+UNIT
+systemctl --user daemon-reload 2>/dev/null || true
+
 # 13. XFCE's notification daemon is D-Bus activated and collides with Mako under Hyprland
 mkdir -p ~/.config/systemd/user/xfce4-notifyd.service.d
 cat >~/.config/systemd/user/xfce4-notifyd.service.d/not-under-hyprland.conf <<'UNIT'

@@ -145,7 +145,7 @@ The full manual is at <https://manuals.omamix.org/2/the-omarchy-manual>.
 | Preinstalled Spotify, Obsidian, Typora, LocalSend, Pinta | Install menu, Apps: official snaps, vendor apt repositories, or Flathub | Not in the Ubuntu archive |
 | Browser title-bar buttons | Chromium-family browsers and Firefox switched to system decorations, so no minimize/maximize/close buttons | Hyprland draws no decorations; `ombuntu-browser-decorations on` restores them |
 | Multi-GPU machines | `AQ_DRM_DEVICES` set to the card the display is plugged into, in `~/.config/uwsm/env-hardware`, and skipped while an X server still holds it | Aquamarine may otherwise render on a GPU that drives nothing, and each frame is then copied to the other card for scanout on the CPU |
-| Runaway apps | `systemd-oomd` installed and enabled, `--no-oomd` skips it | Xubuntu ships no userspace OOM handler, so one app filling RAM thrashes the machine into swap and freezes the desktop; Ubuntu Desktop uses oomd for this |
+| Runaway apps | `systemd-oomd` installed and enabled, `--no-oomd` skips it, and the compositor is excluded from its kill list | Xubuntu ships no userspace OOM handler, so one app filling RAM thrashes the machine into swap and freezes the desktop; Ubuntu Desktop uses oomd for this |
 | Chromium-family extensions and search | Privacy Badger, Dark Reader, 1Password and Awesome Screen Recorder installed by policy; DuckDuckGo as the search engine | `config-system/chromium-defaults.json`; extensions are disableable but not removable, edit that file to change the set |
 
 Signal Desktop is installed from Signal's own apt repository, as on Arch.
