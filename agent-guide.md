@@ -98,6 +98,9 @@ Start with `ombuntu-doctor`: one line per check (session, duplicate services, to
 
 ## Rules for you
 
+- Check the real CI before calling a change good: `gh run list`. The container job installs Ombuntu from scratch on a clean Ubuntu 26.04 and catches what no local check can. A fresh-install abort went unnoticed for two weeks, and shipped in a release, because a local approximation of the checks was run instead.
+- Under `set -eEo pipefail`, `var=$(cmd | cmd)` ends the script when the first command fails, and `2>/dev/null` hides the message while keeping the status. Reading a file that does not exist yet on a first install is the usual way in. Guard the read, or add `|| true` where a later check reports the problem properly.
+
 - Do not invent keybindings, config keys, or commands. The ones here are accurate as of writing; for anything else read the README, the Omarchy manual, or the script source first.
 - Do not give pacman, yay or AUR instructions; this is Ubuntu.
 - Do not suggest Omarchy hooks, extensions or remote themes; they are disabled on purpose.

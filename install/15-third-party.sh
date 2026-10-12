@@ -14,7 +14,10 @@ if [[ ! -s /usr/share/keyrings/signal-desktop-keyring.gpg ]]; then
   log "Adding Signal's apt signing key"
   tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
   curl -fsSL --retry 3 -o "$tmp/keys.asc" https://updates.signal.org/desktop/apt/keys.asc
-  fpr=$(gpg --show-keys --with-colons "$tmp/keys.asc" 2>/dev/null | awk -F: '$1=="fpr"{print $10; exit}')
+  # || true so a corrupt download reaches the fingerprint check below: with pipefail a
+  # failing gpg makes the assignment non-zero, set -e ends the install, and the human sees
+  # a bare exit code instead of being told the key did not match.
+  fpr=$(gpg --show-keys --with-colons "$tmp/keys.asc" 2>/dev/null | awk -F: '$1=="fpr"{print $10; exit}') || true
   [[ $fpr == "$SIGNAL_KEY_FPR" ]] || die "Signal apt key fingerprint is $fpr, expected $SIGNAL_KEY_FPR; not installing it"
   gpg --dearmor <"$tmp/keys.asc" >"$tmp/keyring.gpg"
   install -m 0644 "$tmp/keyring.gpg" /usr/share/keyrings/signal-desktop-keyring.gpg
