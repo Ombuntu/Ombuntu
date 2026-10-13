@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.5
+
+Fixes two faults in 0.1.4: a fresh install could not finish, and on a machine with two GPUs you could be unable to log in. Upgrade from 0.1.4.
+
+- Fresh installs complete again. Step 40 aborted on any machine that had never run Ombuntu: the installer read `~/.config/Hyprland-mimeapps.list` to preserve a browser you had chosen, that file does not exist on a first run, and under `set -e` with `pipefail` the failed read ended the install with no message. Present since 0.1.4.
+- The compositor is no longer pinned to the GPU your display is on. The idea was sound - aquamarine can otherwise render on a card that drives nothing and copy every frame across for scanout on the CPU - but on a two-GPU machine it produced six `CBackend::create() failed` logins in five days, each one dropping the user back to the greeter. Waiting for the display manager's X server to release the card did not help, and retrying the unit did not either, because the failure tears the session down first. Left alone, aquamarine picked the right card anyway. `install/detect-hardware.py` still prints the path for anyone who wants to set `AQ_DRM_DEVICES` by hand.
+- A corrupt Signal signing key download now says so. The fingerprint check could not be reached - the install ended at the download with a bare exit code. It failed closed either way, but said nothing about why.
+
 ## 0.1.4
 
 - Your session survives a runaway app. Ombuntu installs `systemd-oomd`, and oomd picked the compositor as its kill candidate under memory pressure - taking the whole desktop down, every unsaved window with it, while the browser actually holding 13 GB carried on. Killing the compositor frees nothing, because the memory belongs to apps inside the session. The unit now carries `ManagedOOMPreference=omit` and is never a candidate.
