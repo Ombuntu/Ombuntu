@@ -380,6 +380,7 @@ place, and your own pre-existing configs are kept.
 - `~/.config/hypr/*`, `waybar`, `walker`, `elephant`, `mako`, `swayosd`, `alacritty`, `btop`, `fastfetch`, `starship.toml`, `tmux`, `git/config`, `fontconfig/fonts.conf`, `uwsm`, `xdg-terminals.list`, `omarchy/*`, `Hyprland-mimeapps.list`, `autostart/*.desktop`, `systemd/user/*`
 - `~/.bashrc` (backup kept), `~/.XCompose`, `~/.local/bin/*`, `~/.local/share/fonts`, `~/.local/share/applications`
 - `/usr/share/wayland-sessions/ombuntu.desktop`
+- `/etc/systemd/logind.conf.d/ombuntu-power-key.conf` (the power key opens the power menu instead of powering off; applies to every session, and Xfce handles the key itself)
 
 `~/.config/git/config`, `~/.bashrc` and `~/.config/fontconfig/fonts.conf` also
 apply inside XFCE, because Omarchy treats the shell and fonts as part of the
