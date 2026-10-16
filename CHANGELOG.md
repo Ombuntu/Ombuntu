@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.6
+
+- The power key no longer powers the machine off without asking. Omarchy maps it to the power menu and, on Arch, also tells logind to leave the key alone; Ombuntu ported the first half and not the second, so Ubuntu's default `HandlePowerKey=poweroff` stayed in force. One tap of any power key - the case button, or the System Control device a wireless keyboard or receiver exposes - shut a running desktop down on the spot, which looked like a crash back to the login screen. A logind drop-in, `/etc/systemd/logind.conf.d/ombuntu-power-key.conf`, now sets `HandlePowerKey=ignore`, so the key opens the menu. A long press still forces a hardware power-off, and Xubuntu is unaffected because Xfce handles the key itself.
+- The README explains why a big build can take its terminal down. `systemd-oomd` kills a whole app scope, and a build started in a terminal shares that terminal's scope, so the window goes with it. `systemd-run --user --scope cargo build` (or `make`, `npm`, ...) gives the build a scope of its own and limits the kill to the build.
+
 ## 0.1.5
 
 Fixes two faults in 0.1.4: a fresh install could not finish, and on a machine with two GPUs you could be unable to log in. Upgrade from 0.1.4.
