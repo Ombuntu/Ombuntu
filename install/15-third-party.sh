@@ -7,6 +7,14 @@ export DEBIAN_FRONTEND=noninteractive
 
 changed=false
 
+# Signal publishes amd64 builds only. Anywhere else, adding the repository at best does
+# nothing, and with amd64 enabled as a foreign architecture apt tries to install it and
+# fails on its amd64 dependencies, ending the install.
+if [[ $OMBUNTU_ARCH != amd64 ]]; then
+  warn "Signal Desktop has no $OMBUNTU_ARCH build; skipping it"
+  exit 0
+fi
+
 # Signal Desktop (https://signal.org/download/linux/). The signing key is fetched over TLS
 # and then checked against the fingerprint Signal publishes; the sources file is ours.
 SIGNAL_KEY_FPR="DBA36B5181D0C816F630E889D980A17457F6FB06"
