@@ -55,7 +55,7 @@ cd ~/ombuntu && ./install.sh
 The installer:
 
 1. Checks the OS and architecture.
-2. Installs the Ubuntu packages (Hyprland, Waybar, Mako, Alacritty, Nautilus, the terminal tooling, fonts), then adds Signal's apt repository and installs Signal Desktop. These are the steps that need your password.
+2. Installs the Ubuntu packages (Hyprland, Waybar, Mako, Alacritty, Nautilus, the terminal tooling, fonts), then adds Signal's apt repository and installs Signal Desktop (amd64 only; Signal publishes no arm64 build). These are the steps that need your password.
 3. Fetches the Omarchy `v3.8.4` base into `~/.local/share/omarchy` and applies Ombuntu's Ubuntu adaptations.
 4. Downloads pinned releases of Walker, Elephant, Satty and mise into `~/.local/bin`, plus the JetBrainsMono Nerd Font.
 5. Writes the Omarchy configuration into `~/.config`, installs the bash setup (your old `~/.bashrc` is kept as `~/.bashrc.pre-omarchy`), and applies the Tokyo Night theme.
@@ -148,7 +148,7 @@ The full manual is at <https://manuals.omamix.org/2/the-omarchy-manual>.
 | Runaway apps | `systemd-oomd` installed and enabled, `--no-oomd` skips it, and the compositor is excluded from its kill list | Xubuntu ships no userspace OOM handler, so one app filling RAM thrashes the machine into swap and freezes the desktop; Ubuntu Desktop uses oomd for this. oomd kills a whole app scope, and a build shares one with the terminal it runs in, so a big `cargo`/`make -j` build takes the terminal down with it; run it in its own scope to lose only the build: `systemd-run --user --scope cargo build` |
 | Chromium-family extensions and search | Privacy Badger, Dark Reader, 1Password and Awesome Screen Recorder installed by policy; DuckDuckGo as the search engine | `config-system/chromium-defaults.json`; extensions are disableable but not removable, edit that file to change the set |
 
-Signal Desktop is installed from Signal's own apt repository, as on Arch.
+Signal Desktop is installed from Signal's own apt repository, as on Arch. Signal builds for amd64 only, so arm64 installs skip it.
 
 **Omarchy plugins are disabled for security reasons.** Omarchy's hooks
 (`~/.config/omarchy/hooks/*.d/`), menu extensions
