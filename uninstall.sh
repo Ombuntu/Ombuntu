@@ -61,6 +61,7 @@ printf '  %s\n' "${ombuntu_dirs[@]}"
 printf '  %d Ombuntu-generated file(s) under ~/.local and ~/.config\n' "${#ombuntu_files[@]}"
 echo "  /usr/share/wayland-sessions/ombuntu.desktop"
 echo "  /etc/systemd/logind.conf.d/ombuntu-power-key.conf"
+echo "  /etc/systemd/system/user@.service.d/ombuntu-oomd-swap.conf"
 [[ $PURGE == true ]] && echo "  apt packages listed in /etc/ombuntu/installed-packages ($( [[ -f /etc/ombuntu/installed-packages ]] && wc -l </etc/ombuntu/installed-packages || echo 0 ))"
 [[ $RESTORE == true ]] && echo "  the privacy/telemetry changes (restored to Ubuntu defaults)"
 echo "Kept: anything you had before Ombuntu, *.pre-omarchy backups are restored in place, ~/.local/share/mise."
@@ -73,6 +74,8 @@ log "Root steps (sudo): login entry, policy files"
 run sudo rm -f /usr/share/wayland-sessions/ombuntu.desktop
 run sudo rm -f /etc/systemd/logind.conf.d/ombuntu-power-key.conf
 run sudo systemctl reload systemd-logind
+run sudo rm -f /etc/systemd/system/user@.service.d/ombuntu-oomd-swap.conf
+run sudo systemctl daemon-reload
 if [[ $RESTORE == true ]]; then
   log "Restoring Ubuntu telemetry defaults"
   [[ -f /etc/default/apport ]] && run sudo sed -i 's/^enabled=.*/enabled=1/' /etc/default/apport
