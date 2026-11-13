@@ -55,5 +55,7 @@ systemctl enable --now power-profiles-daemon.service >/dev/null 2>&1 || true
 # --no-oomd skips it, for anyone who would rather manage memory pressure themselves.
 if [[ $OMBUNTU_NO_OOMD != true ]]; then
   apt-get install -y --no-install-recommends systemd-oomd
+  install -Dm644 "$OMBUNTU_REPO/config-system/oomd-swap.conf" /etc/systemd/system/user@.service.d/ombuntu-oomd-swap.conf
+  systemctl daemon-reload 2>/dev/null || true # absent in containers
   systemctl enable --now systemd-oomd.service >/dev/null 2>&1 || true
 fi
