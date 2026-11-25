@@ -93,8 +93,10 @@ sed -i '/omarchy-launch-webapp "https:\/\/app\.hey\.com/d' ~/.config/hypr/bindin
 omarchy-refresh-applications >/dev/null 2>&1 || warn "omarchy-refresh-applications reported errors (non-fatal)"
 
 #    The refresh recreates upstream's web apps every run. Where the human also has the real
-#    application installed, the launcher then lists the same name twice; the native entry wins.
-#    Only names from upstream's own list are considered, so web apps the human made are safe.
+#    application installed, the launcher then lists the same name twice, or the web app hides
+#    the native one outright when both use the same file name (Zoom's .deb installs Zoom.desktop
+#    as "Zoom Workplace"); the native entry wins. Only names from upstream's own list are
+#    considered, so web apps the human made are safe.
 while IFS= read -r webapp; do
   entry=~/.local/share/applications/"$webapp".desktop
   [[ -f $entry ]] || continue
@@ -108,7 +110,7 @@ while IFS= read -r webapp; do
       grep -qiE '^(NoDisplay|Hidden)=true' "$candidate" && continue
       native=$candidate
       break
-    done < <(grep -rlx "Name=$webapp" "$dir" 2>/dev/null)
+    done < <({ [[ -f $dir/$webapp.desktop ]] && echo "$dir/$webapp.desktop"; grep -rlx "Name=$webapp" "$dir" 2>/dev/null; })
     [[ -n $native ]] && break
   done
   [[ -n $native ]] || continue
